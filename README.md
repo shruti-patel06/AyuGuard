@@ -149,7 +149,7 @@ Open **http://localhost:8000** → select `ayuguard` agent.
 | `"Dad was tired again today and very thirsty"` | Full pipeline → ESCALATE → warm Diabetes-pattern message |
 | `"He had a slight cough today"` | Log saved → LOW urgency → brief reassurance |
 | `"Show me the history"` | Returns patient log summary |
-| `"Papa bahut thaka hua hai"` (Hindi) | Extracts fatigue → stores → scores → Hindi reply |
+| `"Papa bahut thake hue hai"` (Hindi) | Extracts fatigue → stores → scores → Hindi reply |
 
 ---
 
