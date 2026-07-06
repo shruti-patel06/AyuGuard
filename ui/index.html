@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AyuGuard — Ambient Caregiver Platform</title>
+  <meta name="description" content="AyuGuard — Longitudinal symptom pattern detection. Caregiver dashboard and patient health companion."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..800;1,14..32,300..600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ── Reset & Tokens ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080d1a; --bg2:#0d1426; --bg3:#111827;
+  --surface:rgba(255,255,255,0.04); --surface2:rgba(255,255,255,0.07); --surface3:rgba(255,255,255,0.11);
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13); --border3:rgba(255,255,255,0.2);
+  --purple:#8b5cf6; --purple2:#7c3aed; --purple3:#6d28d9;
+  --teal:#14b8a6; --teal2:#0d9488;
+  --green:#10b981; --amber:#f59e0b; --red:#ef4444; --blue:#3b82f6;
+  --text:#e2e8f0; --text2:#94a3b8; --text3:#64748b; --text4:#475569;
+  --sidebar:260px; --header:60px;
+  --r:14px; --r2:10px; --r3:8px;
+  --shadow:0 8px 32px rgba(0,0,0,0.45);
+  --glow-p:0 0 30px rgba(139,92,246,0.18);
+  --glow-t:0 0 30px rgba(20,184,166,0.14);
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter','Noto Sans Devanagari',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:0;background:
+  radial-gradient(ellipse 70% 55% at 15% 8%,rgba(139,92,246,.09) 0%,transparent 60%),
+  radial-gradient(ellipse 55% 45% at 85% 88%,rgba(20,184,166,.07) 0%,transparent 55%),
+  radial-gradient(ellipse 45% 40% at 55% 45%,rgba(59,130,246,.04) 0%,transparent 50%);
+  pointer-events:none}
+
+/* ── Layout ─────────────────────────────────────────────── */
+#app{display:flex;flex-direction:column;height:100vh;position:relative;z-index:1}
+.body{display:flex;flex:1;min-height:0}
+
+/* ── Header ─────────────────────────────────────────────── */
+header{height:var(--header);display:flex;align-items:center;gap:14px;padding:0 20px;
+  background:rgba(8,13,26,.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);flex-shrink:0;z-index:100}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;letter-spacing:-.4px;
+  background:linear-gradient(135deg,#8b5cf6,#14b8a6);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,#8b5cf6,#14b8a6);
+  border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;box-shadow:0 3px 14px rgba(139,92,246,.38)}
+.logo-devanagari{font-size:10px;font-weight:400;opacity:.45;letter-spacing:.3px;margin-top:-2px}
+.header-center{flex:1;display:flex;justify-content:center}
+.tabs{display:flex;background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:3px;gap:2px}
+.tab{padding:5px 18px;border-radius:9px;border:none;cursor:pointer;
+  font-family:inherit;font-size:12.5px;font-weight:600;
+  color:var(--text3);background:transparent;transition:all .2s var(--ease);white-space:nowrap}
+.tab.active{background:linear-gradient(135deg,var(--purple),var(--teal));color:#fff;
+  box-shadow:0 2px 10px rgba(139,92,246,.38)}
+.tab:not(.active):hover{color:var(--text);background:var(--surface2)}
+.tab.records-tab.active{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+.tab.records-tab:not(.active):hover{color:var(--amber)}
+.header-right{display:flex;align-items:center;gap:10px}
+.urgency-pill{display:flex;align-items:center;gap:5px;padding:5px 12px;
+  border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.4px;
+  text-transform:uppercase;border:1px solid;transition:all .3s var(--ease)}
+.urgency-pill.low{color:var(--green);border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.09)}
+.urgency-pill.watch{color:var(--amber);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.09)}
+.urgency-pill.escalate{color:var(--red);border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.09);animation:pill-pulse 2s infinite}
+@keyframes pill-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}50%{box-shadow:0 0 0 5px rgba(239,68,68,0)}}
+.urgency-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.urgency-pill.escalate .urgency-dot{animation:dot-blink 1s infinite}
+@keyframes dot-blink{0%,100%{opacity:1}50%{opacity:.2}}
+.notif-btn{position:relative;width:34px;height:34px;border-radius:9px;border:1px solid var(--border2);
+  background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:15px;transition:all .2s var(--ease)}
+.notif-btn:hover{border-color:var(--purple);background:rgba(139,92,246,.1)}
+.notif-badge{position:absolute;top:-4px;right:-4px;width:16px;height:16px;
+  background:var(--red);border-radius:50%;font-size:9px;font-weight:700;color:#fff;
+  display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+aside{width:var(--sidebar);flex-shrink:0;border-right:1px solid var(--border);
+  background:rgba(8,13,26,.6);backdrop-filter:blur(10px);
+  display:flex;flex-direction:column;gap:14px;padding:16px 14px;overflow-y:auto}
+aside::-webkit-scrollbar{width:3px}
+aside::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.avatar{width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,#8b5cf6,#14b8a6);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:700;color:#fff;flex-shrink:0;
+  box-shadow:0 3px 16px rgba(139,92,246,.38)}
+.profile-name{font-size:15px;font-weight:700}
+.profile-meta{font-size:11px;color:var(--text2);display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.ptag{background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:2px 8px;font-size:10.5px;color:var(--text2)}
+.cond-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;width:100%;text-align:left;margin-top:2px}
+.cond-tag{display:inline-block;margin:2px;padding:2px 8px;border-radius:20px;font-size:10.5px;
+  background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.22);color:#c4b5fd}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:10px;text-align:center}
+.stat-n{font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--purple),var(--teal));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-top:1px}
+.divider{height:1px;background:var(--border)}
+.sb-section{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;padding:0 2px}
+.sb-nav{display:flex;flex-direction:column;gap:3px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r2);
+  cursor:pointer;border:none;background:transparent;color:var(--text2);
+  font-family:inherit;font-size:13px;font-weight:500;width:100%;text-align:left;transition:all .2s var(--ease)}
+.sb-item:hover{background:var(--surface2);color:var(--text)}
+.sb-item.active{background:rgba(139,92,246,.13);color:var(--purple);border:1px solid rgba(139,92,246,.18)}
+.sb-icon{font-size:15px;width:18px;text-align:center}
+#sbn-records.active{background:rgba(245,158,11,.13);color:var(--amber);border:1px solid rgba(245,158,11,.22)}
+
+/* ── Main ────────────────────────────────────────────────── */
+main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+/* ── Shared chat layout ─────────────────────────────────── */
+.chat-view{display:none;flex-direction:column;height:100%}
+#view-caregiver{display:none}
+#view-patient{display:none}
+.chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.chat-messages::-webkit-scrollbar{width:3px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+.msg{display:flex;gap:10px;max-width:78%;animation:fadeUp .28s var(--ease)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg.agent{align-self:flex-start}
+.msg-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px}
+.msg.agent .msg-av{background:linear-gradient(135deg,#8b5cf6,#14b8a6);box-shadow:0 2px 10px rgba(139,92,246,.35)}
+.msg.user  .msg-av{background:var(--surface2);border:1px solid var(--border2)}
+.msg-body{display:flex;flex-direction:column;gap:3px}
+.msg-name{font-size:10.5px;font-weight:600;color:var(--text3)}
+.msg.user .msg-name{text-align:right}
+.msg-bubble{padding:10px 14px;border-radius:16px;font-size:13.5px;line-height:1.62;word-break:break-word}
+.msg.agent .msg-bubble{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:3px;color:var(--text)}
+.msg.user  .msg-bubble{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border-bottom-right-radius:3px;box-shadow:0 3px 14px rgba(139,92,246,.32)}
+.msg.patient .msg-av{background:linear-gradient(135deg,#14b8a6,#06b6d4);box-shadow:0 2px 10px rgba(20,184,166,.35)}
+.msg.patient .msg-bubble{background:linear-gradient(135deg,#14b8a6,#0d9488);color:#fff;border-bottom-right-radius:3px;box-shadow:0 3px 14px rgba(20,184,166,.32)}
+.msg-time{font-size:10px;color:var(--text3)}
+.msg.user .msg-time,.msg.patient .msg-time{text-align:right}
+.typing-ind{display:flex;gap:4px;padding:12px 14px;align-items:center}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);animation:bounce 1.1s infinite}
+.typing-dot:nth-child(2){animation-delay:.18s}.typing-dot:nth-child(3){animation-delay:.36s}
+@keyframes bounce{0%,80%,100%{transform:scale(.7);opacity:.5}40%{transform:scale(1.2);opacity:1}}
+
+/* ── Chat input ─────────────────────────────────────────── */
+.chat-input-wrap{padding:12px 20px 16px;border-top:1px solid var(--border);
+  background:rgba(8,13,26,.85);backdrop-filter:blur(12px)}
+.chat-form{display:flex;gap:10px;align-items:flex-end}
+.chat-ta{flex:1;resize:none;background:var(--surface);border:1px solid var(--border2);
+  border-radius:12px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:13.5px;
+  outline:none;max-height:110px;min-height:44px;line-height:1.5;transition:all .2s var(--ease)}
+.chat-ta:focus{border-color:var(--purple);box-shadow:0 0 0 2px rgba(139,92,246,.12)}
+.chat-ta::placeholder{color:var(--text3)}
+.chat-ta.patient-ta:focus{border-color:var(--teal);box-shadow:0 0 0 2px rgba(20,184,166,.12)}
+.send-btn{width:44px;height:44px;border-radius:12px;border:none;cursor:pointer;color:#fff;
+  font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all .2s var(--ease)}
+.send-btn.caregiver-btn{background:linear-gradient(135deg,var(--purple),var(--teal));box-shadow:0 3px 14px rgba(139,92,246,.38)}
+.send-btn.patient-btn  {background:linear-gradient(135deg,var(--teal),#06b6d4);box-shadow:0 3px 14px rgba(20,184,166,.35)}
+.send-btn:hover{transform:scale(1.06)}
+.send-btn:active{transform:scale(.96)}
+.send-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.input-hint{font-size:10.5px;color:var(--text3);margin-top:6px;text-align:center}
+
+/* ── Welcome card ────────────────────────────────────────── */
+.welcome{align-self:center;text-align:center;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:28px 36px;max-width:420px;margin:auto}
+.welcome-emoji{font-size:44px;margin-bottom:10px}
+.welcome-title{font-size:20px;font-weight:700;margin-bottom:6px;
+  background:linear-gradient(135deg,var(--purple),var(--teal));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.welcome-desc{color:var(--text2);font-size:13.5px;line-height:1.7}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px}
+.chip{padding:6px 12px;border-radius:20px;font-size:11.5px;font-weight:500;
+  border:1px solid var(--border2);background:var(--surface2);color:var(--text2);
+  cursor:pointer;transition:all .2s var(--ease)}
+.chip:hover{background:rgba(139,92,246,.13);border-color:rgba(139,92,246,.35);color:var(--purple)}
+.chip.teal:hover{background:rgba(20,184,166,.12);border-color:rgba(20,184,166,.35);color:var(--teal)}
+
+/* ── Medical Records view ──────────────────────────────── */
+#view-records{display:none;flex-direction:column;height:100%;overflow-y:auto;padding:20px;gap:16px}
+#view-records::-webkit-scrollbar{width:3px}
+#view-records::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* Upload zone */
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--r);padding:28px 20px;
+  text-align:center;cursor:pointer;transition:all .25s var(--ease);background:var(--surface);
+  position:relative}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--amber);background:rgba(245,158,11,.06);}
+.upload-zone.uploading{border-color:var(--purple);background:rgba(139,92,246,.07);cursor:not-allowed}
+.upload-icon{font-size:38px;margin-bottom:10px}
+.upload-title{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--text)}
+.upload-sub{font-size:12px;color:var(--text3)}
+.upload-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:14px}
+.uf-group{display:flex;flex-direction:column;gap:4px;flex:1;min-width:160px}
+.uf-label{font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px}
+.uf-select,.uf-input{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;
+  padding:7px 11px;color:var(--text);font-family:inherit;font-size:12.5px;outline:none;
+  transition:border-color .2s var(--ease)}
+.uf-select:focus,.uf-input:focus{border-color:var(--amber)}
+.upload-btn{padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;
+  font-size:13px;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,#f59e0b,#ef4444);
+  box-shadow:0 3px 14px rgba(245,158,11,.35);transition:all .2s var(--ease);flex-shrink:0}
+.upload-btn:hover{transform:scale(1.04)}
+.upload-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.upload-progress{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--amber),var(--red));
+  margin-top:10px;width:0;transition:width .3s var(--ease)}
+
+/* Record cards */
+.records-grid{display:flex;flex-direction:column;gap:10px}
+.rec-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  overflow:hidden;transition:all .2s var(--ease)}
+.rec-card:hover{border-color:var(--border2)}
+.rec-card.has-critical{border-color:rgba(239,68,68,.3);}
+.rec-card.has-abnormal{border-color:rgba(245,158,11,.2);}
+.rec-header{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer}
+.rec-type-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:17px;flex-shrink:0}
+.rec-type-icon.lab_test       {background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.2)}
+.rec-type-icon.prescription    {background:rgba(16,185,129,.13);border:1px solid rgba(16,185,129,.2)}
+.rec-type-icon.discharge_summary{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2)}
+.rec-type-icon.scan_report     {background:rgba(236,72,153,.12);border:1px solid rgba(236,72,153,.2)}
+.rec-type-icon.consultation_note{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.2)}
+.rec-type-icon.other           {background:rgba(255,255,255,.06);border:1px solid var(--border2)}
+.rec-meta{flex:1;min-width:0}
+.rec-filename{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec-date-row{display:flex;align-items:center;gap:8px;margin-top:2px;flex-wrap:wrap}
+.rec-type-tag{font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;
+  background:var(--surface2);border:1px solid var(--border2);color:var(--text2)}
+.rec-date{font-size:10.5px;color:var(--text3)}
+.rec-badges{display:flex;gap:5px;flex-shrink:0}
+.badge{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid}
+.badge.critical{background:rgba(239,68,68,.12);color:#f87171;border-color:rgba(239,68,68,.3)}
+.badge.abnormal{background:rgba(245,158,11,.12);color:#fbbf24;border-color:rgba(245,158,11,.3)}
+.badge.ok      {background:rgba(16,185,129,.1); color:#34d399;border-color:rgba(16,185,129,.25)}
+.rec-chevron{color:var(--text3);font-size:12px;transition:transform .2s var(--ease);flex-shrink:0}
+.rec-card.expanded .rec-chevron{transform:rotate(180deg)}
+.rec-body{display:none;padding:0 16px 16px;border-top:1px solid var(--border)}
+.rec-card.expanded .rec-body{display:block}
+.rec-summary{font-size:12.5px;color:var(--text2);line-height:1.65;padding:12px 0 10px;border-bottom:1px solid var(--border)}
+.rec-findings-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--text3);margin:10px 0 6px}
+.abnormal-table{width:100%;border-collapse:collapse;font-size:12px}
+.abnormal-table th{text-align:left;color:var(--text3);font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.4px;padding:4px 8px;border-bottom:1px solid var(--border)}
+.abnormal-table td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04)}
+.abnormal-table tr:last-child td{border-bottom:none}
+.flag-HIGH{color:#f87171;font-weight:700}.flag-LOW{color:#60a5fa;font-weight:700}
+.flag-BORDERLINE{color:#fbbf24;font-weight:600}
+.findings-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.findings-list li{font-size:12px;color:var(--text2);padding:4px 8px;border-radius:6px;
+  background:var(--surface2);border-left:2px solid var(--purple)}
+.meds-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.med-tag{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#34d399}
+.rec-actions{display:flex;justify-content:flex-end;margin-top:10px}
+.rec-delete-btn{padding:4px 12px;border-radius:7px;border:1px solid rgba(239,68,68,.3);
+  background:transparent;color:#f87171;font-size:11px;cursor:pointer;font-family:inherit;
+  transition:all .2s var(--ease)}
+.rec-delete-btn:hover{background:rgba(239,68,68,.1)}
+.abnormal-summary-card{background:linear-gradient(135deg,rgba(245,158,11,.07),rgba(239,68,68,.05));
+  border:1px solid rgba(245,158,11,.18);border-radius:var(--r);padding:16px}
+.abn-params{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.abn-param{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;
+  background:var(--surface2);border:1px solid var(--border2);font-size:11.5px}
+.abn-param-name{font-weight:600;color:var(--text)}
+.abn-param-count{color:var(--text3);font-size:10.5px}
+
+/* ── Patient Dashboard ───────────────────────────────────── */
+#view-dashboard{display:none;flex-direction:column;height:100%;overflow-y:auto;padding:20px;gap:16px}
+#view-dashboard::-webkit-scrollbar{width:3px}
+#view-dashboard::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.dash-header{display:flex;align-items:center;justify-content:space-between}
+.dash-title{font-size:16px;font-weight:700}
+.dash-sub{font-size:11.5px;color:var(--text3);margin-top:2px}
+.refresh-btn{padding:5px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--surface);
+  color:var(--text2);font-size:11.5px;cursor:pointer;font-family:inherit;font-weight:500;
+  display:flex;align-items:center;gap:5px;transition:all .2s var(--ease)}
+.refresh-btn:hover{border-color:var(--purple);color:var(--purple)}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;transition:all .2s var(--ease)}
+.card:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+.card-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:5px}
+
+/* Care plan card */
+.care-section{margin-bottom:10px}
+.care-section-title{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px;
+  display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.4px}
+.care-item{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:8px;
+  background:var(--surface2);border:1px solid var(--border);margin-bottom:4px;font-size:12.5px;color:var(--text)}
+.care-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+
+/* Notifications */
+.notif-panel{position:fixed;top:var(--header);right:0;width:320px;height:calc(100vh - var(--header));
+  background:rgba(8,13,26,.97);backdrop-filter:blur(20px);border-left:1px solid var(--border2);
+  z-index:200;transform:translateX(100%);transition:transform .3s var(--ease);
+  display:flex;flex-direction:column}
+.notif-panel.open{transform:translateX(0)}
+.notif-header{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.notif-title{font-size:14px;font-weight:700}
+.notif-close{width:30px;height:30px;border-radius:8px;border:1px solid var(--border2);background:var(--surface);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s var(--ease)}
+.notif-close:hover{background:var(--surface2);border-color:var(--border3)}
+.notif-list{flex:1;overflow-y:auto;padding:12px}
+.notif-list::-webkit-scrollbar{width:3px}
+.notif-item{padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);
+  margin-bottom:8px;transition:all .2s var(--ease)}
+.notif-item.unread{border-color:rgba(139,92,246,.25);background:rgba(139,92,246,.07)}
+.notif-type{font-size:10px;text-transform:uppercase;letter-spacing:.4px;font-weight:700;margin-bottom:4px}
+.notif-type.care_plan{color:var(--teal)}
+.notif-type.alert{color:var(--amber)}
+.notif-msg{font-size:12.5px;color:var(--text);line-height:1.5}
+.notif-time{font-size:10.5px;color:var(--text3);margin-top:4px}
+.notif-unread-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);float:right;margin-top:2px}
+.notif-empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px}
+
+/* Urgency ring */
+.urgency-ring-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px}
+.ring-wrap{position:relative;width:110px;height:110px;margin-bottom:14px}
+.ring-svg{width:110px;height:110px;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.06);stroke-width:7}
+.ring-fill{fill:none;stroke-width:7;stroke-linecap:round;stroke-dasharray:313;stroke-dashoffset:313;
+  transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1),stroke .4s}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-size:22px;font-weight:800}
+.ring-sub{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px}
+.urg-label{font-size:16px;font-weight:700;margin-bottom:3px}
+.urg-desc{font-size:11.5px;color:var(--text2);max-width:180px;line-height:1.5}
+
+/* Timeline */
+.timeline{display:flex;flex-direction:column;gap:8px}
+.tl-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:var(--r2);
+  background:var(--surface2);border:1px solid var(--border);transition:all .2s var(--ease)}
+.tl-item:hover{border-color:var(--border2)}
+.tl-date{font-size:10.5px;color:var(--text3);min-width:56px}
+.tl-sym{flex:1;font-size:12.5px;font-weight:500;text-transform:capitalize}
+.sev{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;text-transform:uppercase}
+.sev.mild{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.25)}
+.sev.moderate{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}
+.sev.severe{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25)}
+
+/* Freq bars */
+.freq-bars{display:flex;flex-direction:column;gap:9px}
+.freq-row{display:flex;align-items:center;gap:9px}
+.freq-label{font-size:11.5px;color:var(--text2);min-width:110px;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.freq-bar-w{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.freq-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--purple),var(--teal));transition:width .8s var(--ease)}
+.freq-count{font-size:10.5px;color:var(--text3);min-width:18px;text-align:right}
+
+/* Pattern card */
+.pattern-card{background:linear-gradient(135deg,rgba(139,92,246,.07),rgba(20,184,166,.05));
+  border:1px solid rgba(139,92,246,.18);border-radius:var(--r);padding:18px}
+.prec-list{display:flex;flex-direction:column;gap:6px}
+.prec-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;
+  background:rgba(255,255,255,.02);border:1px solid var(--border)}
+.prec-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.prec-text{font-size:12.5px;color:var(--text2);line-height:1.4;text-transform:capitalize}
+
+/* Tips */
+.tips{display:flex;flex-direction:column;gap:7px}
+.tip{display:flex;gap:9px;padding:9px 11px;border-radius:var(--r2);background:var(--surface2)}
+.tip-icon{font-size:16px;flex-shrink:0}
+.tip-text{font-size:11.5px;color:var(--text2);line-height:1.5}
+.tip-text strong{color:var(--text);display:block;font-size:12.5px;margin-bottom:1px}
+
+/* Spinner & empty */
+.spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:28px;color:var(--text3);text-align:center}
+.empty .icon{font-size:32px;opacity:.35}
+.empty p{font-size:12.5px}
+
+/* Toast */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(90px);
+  background:var(--surface2);border:1px solid var(--border2);color:var(--text);
+  padding:9px 18px;border-radius:10px;font-size:13px;font-weight:500;
+  backdrop-filter:blur(20px);transition:transform .3s var(--ease);z-index:300;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Persist stat */
+.big-num{font-size:34px;font-weight:800;background:linear-gradient(135deg,var(--purple),var(--teal));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.big-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.big-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-top:10px;margin-bottom:3px}
+.big-val{font-size:14px;font-weight:700;color:var(--text)}
+.big-hint{font-size:10.5px;color:var(--text3)}
+
+/* Patient chat banner */
+.patient-banner{padding:10px 20px;background:linear-gradient(135deg,rgba(20,184,166,.09),rgba(6,182,212,.06));
+  border-bottom:1px solid rgba(20,184,166,.18);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.patient-banner-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#14b8a6,#06b6d4);
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.patient-banner-text{font-size:12.5px;color:var(--text2);line-height:1.4}
+.patient-banner-text strong{color:var(--teal);font-size:13px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ─── Header ──────────────────────────────────────────────────── -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🌿</div>
+    <div>
+      <div>AyuGuard</div>
+      <div class="logo-devanagari">आयुगार्ड</div>
+    </div>
+  </div>
+
+  <div class="header-center">
+    <div class="tabs">
+      <button class="tab active" id="tab-caregiver" onclick="setMode('caregiver')">🧑‍⚕️ Caregiver</button>
+      <button class="tab" id="tab-dashboard" onclick="setMode('dashboard')">📊 Dashboard</button>
+      <button class="tab" id="tab-patient"   onclick="setMode('patient')">🧓 Patient Chat</button>
+      <button class="tab records-tab" id="tab-records" onclick="setMode('records')">🗂️ Records</button>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="urgency-pill low" id="urgency-pill">
+      <div class="urgency-dot"></div>
+      <span id="urgency-text">—</span>
+    </div>
+    <button class="notif-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Notifications">
+      🔔
+      <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ─── Body ──────────────────────────────────────────────────────── -->
+<div class="body">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="profile-card">
+      <div class="avatar" id="av-init">?</div>
+      <div class="profile-name" id="av-name">Loading…</div>
+      <div class="profile-meta">
+        <span class="ptag" id="av-age">—</span>
+        <span class="ptag" id="av-rel">—</span>
+      </div>
+      <div id="cond-block" style="display:none;width:100%">
+        <div class="cond-label">Known Conditions</div>
+        <div id="cond-tags"></div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-n" id="st-logs">—</div><div class="stat-l">Logs</div></div>
+      <div class="stat"><div class="stat-n" id="st-days">—</div><div class="stat-l">Days</div></div>
+      <div class="stat" style="grid-column:1/-1"><div class="stat-n" id="st-top" style="font-size:13px">—</div><div class="stat-l">Top Symptom</div></div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sb-section">Navigate</div>
+    <div class="sb-nav">
+      <button class="sb-item active" id="sbn-caregiver" onclick="setMode('caregiver')"><span class="sb-icon">💬</span>Caregiver Chat</button>
+      <button class="sb-item" id="sbn-dashboard" onclick="setMode('dashboard')"><span class="sb-icon">📊</span>Health Dashboard</button>
+      <button class="sb-item" id="sbn-patient" onclick="setMode('patient')"><span class="sb-icon">🧓</span>Patient Chat</button>
+      <button class="sb-item" id="sbn-records" onclick="setMode('records')"><span class="sb-icon">🗂️</span>Medical Records</button>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sb-section">Quick Actions</div>
+    <div class="sb-nav">
+      <button class="sb-item" onclick="quickC('Show me symptom history')"><span class="sb-icon">📋</span>View History</button>
+      <button class="sb-item" onclick="quickC('What is the current care plan?')"><span class="sb-icon">🥗</span>Care Plan</button>
+      <button class="sb-item" onclick="quickC('Update care plan: meals: Low-carb breakfast, lunch: Dal chapati, dinner: Light khichdi')"><span class="sb-icon">✏️</span>Update Plan</button>
+      <button class="sb-item" onclick="quickC('What precautions should we follow?')"><span class="sb-icon">🛡️</span>Precautions</button>
+      <button class="sb-item" onclick="setMode('records')" style="color:var(--amber);border-color:rgba(245,158,11,.2)"><span class="sb-icon">📤</span>Upload Record</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main>
+
+    <!-- ── CAREGIVER CHAT ─────────────────────────────────── -->
+    <div id="view-caregiver" class="chat-view">
+      <div class="chat-messages" id="cg-messages">
+        <div class="welcome" id="cg-welcome">
+          <div class="welcome-emoji">🌿</div>
+          <div class="welcome-title">Namaste! I'm AyuGuard</div>
+          <div class="welcome-desc">
+            Tell me how <strong id="wc-patient-name">your patient</strong> is feeling today.
+            I track patterns across days so you never miss an early warning sign.
+          </div>
+          <div class="chips">
+            <span class="chip" onclick="quickC('Dad was very tired and thirsty today')">😴 Tired &amp; Thirsty</span>
+            <span class="chip" onclick="quickC('Papa ko aaj bahut thakaan hai')">🇮🇳 Hindi</span>
+            <span class="chip" onclick="quickC('He had a cold today, runny nose and mild fever')">🤧 Cold</span>
+            <span class="chip" onclick="quickC('Update meal plan: Low-carb breakfast, dal rice for lunch, early light dinner')">🥗 Update Meal Plan</span>
+            <span class="chip" onclick="quickC('Show me symptom history')">📋 History</span>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-wrap">
+        <div class="chat-form">
+          <textarea class="chat-ta" id="cg-input" placeholder="Describe symptoms, update care plan, ask anything… (English, Hindi, or Hinglish)" rows="1"
+            onkeydown="handleKey(event,'cg')" oninput="autoResize(this)"></textarea>
+          <button class="send-btn caregiver-btn" id="cg-send" onclick="sendMsg('cg')" title="Send">➤</button>
+        </div>
+        <div class="input-hint">Enter to send · Shift+Enter for new line</div>
+      </div>
+    </div>
+
+    <!-- ── PATIENT DASHBOARD ──────────────────────────────── -->
+    <div id="view-dashboard">
+      <div class="dash-header">
+        <div>
+          <div class="dash-title" id="dash-title">Patient Dashboard</div>
+          <div class="dash-sub" id="dash-sub">Loading…</div>
+        </div>
+        <button class="refresh-btn" onclick="loadDashboard()">⟳ Refresh</button>
+      </div>
+
+      <!-- Row 1: Ring + persist + freq -->
+      <div class="grid3">
+        <div class="urgency-ring-card card">
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 110 110">
+              <circle class="ring-bg" cx="55" cy="55" r="50"/>
+              <circle class="ring-fill" id="ring-fill" cx="55" cy="55" r="50"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-pct" id="ring-pct">—</div>
+              <div class="ring-sub">Score</div>
+            </div>
+          </div>
+          <div class="urg-label" id="urg-label">—</div>
+          <div class="urg-desc" id="urg-desc">—</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">📅 Pattern Stats</div>
+          <div class="big-num" id="d-days">—</div>
+          <div class="big-sub">days tracked</div>
+          <div class="big-title">Dataset Match</div>
+          <div class="big-val" id="d-disease">—</div>
+          <div class="big-hint" id="d-sim">—</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">📊 Symptom Frequency</div>
+          <div class="freq-bars" id="freq-bars"><div class="empty"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Row 2: Timeline + Pattern/Precautions -->
+      <div class="grid2">
+        <div class="card">
+          <div class="card-label">🗓️ Recent Symptom Log</div>
+          <div class="timeline" id="timeline"><div class="empty"><div class="spinner"></div></div></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <!-- Care Plan Card -->
+          <div class="card" id="care-plan-card">
+            <div class="card-label">🥗 Caregiver's Care Plan</div>
+            <div id="care-plan-content"><div class="empty"><div class="spinner"></div></div></div>
+          </div>
+
+          <div class="pattern-card">
+            <div class="card-label" style="color:var(--purple)">🔍 Pattern Insight</div>
+            <div id="pattern-text" style="font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:12px">Loading…</div>
+            <div class="card-label">🛡️ Precautions</div>
+            <div class="prec-list" id="prec-list"><div class="empty"><div class="spinner"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /view-dashboard -->
+
+    <!-- ── PATIENT CHAT ────────────────────────────────────── -->
+    <div id="view-patient" class="chat-view" style="display:none">
+      <div class="patient-banner">
+        <div class="patient-banner-icon">🧓</div>
+        <div class="patient-banner-text">
+          <strong>Patient Mode</strong> — Share how you're feeling, ask health questions, or view care plan updates from your caregiver.
+        </div>
+      </div>
+      <div class="chat-messages" id="pt-messages">
+        <div class="welcome" id="pt-welcome">
+          <div class="welcome-emoji">🌸</div>
+          <div class="welcome-title" id="pt-welcome-title">Hello!</div>
+          <div class="welcome-desc" id="pt-welcome-desc">
+            Tell AyuGuard how you're feeling today, ask a health question, or check your care plan.
+          </div>
+          <div class="chips">
+            <span class="chip teal" onclick="quickP('I am feeling tired today')">😴 Feeling Tired</span>
+            <span class="chip teal" onclick="quickP('I have a headache')">🤕 Headache</span>
+            <span class="chip teal" onclick="quickP('I am feeling fine today, just checking in')">😊 Checking In</span>
+            <span class="chip teal" onclick="quickP('What is my care plan for today?')">🥗 My Care Plan</span>
+            <span class="chip teal" onclick="quickP('I have a doubt about my medication')">💊 Medication Question</span>
+            <span class="chip teal" onclick="quickP('What precautions should I follow?')">🛡️ Precautions</span>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-wrap">
+        <div class="chat-form">
+          <textarea class="chat-ta patient-ta" id="pt-input" placeholder="How are you feeling? Ask a question or share anything…" rows="1"
+            onkeydown="handleKey(event,'pt')" oninput="autoResize(this)"></textarea>
+          <button class="send-btn patient-btn" id="pt-send" onclick="sendMsg('pt')" title="Send">➤</button>
+        </div>
+        <div class="input-hint" style="color:rgba(20,184,166,.6)">This goes directly to AyuGuard · Enter to send</div>
+      </div>
+    </div><!-- /view-patient -->
+
+    <!-- ── MEDICAL RECORDS ────────────────────────────────── -->
+    <div id="view-records" style="display:none">
+
+      <!-- Upload section -->
+      <div>
+        <div class="dash-header">
+          <div>
+            <div class="dash-title">🗂️ Medical Records & Lab Tests</div>
+            <div class="dash-sub">Upload PDFs or images — Gemini AI extracts and analyses the content automatically</div>
+          </div>
+          <button class="refresh-btn" onclick="loadRecords()">⟳ Refresh</button>
+        </div>
+      </div>
+
+      <!-- Upload card -->
+      <div class="card" style="padding:20px">
+        <div class="card-label">📤 Upload New Document</div>
+        <div class="upload-zone" id="upload-zone"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="handleDrop(event)">
+          <div class="upload-icon">📋</div>
+          <div class="upload-title">Drop a file here or click to browse</div>
+          <div class="upload-sub">PDF, JPG, PNG, WEBP · Max 15 MB · Lab reports, prescriptions, discharge summaries</div>
+          <input type="file" class="upload-input" id="upload-input" accept=".pdf,.jpg,.jpeg,.png,.webp"
+            onchange="handleFileSelect(event)">
+          <div class="upload-progress" id="upload-progress"></div>
+        </div>
+
+        <div class="upload-form" id="upload-form" style="display:none">
+          <div class="uf-group">
+            <label class="uf-label">Document Type</label>
+            <select class="uf-select" id="rec-type">
+              <option value="lab_test">🧪 Lab Test</option>
+              <option value="prescription">💊 Prescription</option>
+              <option value="discharge_summary">🏥 Discharge Summary</option>
+              <option value="scan_report">🔬 Scan / Imaging</option>
+              <option value="consultation_note">📋 Consultation Note</option>
+              <option value="vaccination">💉 Vaccination Record</option>
+              <option value="other">📄 Other</option>
+            </select>
+          </div>
+          <div class="uf-group">
+            <label class="uf-label">Notes (optional)</label>
+            <input type="text" class="uf-input" id="rec-notes" placeholder="e.g. Monthly blood panel July 2026">
+          </div>
+          <button class="upload-btn" id="do-upload-btn" onclick="doUpload()">⬆ Analyse & Upload</button>
+        </div>
+
+        <div id="upload-status" style="margin-top:10px;font-size:12.5px;color:var(--text2)"></div>
+      </div>
+
+      <!-- Abnormal summary -->
+      <div class="abnormal-summary-card" id="abn-summary" style="display:none">
+        <div class="card-label" style="color:var(--amber)">⚠️ Abnormal Values Across All Reports</div>
+        <div class="abn-params" id="abn-params"></div>
+      </div>
+
+      <!-- Records list -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="card-label" style="margin:0">📁 Uploaded Records <span id="rec-count" style="color:var(--text3)"></span></div>
+        </div>
+        <div class="records-grid" id="records-list">
+          <div class="empty"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+    </div><!-- /view-records -->
+
+  </main>
+</div><!-- /body -->
+</div><!-- /app -->
+
+
+<!-- ─── Notification Panel ────────────────────────────────────── -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header">
+    <div class="notif-title">🔔 Notifications</div>
+    <button class="notif-close" onclick="toggleNotifPanel()">✕</button>
+  </div>
+  <div class="notif-list" id="notif-list">
+    <div class="notif-empty">Loading notifications…</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   AyuGuard v2 — Client Logic
+   ═══════════════════════════════════════════════════════════ */
+const API = window.location.origin + '/api';
+
+// Sessions (one per role)
+let sessions = { cg: null, pt: null };
+let busy = { cg: false, pt: false };
+let currentMode = 'caregiver';
+let notifPanelOpen = false;
+
+// Profile cache
+let profile = {};
+
+/* ── Init ──────────────────────────────────────────────────────── */
+async function init() {
+  await Promise.all([loadProfile(), loadStats(), loadUrgencyBadge(), loadNotifCount()]);
+  await Promise.all([createSession('cg'), createSession('pt')]);
+}
+
+/* ── Sessions ──────────────────────────────────────────────────── */
+async function createSession(role) {
+  const userId = role === 'cg' ? 'caregiver-001' : 'patient-001';
+  try {
+    const res = await fetch(`${API}/session`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ app_name: 'ayuguard', user_id: userId }),
+    });
+    const data = await res.json();
+    sessions[role] = data.session_id;
+  } catch {
+    showToast('⚠️ Could not connect to AyuGuard — is adk web running on port 8000?');
+  }
+}
+
+/* ── Profile ───────────────────────────────────────────────────── */
+async function loadProfile() {
+  try {
+    const res = await fetch(`${API}/profile`);
+    profile = await res.json();
+    if (profile.profile_complete) {
+      const init = (profile.name || '?').charAt(0).toUpperCase();
+      document.getElementById('av-init').textContent    = init;
+      document.getElementById('av-name').textContent    = profile.name;
+      document.getElementById('av-age').textContent     = profile.age ? `Age ${profile.age}` : '—';
+      document.getElementById('av-rel').textContent     = profile.caregiver_relationship || '—';
+      document.getElementById('wc-patient-name').textContent = profile.name;
+      document.getElementById('pt-welcome-title').textContent = `Hello, ${profile.name}! 🌸`;
+      document.getElementById('pt-welcome-desc').textContent =
+        `Tell AyuGuard how you're feeling today. ${profile.caregiver_name || 'Your caregiver'} can also see your updates.`;
+      document.getElementById('dash-title').textContent = `${profile.name}'s Dashboard`;
+      document.getElementById('dash-sub').textContent   =
+        `Caregiver: ${profile.caregiver_name || '—'} (${profile.caregiver_relationship || '—'}) · ${profile.language || 'English'}`;
+      if (profile.known_conditions?.length) {
+        document.getElementById('cond-block').style.display = 'block';
+        document.getElementById('cond-tags').innerHTML =
+          profile.known_conditions.map(c => `<span class="cond-tag">${c}</span>`).join('');
+      }
+    } else {
+      document.getElementById('av-name').textContent = 'No Profile Yet';
+      document.getElementById('av-age').textContent  = 'Chat to set up →';
+    }
+  } catch {}
+}
+
+/* ── Stats ─────────────────────────────────────────────────────── */
+async function loadStats() {
+  try {
+    const res  = await fetch(`${API}/stats`);
+    const data = await res.json();
+    document.getElementById('st-logs').textContent = data.total_logs ?? '—';
+    document.getElementById('st-days').textContent = data.days_tracked ?? '—';
+    document.getElementById('st-top').textContent  =
+      data.top_symptom ? `${data.top_symptom} (${data.top_symptom_count}×)` : '—';
+  } catch {}
+}
+
+/* ── Urgency badge ─────────────────────────────────────────────── */
+async function loadUrgencyBadge() {
+  try {
+    const res  = await fetch(`${API}/trend`);
+    const data = await res.json();
+    const u = (data.urgency || 'low').toLowerCase();
+    const pill = document.getElementById('urgency-pill');
+    pill.className = `urgency-pill ${u}`;
+    document.getElementById('urgency-text').textContent =
+      {low:'All Clear', watch:'Watch', escalate:'Escalate'}[u] || u;
+  } catch {}
+}
+
+/* ── Notification count ────────────────────────────────────────── */
+async function loadNotifCount() {
+  try {
+    const res  = await fetch(`${API}/notifications?unread_only=true&limit=50`);
+    const data = await res.json();
+    const cnt  = data.unread_count || 0;
+    const badge = document.getElementById('notif-badge');
+    if (cnt > 0) { badge.style.display = 'flex'; badge.textContent = cnt > 9 ? '9+' : cnt; }
+    else { badge.style.display = 'none'; }
+  } catch {}
+}
+
+/* ── Notification Panel ────────────────────────────────────────── */
+async function toggleNotifPanel() {
+  notifPanelOpen = !notifPanelOpen;
+  document.getElementById('notif-panel').classList.toggle('open', notifPanelOpen);
+  if (notifPanelOpen) {
+    await loadNotifications();
+    // mark read
+    fetch(`${API}/notifications/mark-read`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ patient_id: 'patient_001' }),
+    }).then(() => {
+      document.getElementById('notif-badge').style.display = 'none';
+    });
+  }
+}
+
+async function loadNotifications() {
+  const el = document.getElementById('notif-list');
+  el.innerHTML = '<div class="notif-empty">Loading…</div>';
+  try {
+    const res  = await fetch(`${API}/notifications?limit=20`);
+    const data = await res.json();
+    const notifs = data.notifications || [];
+    if (!notifs.length) {
+      el.innerHTML = '<div class="notif-empty">🔔<br><br>No notifications yet.<br>Caregiver updates will appear here.</div>';
+      return;
+    }
+    el.innerHTML = notifs.map(n => `
+      <div class="notif-item ${n.read ? '' : 'unread'}">
+        ${!n.read ? '<div class="notif-unread-dot"></div>' : ''}
+        <div class="notif-type ${n.type || ''}">${n.type === 'care_plan' ? '🥗 Care Plan Update' : '📢 Alert'}</div>
+        <div class="notif-msg">${escHtml(n.message)}</div>
+        <div class="notif-time">${fmtDt(n.created_at)}</div>
+      </div>
+    `).join('');
+  } catch {
+    el.innerHTML = '<div class="notif-empty">Could not load notifications.</div>';
+  }
+}
+
+/* ── Mode toggle ───────────────────────────────────────────────── */
+function setMode(mode) {
+  currentMode = mode;
+  ['caregiver','dashboard','patient','records'].forEach(m => {
+    const tab = document.getElementById(`tab-${m}`);
+    const sbn = document.getElementById(`sbn-${m}`);
+    if (tab) tab.classList.toggle('active', m === mode);
+    if (sbn) sbn.classList.toggle('active', m === mode);
+  });
+  document.getElementById('view-caregiver').style.display = mode === 'caregiver' ? 'flex' : 'none';
+  document.getElementById('view-dashboard').style.display = mode === 'dashboard' ? 'flex' : 'none';
+  document.getElementById('view-patient').style.display   = mode === 'patient'   ? 'flex' : 'none';
+  document.getElementById('view-records').style.display   = mode === 'records'   ? 'flex' : 'none';
+  if (mode === 'dashboard') loadDashboard();
+  if (mode === 'records')   loadRecords();
+}
+
+/* ── Dashboard Data ────────────────────────────────────────────── */
+async function loadDashboard() {
+  document.getElementById('timeline').innerHTML   = '<div class="empty"><div class="spinner"></div></div>';
+  document.getElementById('freq-bars').innerHTML  = '<div class="empty"><div class="spinner"></div></div>';
+  document.getElementById('prec-list').innerHTML  = '<div class="empty"><div class="spinner"></div></div>';
+  document.getElementById('care-plan-content').innerHTML = '<div class="empty"><div class="spinner"></div></div>';
+
+  try {
+    const [histR, trendR, statsR, planR] = await Promise.all([
+      fetch(`${API}/history?limit=14`),
+      fetch(`${API}/trend`),
+      fetch(`${API}/stats`),
+      fetch(`${API}/care-plan`),
+    ]);
+    const [hist, trend, stats, plan] = await Promise.all([histR.json(), trendR.json(), statsR.json(), planR.json()]);
+
+    renderTimeline(hist.logs || []);
+    renderFreqBars(stats.symptom_breakdown || {});
+    renderUrgencyRing(trend);
+    renderPrecautions(trend.top_disease_precautions || []);
+    renderPatternText(trend);
+    renderCarePlan(plan);
+    document.getElementById('dash-sub').textContent =
+      `${profile.name || 'Patient'} · Updated ${new Date().toLocaleTimeString()}`;
+  } catch { showToast('⚠️ Could not load dashboard data'); }
+}
+
+function renderTimeline(logs) {
+  const el = document.getElementById('timeline');
+  if (!logs.length) { el.innerHTML = '<div class="empty"><div class="icon">📋</div><p>No symptoms yet.</p></div>'; return; }
+  el.innerHTML = logs.slice(0,12).map(l => `
+    <div class="tl-item">
+      <span class="tl-date">${fmtDate(l.date)}</span>
+      <span class="tl-sym">${escHtml(l.symptom)}</span>
+      <span class="sev ${l.severity || 'mild'}">${l.severity || 'mild'}</span>
+    </div>
+  `).join('');
+}
+
+function renderFreqBars(bdown) {
+  const el = document.getElementById('freq-bars');
+  const entries = Object.entries(bdown);
+  if (!entries.length) { el.innerHTML = '<div class="empty"><p>No data yet</p></div>'; return; }
+  const max = Math.max(...entries.map(e => e[1]));
+  el.innerHTML = entries.map(([sym,cnt]) => `
+    <div class="freq-row">
+      <span class="freq-label">${escHtml(sym)}</span>
+      <div class="freq-bar-w"><div class="freq-bar" style="width:${Math.round(cnt/max*100)}%"></div></div>
+      <span class="freq-count">${cnt}</span>
+    </div>
+  `).join('');
+}
+
+function renderUrgencyRing(trend) {
+  const u     = (trend.urgency || 'low').toLowerCase();
+  const score = Math.round((trend.composite_score || 0) * 100);
+  const colors = { low:'#10b981', watch:'#f59e0b', escalate:'#ef4444' };
+  const titles = { low:'✅ All Clear', watch:'👀 Pattern Building', escalate:'⚠️ Pattern Flagged' };
+  const descs  = {
+    low:     'No concerning patterns detected. Keep logging daily.',
+    watch:   'A pattern is building. Mention at next doctor visit.',
+    escalate:'This pattern has been flagged. Speak to your doctor.',
+  };
+  const C = 2 * Math.PI * 50;
+  const ring = document.getElementById('ring-fill');
+  ring.style.stroke = colors[u] || colors.low;
+  ring.style.strokeDasharray  = C;
+  setTimeout(() => { ring.style.strokeDashoffset = C - (score / 100) * C; }, 80);
+  document.getElementById('ring-pct').textContent  = `${score}`;
+  document.getElementById('urg-label').textContent = titles[u] || u;
+  document.getElementById('urg-label').style.color = colors[u];
+  document.getElementById('urg-desc').textContent  = descs[u] || '';
+  document.getElementById('d-days').textContent    = trend.persistence_days ?? '—';
+  document.getElementById('d-disease').textContent = trend.top_disease || 'No match yet';
+  document.getElementById('d-sim').textContent     = trend.similarity_score
+    ? `${Math.round(trend.similarity_score*100)}% similarity` : '';
+  const pill = document.getElementById('urgency-pill');
+  pill.className = `urgency-pill ${u}`;
+  document.getElementById('urgency-text').textContent = {low:'All Clear',watch:'Watch',escalate:'Escalate'}[u] || u;
+}
+
+function renderPrecautions(precs) {
+  const el = document.getElementById('prec-list');
+  const icons = ['🥗','🏃','👨‍⚕️','📅','💊','🌿','🧘','🛌'];
+  if (!precs.length) { el.innerHTML = '<div class="empty"><p>Log more symptoms to see precautions.</p></div>'; return; }
+  el.innerHTML = precs.map((p,i) => `
+    <div class="prec-item"><span class="prec-icon">${icons[i%icons.length]}</span><span class="prec-text">${escHtml(p)}</span></div>
+  `).join('');
+}
+
+function renderPatternText(trend) {
+  const el = document.getElementById('pattern-text');
+  el.textContent = trend.pattern_summary || 'Keep logging — patterns emerge over several days.';
+}
+
+function renderCarePlan(plan) {
+  const el = document.getElementById('care-plan-content');
+  if (plan.status === 'not_found' || (!plan.meals?.length && !plan.medications?.length && !plan.activities?.length)) {
+    el.innerHTML = '<div class="empty"><div class="icon">🥗</div><p>No care plan yet.<br>Your caregiver can set one via chat.</p></div>';
+    return;
+  }
+  let html = '';
+  if (plan.meals?.length) {
+    html += `<div class="care-section"><div class="care-section-title">🍽️ Meals</div>
+      ${plan.meals.map(m => `<div class="care-item"><span class="care-icon">•</span>${escHtml(m)}</div>`).join('')}</div>`;
+  }
+  if (plan.medications?.length) {
+    html += `<div class="care-section"><div class="care-section-title">💊 Medications</div>
+      ${plan.medications.map(m => `<div class="care-item"><span class="care-icon">•</span>${escHtml(m)}</div>`).join('')}</div>`;
+  }
+  if (plan.activities?.length) {
+    html += `<div class="care-section"><div class="care-section-title">🏃 Activities</div>
+      ${plan.activities.map(a => `<div class="care-item"><span class="care-icon">•</span>${escHtml(a)}</div>`).join('')}</div>`;
+  }
+  if (plan.notes) {
+    html += `<div class="care-section"><div class="care-section-title">📝 Note from ${escHtml(plan.updated_by||'Caregiver')}</div>
+      <div class="care-item"><span class="care-icon">💬</span>${escHtml(plan.notes)}</div></div>`;
+  }
+  if (plan.updated_at) {
+    html += `<div style="font-size:10.5px;color:var(--text3);margin-top:8px;">Updated by ${escHtml(plan.updated_by||'Caregiver')} · ${fmtDt(plan.updated_at)}</div>`;
+  }
+  el.innerHTML = html;
+}
+
+/* ── Chat ──────────────────────────────────────────────────────── */
+function quickC(text) { setMode('caregiver'); fillAndSend('cg', text); }
+function quickP(text) { fillAndSend('pt', text); }
+
+function fillAndSend(role, text) {
+  const inp = document.getElementById(`${role}-input`);
+  inp.value = text; sendMsg(role);
+}
+
+async function sendMsg(role) {
+  const inp     = document.getElementById(`${role}-input`);
+  const text    = inp.value.trim();
+  const msgBox  = document.getElementById(`${role}-messages`);
+  if (!text || busy[role]) return;
+  if (!sessions[role]) { showToast('Connecting…'); await createSession(role); if (!sessions[role]) return; }
+
+  document.getElementById(`${role}-welcome`)?.remove();
+  inp.value = ''; inp.style.height = '';
+
+  const senderName = role === 'cg'
+    ? (profile.caregiver_name || 'You')
+    : (profile.name || 'You');
+
+  appendMsg(role, 'user', text, senderName);
+  showTyping(role);
+  busy[role] = true;
+  document.getElementById(`${role}-send`).disabled = true;
+
+  const userId = role === 'cg' ? 'caregiver-001' : 'patient-001';
+  const body = {
+    app_name: 'ayuguard', user_id: userId,
+    session_id: sessions[role],
+    new_message: { role: 'user', parts: [{ text }] },
+  };
+
+  let full = '', msgEl = null;
+  try {
+    const res = await fetch(`${API}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const lines = buf.split('\n'); buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data:')) continue;
+        const raw = line.slice(5).trim();
+        if (!raw || raw === '[DONE]') continue;
+        try {
+          const evt = JSON.parse(raw);
+          const content = evt?.content;
+          if (!content || content.role !== 'model') continue;
+          for (const part of (content.parts || [])) {
+            if (part.text) {
+              full += part.text;
+              if (!msgEl) { removeTyping(role); msgEl = appendMsg(role, 'agent', full, 'AyuGuard 🌿'); }
+              else { msgEl.querySelector('.msg-bubble').innerHTML = renderMd(full); }
+            }
+          }
+        } catch {}
+      }
+    }
+    if (!full) {
+      removeTyping(role);
+      appendMsg(role, 'agent', "I've noted that. Keep logging daily — patterns across days are what matter. 🌸", 'AyuGuard 🌿');
+    }
+  } catch (e) {
+    removeTyping(role);
+    appendMsg(role, 'agent', `⚠️ ${e.message}`, 'AyuGuard 🌿');
+  } finally {
+    busy[role] = false;
+    document.getElementById(`${role}-send`).disabled = false;
+    setTimeout(() => { loadStats(); loadUrgencyBadge(); loadNotifCount(); }, 2200);
+  }
+}
+
+function appendMsg(role, type, text, name) {
+  const container = document.getElementById(`${role}-messages`);
+  const div = document.createElement('div');
+  const msgClass = type === 'user' && role === 'pt' ? 'patient' : type;
+  div.className = `msg ${msgClass}`;
+  const emoji = type === 'agent' ? '🌿' : role === 'pt' ? '🧓' : '👤';
+  const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  div.innerHTML = `
+    <div class="msg-av">${emoji}</div>
+    <div class="msg-body">
+      <div class="msg-name">${escHtml(name)}</div>
+      <div class="msg-bubble">${type === 'agent' ? renderMd(text) : escHtml(text)}</div>
+      <div class="msg-time">${time}</div>
+    </div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+function showTyping(role) {
+  const container = document.getElementById(`${role}-messages`);
+  const div = document.createElement('div');
+  div.className = 'msg agent'; div.id = `${role}-typing`;
+  div.innerHTML = `<div class="msg-av">🌿</div><div class="msg-body"><div class="msg-name">AyuGuard 🌿</div>
+    <div class="msg-bubble"><div class="typing-ind">
+      <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+    </div></div></div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+function removeTyping(role) { document.getElementById(`${role}-typing`)?.remove(); }
+
+/* ── Helpers ───────────────────────────────────────────────────── */
+function handleKey(e, role) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(role); } }
+function autoResize(el) { el.style.height = ''; el.style.height = Math.min(el.scrollHeight,110)+'px'; }
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function renderMd(text) {
+  return escHtml(text)
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`(.+?)`/g,'<code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;font-size:12px">$1</code>')
+    .replace(/\n/g,'<br>');
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d+'T00:00:00');
+  return dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+}
+function fmtDt(d) {
+  if (!d) return '—';
+  try { return new Date(d).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}); }
+  catch { return d; }
+}
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+/* ── Medical Records JS ────────────────────────────────────────── */
+let selectedFile = null;
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) selectFile(file);
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) selectFile(file);
+}
+function selectFile(file) {
+  selectedFile = file;
+  const zone = document.getElementById('upload-zone');
+  zone.querySelector('.upload-title').textContent = `📎 ${file.name}`;
+  zone.querySelector('.upload-sub').textContent = `${(file.size/1024/1024).toFixed(2)} MB · Ready to upload`;
+  document.getElementById('upload-form').style.display = 'flex';
+  document.getElementById('upload-status').textContent = '';
+}
+
+async function doUpload() {
+  if (!selectedFile) { showToast('Please select a file first'); return; }
+  const btn = document.getElementById('do-upload-btn');
+  const prog = document.getElementById('upload-progress');
+  const status = document.getElementById('upload-status');
+  btn.disabled = true;
+  btn.textContent = '⏳ Analysing…';
+  prog.style.width = '30%';
+  status.textContent = '🤖 Gemini is reading the document…';
+
+  const fd = new FormData();
+  fd.append('file', selectedFile);
+  fd.append('record_type', document.getElementById('rec-type').value);
+  fd.append('notes', document.getElementById('rec-notes').value);
+  fd.append('patient_id', 'patient_001');
+  fd.append('caregiver_name', profile.caregiver_name || 'Caregiver');
+
+  try {
+    prog.style.width = '70%';
+    const res = await fetch(`${API}/upload-record`, { method: 'POST', body: fd });
+    prog.style.width = '100%';
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Upload failed');
+    status.innerHTML = `✅ <strong>${escHtml(data.record_type)}</strong> analysed! `
+      + (data.abnormal_count > 0 ? `⚠️ ${data.abnormal_count} abnormal value(s) found. ` : '')
+      + (data.summary ? `<em>${escHtml(data.summary.slice(0,120))}…</em>` : '');
+    selectedFile = null;
+    document.getElementById('upload-form').style.display = 'none';
+    document.getElementById('upload-zone').querySelector('.upload-title').textContent = 'Drop a file here or click to browse';
+    document.getElementById('upload-zone').querySelector('.upload-sub').textContent = 'PDF, JPG, PNG, WEBP · Max 15 MB · Lab reports, prescriptions, discharge summaries';
+    document.getElementById('rec-notes').value = '';
+    document.getElementById('upload-input').value = '';
+    showToast('✅ Record uploaded and analysed!');
+    await loadRecords();
+  } catch(e) {
+    status.textContent = `❌ ${e.message}`;
+    showToast(`❌ ${e.message}`);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⬆ Analyse & Upload';
+    setTimeout(() => { prog.style.width = '0'; }, 1000);
+  }
+}
+
+async function loadRecords() {
+  document.getElementById('records-list').innerHTML = '<div class="empty"><div class="spinner"></div></div>';
+  try {
+    const [recRes, abnRes] = await Promise.all([
+      fetch(`${API}/records`),
+      fetch(`${API}/abnormal-history`),
+    ]);
+    const recData = await recRes.json();
+    const abnData = await abnRes.json();
+    renderRecords(recData.records || []);
+    renderAbnormalSummary(abnData);
+    document.getElementById('rec-count').textContent = recData.total ? `(${recData.total})` : '';
+  } catch { document.getElementById('records-list').innerHTML = '<div class="empty"><p>Could not load records.</p></div>'; }
+}
+
+function renderRecords(records) {
+  const el = document.getElementById('records-list');
+  if (!records.length) {
+    el.innerHTML = '<div class="empty"><div class="icon">📂</div><p>No records uploaded yet.<br>Upload a lab report or prescription above.</p></div>';
+    return;
+  }
+  const typeIcons = {
+    lab_test:'🧪',prescription:'💊',discharge_summary:'🏥',
+    scan_report:'🔬',consultation_note:'📋',vaccination:'💉',other:'📄'
+  };
+  el.innerHTML = records.map(r => {
+    const hasCrit = r.critical_count > 0;
+    const hasAbn  = r.abnormal_count > 0;
+    const cls     = hasCrit ? 'has-critical' : hasAbn ? 'has-abnormal' : '';
+    const badge   = hasCrit
+      ? `<span class="badge critical">⚠️ ${r.critical_count} Critical</span>`
+      : hasAbn
+      ? `<span class="badge abnormal">⚠ ${r.abnormal_count} Abnormal</span>`
+      : `<span class="badge ok">✓ Normal</span>`;
+    const typeKey = records.find ? r.record_type : 'other';
+    const icon = typeIcons[r.record_type?.toLowerCase().replace(/[^a-z_]/g,'_').trim()] || '📄';
+    const followUp = r.follow_up === 'yes' ? '<span class="badge abnormal" style="margin-left:4px">📅 Follow-up needed</span>' : '';
+    return `
+      <div class="rec-card ${cls}" id="rec-${r.record_id}">
+        <div class="rec-header" onclick="toggleRecord('${r.record_id}')">
+          <div class="rec-type-icon ${(r.record_type||'other').toLowerCase()}">${icon}</div>
+          <div class="rec-meta">
+            <div class="rec-filename" title="${escHtml(r.filename)}">${escHtml(r.filename)}</div>
+            <div class="rec-date-row">
+              <span class="rec-type-tag">${escHtml(r.record_type || 'other')}</span>
+              <span class="rec-date">${r.report_date || r.uploaded_at?.slice(0,10) || '—'}</span>
+              ${r.notes ? `<span class="rec-date">· ${escHtml(r.notes)}</span>` : ''}
+              ${followUp}
+            </div>
+          </div>
+          <div class="rec-badges">${badge}</div>
+          <span class="rec-chevron">▼</span>
+        </div>
+        <div class="rec-body" id="body-${r.record_id}">
+          <div class="rec-summary">${escHtml(r.summary || 'No summary available.')}</div>
+          <div class="rec-actions">
+            <button class="rec-delete-btn" onclick="deleteRecord('${r.record_id}',event)">🗑 Remove</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function toggleRecord(id) {
+  const card = document.getElementById(`rec-${id}`);
+  const body = document.getElementById(`body-${id}`);
+  const isExpanded = card.classList.contains('expanded');
+  if (!isExpanded && !body.dataset.loaded) {
+    body.innerHTML = '<div class="empty" style="padding:14px"><div class="spinner"></div></div>';
+    card.classList.add('expanded');
+    try {
+      const res  = await fetch(`${API}/records/${id}`);
+      const data = await res.json();
+      const analysis = data.analysis || {};
+      let html = `<div class="rec-summary">${escHtml(analysis.summary || 'No summary.')}</div>`;
+      const abnormals = analysis.abnormal_values || [];
+      if (abnormals.length) {
+        html += `<div class="rec-findings-title">⚠️ Abnormal Values</div>
+          <table class="abnormal-table">
+            <tr><th>Parameter</th><th>Result</th><th>Normal Range</th><th>Flag</th></tr>
+            ${abnormals.map(a => `<tr>
+              <td>${escHtml(a.parameter||'—')}</td>
+              <td><strong>${escHtml(a.value||'—')}</strong></td>
+              <td>${escHtml(a.normal_range||'—')}</td>
+              <td><span class="flag-${a.flag||''}">${a.flag||'—'}</span></td>
+            </tr>`).join('')}
+          </table>`;
+      }
+      const findings = analysis.key_findings || [];
+      if (findings.length) {
+        html += `<div class="rec-findings-title">🔍 Key Findings</div>
+          <ul class="findings-list">${findings.map(f=>`<li>${escHtml(f)}</li>`).join('')}</ul>`;
+      }
+      const meds = analysis.medications_mentioned || [];
+      if (meds.length) {
+        html += `<div class="rec-findings-title">💊 Medications</div>
+          <div class="meds-list">${meds.map(m=>`<span class="med-tag">${escHtml(m)}</span>`).join('')}</div>`;
+      }
+      const recs = analysis.recommendations || [];
+      if (recs.length) {
+        html += `<div class="rec-findings-title">📋 Doctor's Recommendations</div>
+          <ul class="findings-list">${recs.map(r=>`<li>${escHtml(r)}</li>`).join('')}</ul>`;
+      }
+      if (analysis.critical_values?.length) {
+        html += `<div class="rec-findings-title" style="color:var(--red)">🚨 Critical Values — Discuss with Doctor</div>
+          <ul class="findings-list">${analysis.critical_values.map(c=>`<li style="border-left-color:var(--red);color:#fca5a5">${escHtml(c)}</li>`).join('')}</ul>`;
+      }
+      html += `<div style="font-size:10.5px;color:var(--text3);margin-top:10px">Uploaded by ${escHtml(data.uploaded_by||'Caregiver')} · ${fmtDt(data.uploaded_at)}</div>
+        <div class="rec-actions"><button class="rec-delete-btn" onclick="deleteRecord('${id}',event)">🗑 Remove</button></div>`;
+      body.innerHTML = html;
+      body.dataset.loaded = '1';
+    } catch { body.innerHTML = '<div class="empty"><p>Could not load details.</p></div>'; }
+  } else {
+    card.classList.toggle('expanded');
+  }
+}
+
+async function deleteRecord(id, e) {
+  e.stopPropagation();
+  if (!confirm('Remove this record?')) return;
+  try {
+    await fetch(`${API}/records/${id}`, { method: 'DELETE' });
+    showToast('Record removed');
+    await loadRecords();
+  } catch { showToast('Could not remove record'); }
+}
+
+function renderAbnormalSummary(data) {
+  const params = data.abnormal_by_parameter || {};
+  const el = document.getElementById('abn-summary');
+  const pl = document.getElementById('abn-params');
+  const entries = Object.entries(params);
+  if (!entries.length) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  pl.innerHTML = entries.map(([name, vals]) =>
+    `<div class="abn-param">
+      <span class="abn-param-name">${escHtml(name)}</span>
+      <span class="abn-param-count">(${vals.length}×)</span>
+      <span class="flag-${vals[0]?.flag||''}">${vals[0]?.flag||''}</span>
+    </div>`
+  ).join('');
+  if (data.critical_alerts?.length) {
+    pl.innerHTML += `<div style="width:100%;margin-top:8px;font-size:11.5px;color:#f87171">
+      🚨 Critical flags in: ${data.critical_alerts.map(escHtml).join(', ')}</div>`;
+  }
+}
+
+/* ── Boot ──────────────────────────────────────────────────────── */
+setMode('caregiver');
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+﻿# AyuGuard — Full Production Requirements
+# Core ADK + agent
+google-adk>=1.0.0
+google-genai>=1.0.0
+python-dotenv>=1.0.0
+
+# FastAPI UI server
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+httpx>=0.27.0
+python-multipart>=0.0.9
+sse-starlette>=2.1.0
+
+# Firebase / Firestore
+firebase-admin>=6.5.0
+
+# Google Cloud Storage (for medical record uploads)
+google-cloud-storage>=2.16.0
+
+# Medical record document parsing
+pdfplumber>=0.11.0
+pypdf>=4.2.0
+Pillow>=10.3.0
+
+# Data / ML (dataset search)
+numpy>=1.26.0
+scikit-learn>=1.4.0
+
+# MCP
+mcp>=1.0.0
+fastmcp>=2.0.0

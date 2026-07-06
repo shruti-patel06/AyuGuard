@@ -1,0 +1,122 @@
+[
+  {
+    "id": "cluster_001",
+    "name": "Early Metabolic Warning / Type 2 Diabetes Risk",
+    "severity_weight": 2,
+    "symptoms": ["fatigue", "increased thirst", "frequent urination", "unexplained weight loss", "blurry vision", "slow healing wounds"],
+    "description": "A pattern of persistent fatigue combined with increased fluid intake, more frequent bathroom visits, and possible weight changes may indicate early metabolic dysregulation. This combination of symptoms, especially when occurring together over several days, is worth discussing with a doctor — particularly if there is a family history of diabetes.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_002",
+    "name": "Early Heart Failure Signs",
+    "severity_weight": 3,
+    "symptoms": ["fatigue", "shortness of breath", "ankle swelling", "rapid weight gain", "reduced exercise tolerance", "persistent cough", "palpitations"],
+    "description": "Gradual onset fatigue combined with breathlessness on mild exertion, swollen ankles, and unexpected weight gain over days may reflect fluid retention patterns associated with cardiac strain. This pattern warrants prompt medical evaluation, especially in someone with existing heart conditions.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_003",
+    "name": "Iron Deficiency Anemia",
+    "severity_weight": 2,
+    "symptoms": ["fatigue", "pallor", "dizziness", "cold hands and feet", "shortness of breath on exertion", "headache", "brittle nails", "hair loss"],
+    "description": "Persistent fatigue with dizziness, cold extremities, and pale appearance may suggest low hemoglobin levels. This is very common in elderly individuals and is usually correctable once identified. A simple blood test can confirm or rule this out quickly.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_004",
+    "name": "Hypertension Deterioration",
+    "severity_weight": 3,
+    "symptoms": ["headache", "dizziness", "chest tightness", "visual changes", "palpitations", "shortness of breath", "nosebleed", "fatigue"],
+    "description": "A cluster of recurrent headaches, dizziness, and chest discomfort — especially if blood pressure is known to be high — may indicate that current management needs adjustment. Visual disturbances alongside these symptoms should be reported to a doctor promptly.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_005",
+    "name": "Hypothyroidism (Underactive Thyroid)",
+    "severity_weight": 2,
+    "symptoms": ["fatigue", "weight gain", "cold intolerance", "constipation", "dry skin", "hair loss", "slow heart rate", "depression", "memory issues"],
+    "description": "Unexplained fatigue alongside weight gain, feeling cold when others do not, and constipation can signal an underactive thyroid — a very common and treatable condition, especially in older women. A simple blood test (TSH level) confirms or rules this out.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_006",
+    "name": "Urinary Tract Infection in Elderly (Atypical Presentation)",
+    "severity_weight": 3,
+    "symptoms": ["confusion", "sudden behavioral change", "fever", "dark or cloudy urine", "urinary urgency", "lower back pain", "fatigue", "loss of appetite"],
+    "description": "In elderly patients, UTIs often present atypically — as sudden confusion or behavioral change rather than the classic burning sensation. Fever combined with changed urination patterns and new confusion warrants prompt medical attention, as untreated UTIs in the elderly can escalate quickly.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_007",
+    "name": "Dehydration Pattern",
+    "severity_weight": 2,
+    "symptoms": ["increased thirst", "dark urine", "fatigue", "dizziness", "dry mouth", "headache", "decreased urination", "muscle cramps"],
+    "description": "Persistent thirst, dark-colored urine, dizziness, and fatigue together are a classic dehydration pattern. This is especially common in elderly individuals who may not feel thirst normally. Increasing fluid intake and monitoring are usually sufficient, but if symptoms persist, medical evaluation is advisable.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_008",
+    "name": "Early Chronic Kidney Disease Signs",
+    "severity_weight": 3,
+    "symptoms": ["fatigue", "ankle and foot swelling", "reduced appetite", "changes in urination", "muscle cramps", "nausea", "difficulty concentrating", "itching"],
+    "description": "Fatigue combined with swelling in the lower legs, appetite changes, and altered urination patterns can reflect reduced kidney function. This combination should be evaluated with a blood test — especially in patients with diabetes or high blood pressure, who are at higher risk.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_009",
+    "name": "Depression in Elderly",
+    "severity_weight": 2,
+    "symptoms": ["fatigue", "sleep disturbance", "appetite changes", "social withdrawal", "low mood", "loss of interest", "difficulty concentrating", "unexplained aches"],
+    "description": "Persistent low energy, changes in sleep and appetite, withdrawal from activities the person previously enjoyed, and loss of interest over several weeks can indicate depression. This is underdiagnosed in elderly patients and very treatable — a compassionate conversation with a doctor can make a significant difference.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_010",
+    "name": "COPD or Respiratory Exacerbation",
+    "severity_weight": 3,
+    "symptoms": ["shortness of breath", "chronic cough", "increased mucus", "fatigue", "chest tightness", "wheezing", "reduced activity tolerance"],
+    "description": "Worsening breathlessness, increased cough with more mucus, and chest tightness over several days may indicate a respiratory flare-up, especially in someone with known lung conditions. This pattern can escalate quickly and warrants prompt medical evaluation.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_011",
+    "name": "Vitamin B12 or Folate Deficiency",
+    "severity_weight": 2,
+    "symptoms": ["fatigue", "numbness or tingling", "memory problems", "balance difficulties", "weakness", "sore tongue", "mood changes", "pale skin"],
+    "description": "Fatigue combined with tingling sensations, memory lapses, and balance problems may point to B12 or folate deficiency — very common in elderly patients, especially vegetarians or those on certain medications. This is straightforward to diagnose and treat once identified.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_012",
+    "name": "Hypoglycemia Pattern (Low Blood Sugar Episodes)",
+    "severity_weight": 3,
+    "symptoms": ["shakiness", "sweating", "sudden hunger", "confusion", "palpitations", "dizziness", "headache", "irritability", "blurred vision"],
+    "description": "Recurrent episodes of shakiness, sweating, sudden hunger, and confusion — especially before meals or after physical activity — may indicate blood sugar dropping too low. This is particularly concerning in patients on diabetes medication and should be reviewed with their doctor, who may need to adjust the dosage.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_013",
+    "name": "Post-viral Fatigue or Long COVID Pattern",
+    "severity_weight": 2,
+    "symptoms": ["fatigue", "brain fog", "sleep disturbance", "reduced stamina", "joint aches", "headache", "shortness of breath on exertion", "mood changes"],
+    "description": "Prolonged fatigue, difficulty concentrating, and reduced exercise tolerance weeks after a viral illness can indicate post-infectious recovery syndrome. While often self-limiting, this pattern warrants monitoring and a check-in with a doctor if it persists beyond 4 to 6 weeks.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_014",
+    "name": "Gastrointestinal Warning Pattern",
+    "severity_weight": 2,
+    "symptoms": ["appetite loss", "nausea", "abdominal discomfort", "weight loss", "heartburn", "bloating", "change in bowel habits", "fatigue"],
+    "description": "Persistent appetite loss combined with nausea, abdominal discomfort, and unintentional weight loss over several weeks warrants medical evaluation. While often benign, this pattern can reflect a range of conditions that benefit from early identification.",
+    "embedding": null
+  },
+  {
+    "id": "cluster_015",
+    "name": "Osteoporosis or Fall Risk Pattern",
+    "severity_weight": 2,
+    "symptoms": ["back pain", "balance difficulties", "height reduction", "joint pain", "muscle weakness", "fatigue", "bone pain", "reduced mobility"],
+    "description": "Gradually increasing back pain, balance difficulties, and muscle weakness in an elderly patient may indicate bone density loss or increased fall risk. A bone density scan and physiotherapy assessment can significantly reduce the risk of fractures.",
+    "embedding": null
+  }
+]

@@ -1,0 +1,42 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Local dev data (will be seeded from Firestore in Cloud Run)
+ayuguard/data/uploads/
+
+# Secrets / credentials (never bake into image)
+*.env
+.env
+firebase-service-account.json
+*-service-account.json
+
+# IDE / OS
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docs / tests
+*.md
+tests/
+
+# Datasets are large — copy selectively via Dockerfile
+# (we DO include datasets/ — see COPY in Dockerfiles)
+datasets/Final_Augmented_dataset_Diseases_and_Symptoms.csv
+datasets/release_train_patients.csv

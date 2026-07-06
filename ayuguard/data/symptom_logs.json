@@ -1,0 +1,300 @@
+{
+  "patients": {
+    "test_001": {
+      "name": "TestPatient",
+      "created_at": "2026-07-05T21:25:30.367443",
+      "logs": [
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-06-22",
+          "source": "log",
+          "notes": "test entry",
+          "stored_at": "2026-07-05T21:25:30.367605"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-06-24",
+          "source": "log",
+          "notes": "test entry",
+          "stored_at": "2026-07-05T21:25:30.367644"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-06-26",
+          "source": "log",
+          "notes": "test entry",
+          "stored_at": "2026-07-05T21:25:30.367670"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-06-27",
+          "source": "log",
+          "notes": "test entry",
+          "stored_at": "2026-07-05T21:25:30.367691"
+        },
+        {
+          "symptom": "blurry vision",
+          "severity": "mild",
+          "date": "2026-06-28",
+          "source": "log",
+          "notes": "test entry",
+          "stored_at": "2026-07-05T21:25:30.367712"
+        },
+        {
+          "symptom": "weight loss",
+          "severity": "mild",
+          "date": "2026-06-29",
+          "source": "log",
+          "notes": "test entry",
+          "stored_at": "2026-07-05T21:25:30.367742"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-07-01",
+          "source": "log",
+          "notes": "test entry",
+          "stored_at": "2026-07-05T21:25:30.367761"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-07-02",
+          "source": "log",
+          "notes": "test entry",
+          "stored_at": "2026-07-05T21:25:30.367780"
+        },
+        {
+          "symptom": "frequent urination",
+          "severity": "mild",
+          "date": "2026-07-03",
+          "source": "log",
+          "notes": "test entry",
+          "stored_at": "2026-07-05T21:25:30.367797"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-07-05",
+          "source": "log",
+          "notes": "test entry",
+          "stored_at": "2026-07-05T21:25:30.367817"
+        }
+      ]
+    },
+    "patient_001": {
+      "name": "Rajan Sharma",
+      "age": 68,
+      "created_at": "2026-07-05T21:25:50.227655",
+      "logs": [
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-06-22",
+          "source": "log",
+          "notes": "Dad seemed tired today, went to bed early after dinner",
+          "stored_at": "2026-07-05T21:50:00.410449"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-06-23",
+          "source": "log",
+          "notes": "He drank a lot of water today — refilled his bottle twice",
+          "stored_at": "2026-07-05T21:50:00.410489"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-06-24",
+          "source": "log",
+          "notes": "Still tired, slept an extra hour in the afternoon",
+          "stored_at": "2026-07-05T21:50:00.410506"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-06-25",
+          "source": "log",
+          "notes": "Very thirsty again, kept asking for water",
+          "stored_at": "2026-07-05T21:50:00.410576"
+        },
+        {
+          "symptom": "blurry vision",
+          "severity": "mild",
+          "date": "2026-06-26",
+          "source": "log",
+          "notes": "Mentioned his vision was a bit blurry while reading newspaper",
+          "stored_at": "2026-07-05T21:50:00.410738"
+        },
+        {
+          "symptom": "weight loss",
+          "severity": "mild",
+          "date": "2026-06-27",
+          "source": "log",
+          "notes": "Weight down roughly 1 kg compared to last week",
+          "stored_at": "2026-07-05T21:50:00.410758"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-06-28",
+          "source": "log",
+          "notes": "Low energy, did not want to go for his evening walk",
+          "stored_at": "2026-07-05T21:50:00.410769"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-06-29",
+          "source": "log",
+          "notes": "Thirsty again — had 6-7 glasses of water through the day",
+          "stored_at": "2026-07-05T21:50:00.410810"
+        },
+        {
+          "symptom": "frequent urination",
+          "severity": "mild",
+          "date": "2026-06-30",
+          "source": "log",
+          "notes": "Bathroom trips more often than usual, including at night",
+          "stored_at": "2026-07-05T21:50:00.410829"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "moderate",
+          "date": "2026-07-01",
+          "source": "log",
+          "notes": "Very tired today, skipped lunch, felt weak",
+          "stored_at": "2026-07-05T21:50:00.410842"
+        },
+        {
+          "symptom": "blurry vision",
+          "severity": "mild",
+          "date": "2026-07-02",
+          "source": "log",
+          "notes": "Eyes bothering him again while reading",
+          "stored_at": "2026-07-05T21:50:00.410854"
+        },
+        {
+          "symptom": "frequent urination",
+          "severity": "mild",
+          "date": "2026-07-03",
+          "source": "log",
+          "notes": "Had to get up 3 times at night",
+          "stored_at": "2026-07-05T21:50:00.410866"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "moderate",
+          "date": "2026-07-04",
+          "source": "log",
+          "notes": "Tired and irritable — no energy for his walk",
+          "stored_at": "2026-07-05T21:50:00.410877"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-07-05",
+          "source": "log",
+          "notes": "Drinking a lot of water again today",
+          "stored_at": "2026-07-05T21:50:00.410889"
+        },
+        {
+          "symptom": "numb fingers",
+          "severity": "mild",
+          "date": "2026-06-03",
+          "source": "log",
+          "notes": "numb fingers",
+          "stored_at": "2026-07-05T22:43:14.621860"
+        },
+        {
+          "symptom": "swollen feet",
+          "severity": "mild",
+          "date": "2026-06-03",
+          "source": "log",
+          "notes": "swollen feet",
+          "stored_at": "2026-07-05T22:43:14.621932"
+        },
+        {
+          "symptom": "finger numbness",
+          "severity": "mild",
+          "date": "2026-07-30",
+          "source": "log",
+          "notes": "numb fingers",
+          "stored_at": "2026-07-05T22:45:35.142161"
+        },
+        {
+          "symptom": "foot edema",
+          "severity": "mild",
+          "date": "2026-07-30",
+          "source": "log",
+          "notes": "swollen feet",
+          "stored_at": "2026-07-05T22:45:35.142257"
+        },
+        {
+          "symptom": "hearing loss",
+          "severity": "moderate",
+          "date": "2026-07-05",
+          "source": "log",
+          "notes": "he is also experiencing problem in hearing as last month he lost one side hearing due to the sound of firecrakers",
+          "stored_at": "2026-07-05T22:47:20.301014"
+        }
+      ]
+    }
+  },
+  "alert_cooldowns": {
+    "test_001": {
+      "Diabetes": "2026-07-05T21:25:30.543445"
+    },
+    "patient_001": {
+      "Diabetes": "2026-07-05T21:59:48.948763"
+    }
+  },
+  "profiles": {
+    "patient_001": {
+      "name": "Rajan Sharma",
+      "age": 68,
+      "caregiver_name": "Priya",
+      "caregiver_relationship": "daughter",
+      "known_conditions": [],
+      "language": "English",
+      "profile_complete": true,
+      "updated_at": "2026-07-05T23:16:34.238512",
+      "created_at": "2026-07-05T21:50:00.381754"
+    }
+  },
+  "care_plans": {
+    "patient_001": {
+      "meals": [
+        "Low-carb breakfast",
+        "dal rice for lunch",
+        "early light dinner"
+      ],
+      "medications": [],
+      "activities": [],
+      "notes": "",
+      "updated_by": "Priya",
+      "updated_at": "2026-07-05T23:35:47.449610"
+    }
+  },
+  "notifications": {
+    "patient_001": [
+      {
+        "message": "Meal plan updated: Low-carb breakfast, Dal chapati lunch | Medications: Metformin 500mg after dinner | Activities: 15 min walk | Note from Priya: Rest well",
+        "type": "care_plan",
+        "read": true,
+        "created_at": "2026-07-05T22:21:51.405395"
+      },
+      {
+        "message": "Meal plan updated: Low-carb breakfast, dal rice for lunch",
+        "type": "care_plan",
+        "read": true,
+        "created_at": "2026-07-05T23:35:47.449610"
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+﻿# ──────────────────────────────────────────────────────────────
+#  Dockerfile.agent  —  AyuGuard ADK Agent Service
+#  Runs: adk web  (Google ADK development server)
+#  Port: $PORT (Cloud Run injects this, default 8000)
+# ──────────────────────────────────────────────────────────────
+FROM python:3.11-slim
+
+# System deps for pdfplumber, Pillow, and numpy
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install Python dependencies first (better layer caching)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy agent package
+COPY ayuguard/ ./ayuguard/
+
+# Copy clinical datasets (needed for pattern matching)
+COPY datasets/ ./datasets/
+
+# Create data directory with seed JSON files
+COPY ayuguard/data/ ./ayuguard/data/
+
+# Cloud Run: $PORT is injected. adk web defaults to 8000.
+# We read ADK_PORT from env (set to $PORT by Cloud Run entrypoint).
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV GOOGLE_GENAI_USE_VERTEXAI=FALSE
+
+# Startup: read Cloud Run PORT and pass to adk web
+CMD ["sh", "-c", "adk web --host 0.0.0.0 --port ${PORT:-8000}"]

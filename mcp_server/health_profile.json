@@ -1,0 +1,62 @@
+{
+  "patient": {
+    "name": "Kamla Devi",
+    "preferred_name": "नानी",
+    "age": 70,
+    "gender": "female",
+    "language": "Hindi",
+    "location": "Jaipur"
+  },
+  "chronic_conditions": [
+    "Type 2 Diabetes",
+    "Hypertension"
+  ],
+  "medications": [
+    {
+      "name": "Metformin 500mg",
+      "generic": "Metformin Hydrochloride",
+      "schedule": "twice daily with meals",
+      "reminder_times": [
+        "08:00",
+        "20:00"
+      ],
+      "notes": "भोजन के साथ लें। पेट में तकलीफ हो सकती है यदि खाली पेट लें।",
+      "notes_en": "Take with food to avoid stomach upset."
+    },
+    {
+      "name": "Amlodipine 5mg",
+      "generic": "Amlodipine Besylate",
+      "schedule": "once daily morning",
+      "reminder_times": [
+        "08:00"
+      ],
+      "notes": "सुबह नाश्ते के साथ लें। रक्तचाप नियंत्रण के लिए।",
+      "notes_en": "Take with breakfast. For blood pressure control."
+    }
+  ],
+  "acute_events": [
+    "diarrhea"
+  ],
+  "dietary_restrictions": [
+    "low-sodium",
+    "low-sugar",
+    "low-glycemic-index"
+  ],
+  "allergies": [
+    "penicillin"
+  ],
+  "preferred_foods": [
+    "khichdi",
+    "curd",
+    "banana",
+    "coconut water"
+  ],
+  "avoided_foods": [
+    "fried foods",
+    "pickles",
+    "papad",
+    "white bread",
+    "sweets"
+  ],
+  "last_updated": "2026-07-03T23:09:08.011467+05:30"
+}

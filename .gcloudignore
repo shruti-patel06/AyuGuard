@@ -1,0 +1,24 @@
+.git/
+.gitignore
+.gcloudignore
+.dockerignore
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.vscode/
+.idea/
+
+# Ignore massive unused datasets to prevent slow Cloud Build uploads
+datasets/Final_Augmented_dataset_Diseases_and_Symptoms.csv
+datasets/release_train_patients.csv
+
+# Ignore local uploads
+ayuguard/data/uploads/
+ui/uploads/
+uploads/

@@ -1,0 +1,30 @@
+# AyuGuard — git ignore
+# ─────────────────────────────────────────────────────────────────────────────
+ayuguard/.env
+.env
+ayuguard/firebase-service-account.json
+.adk/
+**/.adk/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+.DS_Store
+
+# Ignore massive unused datasets to stay well under GitHub's file limit
+datasets/Final_Augmented_dataset_Diseases_and_Symptoms.csv
+datasets/release_train_patients.csv
+
+# Ignore local uploads
+ayuguard/data/uploads/
+ui/uploads/
+uploads/
+
+# IDE / temp files
+.vscode/
+.idea/
+*.log
+
