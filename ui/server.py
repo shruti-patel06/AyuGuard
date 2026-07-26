@@ -172,18 +172,81 @@ async def create_session(request: Request):
 async def chat_proxy(request: Request):
     """Proxy chat messages to the ADK /run_sse endpoint (SSE streaming)."""
     body = await request.json()
+    
+    # Safeguard streaming flag
+    body["streaming"] = True
+
+    user_id = body.get("user_id", "caregiver-001")
+    app_name = body.get("app_name", "ayuguard")
+    session_id = body.get("session_id")
+
+    # If the user is patient-001, inject system context to bypass caregiver messages and speak directly
+    if user_id == "patient-001" and "new_message" in body:
+        new_msg = body["new_message"]
+        if "parts" in new_msg and len(new_msg["parts"]) > 0:
+            part = new_msg["parts"][0]
+            if "text" in part:
+                context_instruction = (
+                    "[SYSTEM CONTEXT: You are speaking directly to the ELDERLY PATIENT (Rajan Sharma), NOT the caregiver. "
+                    "Greet and address them directly as Rajan ji, with extreme respect, warmth, and care. "
+                    "Do NOT call generate_caregiver_message() under any circumstances. "
+                    "Compose a direct, comforting response. If appropriate, run Step 1 to Step 4 of the symptom pipeline to log their feelings. "
+                    "Remind them that their caregiver Priya can view these logs on her dashboard, and gently advise them to rest and notify Priya "
+                    "if they are feeling worse or if urgency is elevated. Respond directly in their preferred language.]\n\n"
+                )
+                part["text"] = context_instruction + part["text"]
 
     async def stream_adk() -> AsyncGenerator[bytes, None]:
+        current_session_id = session_id
         async with httpx.AsyncClient(timeout=120) as client:
-            async with client.stream(
-                "POST",
-                f"{ADK_BASE}/run_sse",
-                json=body,
-                headers={"Accept": "text/event-stream"},
-            ) as resp:
-                async for line in resp.aiter_lines():
-                    if line:
-                        yield (line + "\n\n").encode()
+            recreate_needed = False
+            try:
+                async with client.stream(
+                    "POST",
+                    f"{ADK_BASE}/run_sse",
+                    json={**body, "session_id": current_session_id},
+                    headers={"Accept": "text/event-stream"},
+                ) as resp:
+                    if resp.status_code == 404:
+                        recreate_needed = True
+                    else:
+                        async for line in resp.aiter_lines():
+                            if line:
+                                yield (line + "\n\n").encode()
+            except Exception as exc:
+                recreate_needed = True
+                print(f"Initial stream connection failed: {exc}")
+
+            # Dynamic session recovery if 404 Session Not Found occurs
+            if recreate_needed:
+                print(f"Session {current_session_id} not found or failed. Attempting auto-recovery...")
+                try:
+                    session_resp = await client.post(
+                        f"{ADK_BASE}/apps/{app_name}/users/{user_id}/sessions",
+                        json={},
+                    )
+                    if session_resp.status_code in (200, 201):
+                        new_session = session_resp.json()
+                        new_session_id = new_session.get("id", new_session.get("session_id", ""))
+                        if new_session_id:
+                            current_session_id = new_session_id
+                            print(f"Dynamically recovered session: {new_session_id}")
+                            # Send control message so frontend can update its local sessions dict
+                            control_msg = f"data: {{\"control\": \"set_session\", \"session_id\": \"{current_session_id}\"}}\n\n"
+                            yield control_msg.encode()
+
+                            # Retry streaming with the new session
+                            async with client.stream(
+                                "POST",
+                                f"{ADK_BASE}/run_sse",
+                                json={**body, "session_id": current_session_id},
+                                headers={"Accept": "text/event-stream"},
+                            ) as resp_retry:
+                                async for line in resp_retry.aiter_lines():
+                                    if line:
+                                        yield (line + "\n\n").encode()
+                except Exception as exc:
+                    yield f"data: {{\"error\": \"Failed to auto-recover session: {exc}\"}}\n\n".encode()
 
     return StreamingResponse(
         stream_adk(),

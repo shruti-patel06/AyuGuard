@@ -97,15 +97,19 @@ def generate_caregiver_message(
             contents=prompt,
             config=genai.types.GenerateContentConfig(
                 system_instruction=_SYSTEM_INSTRUCTION,
-                max_output_tokens=250,
-                temperature=0.4,
+                max_output_tokens=300,
+                temperature=0.7,
             ),
         )
         return response.text.strip()
     except Exception as exc:  # noqa: BLE001
+        import traceback
+        traceback.print_exc()
         name_str = f" for {patient_name}" if patient_name else ""
+        error_detail = str(exc)
         return (
-            f"Symptom logged{name_str}. AyuGuard is tracking the pattern "
-            f"(urgency: {urgency}). Keep logging daily — patterns across days matter most. "
-            f"Stay well! 🌸 [Note: {exc}]"
+            f"⚠️ AyuGuard could not generate a response right now.\n"
+            f"Symptom logged{name_str} (urgency: {urgency}).\n"
+            f"Error: {error_detail}\n"
+            f"Please check that the GOOGLE_API_KEY in ayuguard/.env is valid and restart the servers."
         )

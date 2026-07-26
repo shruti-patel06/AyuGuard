@@ -11,28 +11,75 @@
 <style>
 /* ── Reset & Tokens ─────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* ── Dark mode (default) — Calming sage + sky-blue palette ── */
 :root{
-  --bg:#080d1a; --bg2:#0d1426; --bg3:#111827;
-  --surface:rgba(255,255,255,0.04); --surface2:rgba(255,255,255,0.07); --surface3:rgba(255,255,255,0.11);
-  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13); --border3:rgba(255,255,255,0.2);
-  --purple:#8b5cf6; --purple2:#7c3aed; --purple3:#6d28d9;
-  --teal:#14b8a6; --teal2:#0d9488;
-  --green:#10b981; --amber:#f59e0b; --red:#ef4444; --blue:#3b82f6;
-  --text:#e2e8f0; --text2:#94a3b8; --text3:#64748b; --text4:#475569;
+  --bg:#0c1219; --bg2:#111c28; --bg3:#162032;
+  --surface:rgba(255,255,255,0.04); --surface2:rgba(255,255,255,0.07); --surface3:rgba(255,255,255,0.12);
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12); --border3:rgba(255,255,255,0.2);
+  /* Primary: calm sky-blue  Secondary: sage green */
+  --purple:#6b9cdf; --purple2:#5a8bc8; --purple3:#4a7ab1;
+  --teal:#5bab8a;   --teal2:#4a9278;
+  --green:#5bbd8a; --amber:#e8a165; --red:#e07070; --blue:#6b9cdf;
+  --text:#dde6f0; --text2:#8ea8c0; --text3:#5f7a96; --text4:#415a74;
   --sidebar:260px; --header:60px;
   --r:14px; --r2:10px; --r3:8px;
   --shadow:0 8px 32px rgba(0,0,0,0.45);
-  --glow-p:0 0 30px rgba(139,92,246,0.18);
-  --glow-t:0 0 30px rgba(20,184,166,0.14);
+  --glow-p:0 0 30px rgba(107,156,223,0.18);
+  --glow-t:0 0 30px rgba(91,171,138,0.14);
   --ease:cubic-bezier(.4,0,.2,1);
 }
+/* ── Light mode overrides ─────────────────────────────── */
+[data-theme="light"]{
+  --bg:#f4f0ea; --bg2:#ede8df; --bg3:#ffffff;
+  --surface:rgba(0,0,0,0.035); --surface2:rgba(0,0,0,0.06); --surface3:rgba(0,0,0,0.09);
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.13); --border3:rgba(0,0,0,0.2);
+  --purple:#4a7fc0; --purple2:#3a6aaa; --purple3:#2d5590;
+  --teal:#3a9470;   --teal2:#2d7a5a;
+  --green:#3aaa6a; --amber:#c87840; --red:#c85050; --blue:#4a7fc0;
+  --text:#1a2535; --text2:#3a5070; --text3:#607090; --text4:#8090a8;
+  --shadow:0 4px 24px rgba(0,0,0,0.12);
+  --glow-p:0 0 20px rgba(74,127,192,0.15);
+  --glow-t:0 0 20px rgba(58,148,112,0.12);
+}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Inter','Noto Sans Devanagari',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+body{font-family:'Inter','Noto Sans Devanagari',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;transition:background .3s,color .3s}
 body::before{content:'';position:fixed;inset:0;z-index:0;background:
-  radial-gradient(ellipse 70% 55% at 15% 8%,rgba(139,92,246,.09) 0%,transparent 60%),
-  radial-gradient(ellipse 55% 45% at 85% 88%,rgba(20,184,166,.07) 0%,transparent 55%),
-  radial-gradient(ellipse 45% 40% at 55% 45%,rgba(59,130,246,.04) 0%,transparent 50%);
-  pointer-events:none}
+  radial-gradient(ellipse 70% 55% at 15% 8%,rgba(107,156,223,.08) 0%,transparent 60%),
+  radial-gradient(ellipse 55% 45% at 85% 88%,rgba(91,171,138,.06) 0%,transparent 55%),
+  radial-gradient(ellipse 45% 40% at 55% 45%,rgba(107,156,223,.03) 0%,transparent 50%);
+  pointer-events:none;transition:opacity .3s}
+[data-theme="light"] body::before{
+  background:
+    radial-gradient(ellipse 70% 55% at 15% 8%,rgba(107,156,223,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 45% at 85% 88%,rgba(91,171,138,.05) 0%,transparent 55%),
+    radial-gradient(ellipse 45% 40% at 55% 45%,rgba(91,171,138,.03) 0%,transparent 50%);
+}
+/* Light mode surface/border fixes */
+[data-theme="light"] header{background:rgba(244,240,234,.92);border-bottom-color:rgba(0,0,0,.1)}
+[data-theme="light"] aside{background:rgba(237,232,223,.85);border-right-color:rgba(0,0,0,.1)}
+[data-theme="light"] .chat-input-wrap{background:rgba(244,240,234,.92)}
+[data-theme="light"] .notif-panel{background:rgba(244,240,234,.98)}
+[data-theme="light"] .msg.agent .msg-bubble{background:#ffffff;border-color:rgba(0,0,0,.1)}
+[data-theme="light"] .welcome{background:#ffffff;border-color:rgba(0,0,0,.1)}
+[data-theme="light"] .card{background:#ffffff;border-color:rgba(0,0,0,.08)}
+[data-theme="light"] .card:hover{border-color:rgba(0,0,0,.15);box-shadow:0 4px 20px rgba(0,0,0,.1)}
+[data-theme="light"] .profile-card{background:#ffffff;border-color:rgba(0,0,0,.08)}
+[data-theme="light"] .stat{background:#ffffff;border-color:rgba(0,0,0,.08)}
+[data-theme="light"] .sb-item:hover{background:rgba(0,0,0,.06)}
+[data-theme="light"] .tl-item{background:rgba(0,0,0,.035);border-color:rgba(0,0,0,.08)}
+[data-theme="light"] .chip{background:#fff;border-color:rgba(0,0,0,.12);color:#3a5070}
+[data-theme="light"] .rec-card{background:#ffffff;border-color:rgba(0,0,0,.08)}
+[data-theme="light"] .abnormal-summary-card{background:linear-gradient(135deg,rgba(232,161,101,.08),rgba(224,112,112,.06))}
+[data-theme="light"] .pattern-card{background:linear-gradient(135deg,rgba(107,156,223,.06),rgba(91,171,138,.05));border-color:rgba(107,156,223,.2)}
+[data-theme="light"] .patient-banner{background:linear-gradient(135deg,rgba(91,171,138,.1),rgba(107,156,223,.07));border-bottom-color:rgba(91,171,138,.2)}
+[data-theme="light"] .chat-ta{background:#ffffff;border-color:rgba(0,0,0,.15);color:#1a2535}
+[data-theme="light"] .chat-ta::placeholder{color:#8090a8}
+[data-theme="light"] #toast{background:#fff;border-color:rgba(0,0,0,.15);color:#1a2535}
+/* Theme toggle button */
+.theme-btn{width:34px;height:34px;border-radius:9px;border:1px solid var(--border2);
+  background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:15px;transition:all .2s var(--ease);flex-shrink:0}
+.theme-btn:hover{border-color:var(--teal);background:rgba(91,171,138,.1)}
 
 /* ── Layout ─────────────────────────────────────────────── */
 #app{display:flex;flex-direction:column;height:100vh;position:relative;z-index:1}
@@ -47,8 +94,9 @@ header{height:var(--header);display:flex;align-items:center;gap:14px;padding:0 2
   -webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
 .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,#8b5cf6,#14b8a6);
   border-radius:9px;display:flex;align-items:center;justify-content:center;
-  font-size:17px;flex-shrink:0;box-shadow:0 3px 14px rgba(139,92,246,.38)}
+  font-size:17px;flex-shrink:0;box-shadow:0 3px 14px rgba(107,156,223,.38)}
 .logo-devanagari{font-size:10px;font-weight:400;opacity:.45;letter-spacing:.3px;margin-top:-2px}
+.logo-tagline{font-size:9px;font-weight:500;opacity:.38;letter-spacing:.6px;margin-top:1px;-webkit-text-fill-color:rgba(148,163,184,.6);background:none;text-transform:uppercase}
 .header-center{flex:1;display:flex;justify-content:center}
 .tabs{display:flex;background:var(--surface);border:1px solid var(--border);
   border-radius:12px;padding:3px;gap:2px}
@@ -56,7 +104,7 @@ header{height:var(--header);display:flex;align-items:center;gap:14px;padding:0 2
   font-family:inherit;font-size:12.5px;font-weight:600;
   color:var(--text3);background:transparent;transition:all .2s var(--ease);white-space:nowrap}
 .tab.active{background:linear-gradient(135deg,var(--purple),var(--teal));color:#fff;
-  box-shadow:0 2px 10px rgba(139,92,246,.38)}
+  box-shadow:0 2px 10px rgba(107,156,223,.38)}
 .tab:not(.active):hover{color:var(--text);background:var(--surface2)}
 .tab.records-tab.active{background:linear-gradient(135deg,#f59e0b,#ef4444)}
 .tab.records-tab:not(.active):hover{color:var(--amber)}
@@ -74,7 +122,7 @@ header{height:var(--header);display:flex;align-items:center;gap:14px;padding:0 2
 .notif-btn{position:relative;width:34px;height:34px;border-radius:9px;border:1px solid var(--border2);
   background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;
   font-size:15px;transition:all .2s var(--ease)}
-.notif-btn:hover{border-color:var(--purple);background:rgba(139,92,246,.1)}
+.notif-btn:hover{border-color:var(--purple);background:rgba(107,156,223,.1)}
 .notif-badge{position:absolute;top:-4px;right:-4px;width:16px;height:16px;
   background:var(--red);border-radius:50%;font-size:9px;font-weight:700;color:#fff;
   display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
@@ -92,13 +140,13 @@ aside::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
   background:linear-gradient(135deg,#8b5cf6,#14b8a6);
   display:flex;align-items:center;justify-content:center;
   font-size:22px;font-weight:700;color:#fff;flex-shrink:0;
-  box-shadow:0 3px 16px rgba(139,92,246,.38)}
+  box-shadow:0 3px 16px rgba(107,156,223,.38)}
 .profile-name{font-size:15px;font-weight:700}
 .profile-meta{font-size:11px;color:var(--text2);display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
 .ptag{background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:2px 8px;font-size:10.5px;color:var(--text2)}
 .cond-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;width:100%;text-align:left;margin-top:2px}
 .cond-tag{display:inline-block;margin:2px;padding:2px 8px;border-radius:20px;font-size:10.5px;
-  background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.22);color:#c4b5fd}
+  background:rgba(107,156,223,.1);border:1px solid rgba(107,156,223,.22);color:#c4b5fd}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:10px;text-align:center}
 .stat-n{font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--purple),var(--teal));
@@ -111,7 +159,7 @@ aside::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
   cursor:pointer;border:none;background:transparent;color:var(--text2);
   font-family:inherit;font-size:13px;font-weight:500;width:100%;text-align:left;transition:all .2s var(--ease)}
 .sb-item:hover{background:var(--surface2);color:var(--text)}
-.sb-item.active{background:rgba(139,92,246,.13);color:var(--purple);border:1px solid rgba(139,92,246,.18)}
+.sb-item.active{background:rgba(107,156,223,.13);color:var(--purple);border:1px solid rgba(107,156,223,.18)}
 .sb-icon{font-size:15px;width:18px;text-align:center}
 #sbn-records.active{background:rgba(245,158,11,.13);color:var(--amber);border:1px solid rgba(245,158,11,.22)}
 
@@ -131,16 +179,16 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 .msg.user{align-self:flex-end;flex-direction:row-reverse}
 .msg.agent{align-self:flex-start}
 .msg-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px}
-.msg.agent .msg-av{background:linear-gradient(135deg,#8b5cf6,#14b8a6);box-shadow:0 2px 10px rgba(139,92,246,.35)}
+.msg.agent .msg-av{background:linear-gradient(135deg,#8b5cf6,#14b8a6);box-shadow:0 2px 10px rgba(107,156,223,.35)}
 .msg.user  .msg-av{background:var(--surface2);border:1px solid var(--border2)}
 .msg-body{display:flex;flex-direction:column;gap:3px}
 .msg-name{font-size:10.5px;font-weight:600;color:var(--text3)}
 .msg.user .msg-name{text-align:right}
 .msg-bubble{padding:10px 14px;border-radius:16px;font-size:13.5px;line-height:1.62;word-break:break-word}
 .msg.agent .msg-bubble{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:3px;color:var(--text)}
-.msg.user  .msg-bubble{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border-bottom-right-radius:3px;box-shadow:0 3px 14px rgba(139,92,246,.32)}
-.msg.patient .msg-av{background:linear-gradient(135deg,#14b8a6,#06b6d4);box-shadow:0 2px 10px rgba(20,184,166,.35)}
-.msg.patient .msg-bubble{background:linear-gradient(135deg,#14b8a6,#0d9488);color:#fff;border-bottom-right-radius:3px;box-shadow:0 3px 14px rgba(20,184,166,.32)}
+.msg.user  .msg-bubble{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border-bottom-right-radius:3px;box-shadow:0 3px 14px rgba(107,156,223,.32)}
+.msg.patient .msg-av{background:linear-gradient(135deg,#14b8a6,#06b6d4);box-shadow:0 2px 10px rgba(91,171,138,.35)}
+.msg.patient .msg-bubble{background:linear-gradient(135deg,#14b8a6,#0d9488);color:#fff;border-bottom-right-radius:3px;box-shadow:0 3px 14px rgba(91,171,138,.32)}
 .msg-time{font-size:10px;color:var(--text3)}
 .msg.user .msg-time,.msg.patient .msg-time{text-align:right}
 .typing-ind{display:flex;gap:4px;padding:12px 14px;align-items:center}
@@ -155,14 +203,14 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 .chat-ta{flex:1;resize:none;background:var(--surface);border:1px solid var(--border2);
   border-radius:12px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:13.5px;
   outline:none;max-height:110px;min-height:44px;line-height:1.5;transition:all .2s var(--ease)}
-.chat-ta:focus{border-color:var(--purple);box-shadow:0 0 0 2px rgba(139,92,246,.12)}
+.chat-ta:focus{border-color:var(--purple);box-shadow:0 0 0 2px rgba(107,156,223,.12)}
 .chat-ta::placeholder{color:var(--text3)}
-.chat-ta.patient-ta:focus{border-color:var(--teal);box-shadow:0 0 0 2px rgba(20,184,166,.12)}
+.chat-ta.patient-ta:focus{border-color:var(--teal);box-shadow:0 0 0 2px rgba(91,171,138,.12)}
 .send-btn{width:44px;height:44px;border-radius:12px;border:none;cursor:pointer;color:#fff;
   font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
   transition:all .2s var(--ease)}
-.send-btn.caregiver-btn{background:linear-gradient(135deg,var(--purple),var(--teal));box-shadow:0 3px 14px rgba(139,92,246,.38)}
-.send-btn.patient-btn  {background:linear-gradient(135deg,var(--teal),#06b6d4);box-shadow:0 3px 14px rgba(20,184,166,.35)}
+.send-btn.caregiver-btn{background:linear-gradient(135deg,var(--purple),var(--teal));box-shadow:0 3px 14px rgba(107,156,223,.38)}
+.send-btn.patient-btn  {background:linear-gradient(135deg,var(--teal),#06b6d4);box-shadow:0 3px 14px rgba(91,171,138,.35)}
 .send-btn:hover{transform:scale(1.06)}
 .send-btn:active{transform:scale(.96)}
 .send-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
@@ -180,11 +228,11 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 .chip{padding:6px 12px;border-radius:20px;font-size:11.5px;font-weight:500;
   border:1px solid var(--border2);background:var(--surface2);color:var(--text2);
   cursor:pointer;transition:all .2s var(--ease)}
-.chip:hover{background:rgba(139,92,246,.13);border-color:rgba(139,92,246,.35);color:var(--purple)}
-.chip.teal:hover{background:rgba(20,184,166,.12);border-color:rgba(20,184,166,.35);color:var(--teal)}
+.chip:hover{background:rgba(107,156,223,.13);border-color:rgba(107,156,223,.35);color:var(--purple)}
+.chip.teal:hover{background:rgba(91,171,138,.12);border-color:rgba(91,171,138,.35);color:var(--teal)}
 
 /* ── Medical Records view ──────────────────────────────── */
-#view-records{display:none;flex-direction:column;height:100%;overflow-y:auto;padding:20px;gap:16px}
+#view-records{display:none;flex-direction:column;flex:1;min-height:0;overflow-y:auto;padding:20px;gap:16px}
 #view-records::-webkit-scrollbar{width:3px}
 #view-records::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
@@ -193,7 +241,7 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
   text-align:center;cursor:pointer;transition:all .25s var(--ease);background:var(--surface);
   position:relative}
 .upload-zone:hover,.upload-zone.drag-over{border-color:var(--amber);background:rgba(245,158,11,.06);}
-.upload-zone.uploading{border-color:var(--purple);background:rgba(139,92,246,.07);cursor:not-allowed}
+.upload-zone.uploading{border-color:var(--purple);background:rgba(107,156,223,.07);cursor:not-allowed}
 .upload-icon{font-size:38px;margin-bottom:10px}
 .upload-title{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--text)}
 .upload-sub{font-size:12px;color:var(--text3)}
@@ -224,9 +272,9 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 .rec-header{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer}
 .rec-type-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
   justify-content:center;font-size:17px;flex-shrink:0}
-.rec-type-icon.lab_test       {background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.2)}
+.rec-type-icon.lab_test       {background:rgba(107,156,223,.15);border:1px solid rgba(107,156,223,.2)}
 .rec-type-icon.prescription    {background:rgba(16,185,129,.13);border:1px solid rgba(16,185,129,.2)}
-.rec-type-icon.discharge_summary{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2)}
+.rec-type-icon.discharge_summary{background:rgba(107,156,223,.12);border:1px solid rgba(107,156,223,.2)}
 .rec-type-icon.scan_report     {background:rgba(236,72,153,.12);border:1px solid rgba(236,72,153,.2)}
 .rec-type-icon.consultation_note{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.2)}
 .rec-type-icon.other           {background:rgba(255,255,255,.06);border:1px solid var(--border2)}
@@ -275,7 +323,7 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 .abn-param-count{color:var(--text3);font-size:10.5px}
 
 /* ── Patient Dashboard ───────────────────────────────────── */
-#view-dashboard{display:none;flex-direction:column;height:100%;overflow-y:auto;padding:20px;gap:16px}
+#view-dashboard{display:none;flex-direction:column;flex:1;min-height:0;overflow-y:auto;padding:20px;gap:16px}
 #view-dashboard::-webkit-scrollbar{width:3px}
 #view-dashboard::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .dash-header{display:flex;align-items:center;justify-content:space-between}
@@ -314,7 +362,7 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 .notif-list::-webkit-scrollbar{width:3px}
 .notif-item{padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);
   margin-bottom:8px;transition:all .2s var(--ease)}
-.notif-item.unread{border-color:rgba(139,92,246,.25);background:rgba(139,92,246,.07)}
+.notif-item.unread{border-color:rgba(107,156,223,.25);background:rgba(107,156,223,.07)}
 .notif-type{font-size:10px;text-transform:uppercase;letter-spacing:.4px;font-weight:700;margin-bottom:4px}
 .notif-type.care_plan{color:var(--teal)}
 .notif-type.alert{color:var(--amber)}
@@ -357,8 +405,8 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 .freq-count{font-size:10.5px;color:var(--text3);min-width:18px;text-align:right}
 
 /* Pattern card */
-.pattern-card{background:linear-gradient(135deg,rgba(139,92,246,.07),rgba(20,184,166,.05));
-  border:1px solid rgba(139,92,246,.18);border-radius:var(--r);padding:18px}
+.pattern-card{background:linear-gradient(135deg,rgba(107,156,223,.07),rgba(91,171,138,.05));
+  border:1px solid rgba(107,156,223,.18);border-radius:var(--r);padding:18px}
 .prec-list{display:flex;flex-direction:column;gap:6px}
 .prec-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;
   background:rgba(255,255,255,.02);border:1px solid var(--border)}
@@ -395,12 +443,57 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 .big-hint{font-size:10.5px;color:var(--text3)}
 
 /* Patient chat banner */
-.patient-banner{padding:10px 20px;background:linear-gradient(135deg,rgba(20,184,166,.09),rgba(6,182,212,.06));
-  border-bottom:1px solid rgba(20,184,166,.18);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.patient-banner{padding:10px 20px;background:linear-gradient(135deg,rgba(91,171,138,.09),rgba(6,182,212,.06));
+  border-bottom:1px solid rgba(91,171,138,.18);display:flex;align-items:center;gap:10px;flex-shrink:0}
 .patient-banner-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#14b8a6,#06b6d4);
   display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .patient-banner-text{font-size:12.5px;color:var(--text2);line-height:1.4}
 .patient-banner-text strong{color:var(--teal);font-size:13px}
+
+/* ── Patient notification tray ────────────────────── */
+#pt-notif-tray{display:flex;flex-direction:column;gap:8px;padding:10px 16px 0;flex-shrink:0}
+.ptn-card{display:flex;gap:12px;align-items:flex-start;
+  background:linear-gradient(135deg,rgba(91,171,138,.1),rgba(107,156,223,.07));
+  border:1px solid rgba(91,171,138,.28);border-radius:14px;padding:14px 16px;
+  animation:ptnSlideIn .4s cubic-bezier(.4,0,.2,1);
+  transition:opacity .3s,transform .3s}
+@keyframes ptnSlideIn{
+  from{opacity:0;transform:translateY(-12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.ptn-icon-wrap{width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--teal),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  box-shadow:0 3px 10px rgba(91,171,138,.3)}
+.ptn-body{flex:1;min-width:0}
+.ptn-from{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+  color:var(--teal);margin-bottom:3px}
+.ptn-msg{font-size:13px;color:var(--text);line-height:1.55;margin-bottom:10px}
+.ptn-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ptn-ask-btn{padding:5px 13px;border-radius:20px;border:none;cursor:pointer;
+  font-family:inherit;font-size:11.5px;font-weight:600;
+  background:linear-gradient(135deg,var(--teal),var(--purple));color:#fff;
+  box-shadow:0 2px 8px rgba(91,171,138,.35);transition:all .2s}
+.ptn-ask-btn:hover{transform:scale(1.04)}
+.ptn-ok-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border2);
+  background:var(--surface2);color:var(--text2);font-family:inherit;font-size:11.5px;
+  font-weight:500;cursor:pointer;transition:all .2s}
+.ptn-ok-btn:hover{border-color:var(--teal);color:var(--teal)}
+[data-theme="light"] .ptn-card{background:linear-gradient(135deg,rgba(58,148,112,.08),rgba(74,127,192,.06));border-color:rgba(58,148,112,.25)}
+
+/* ── Live update flash ──────────────────────────────── */
+@keyframes tabPulse{
+  0%{box-shadow:0 0 0 0 rgba(91,171,138,.55)}
+  60%{box-shadow:0 0 0 5px rgba(91,171,138,0)}
+  100%{box-shadow:none}
+}
+.dash-flash{animation:tabPulse .9s ease-out 2}
+.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--teal);margin-left:5px;vertical-align:middle;
+  animation:dot-blink 1.4s ease-in-out infinite}
+.dash-updated-label{font-size:10px;color:var(--teal);font-weight:600;
+  letter-spacing:.4px;margin-left:8px;opacity:0;transition:opacity .3s}
+.dash-updated-label.visible{opacity:1}
 </style>
 </head>
 <body>
@@ -412,7 +505,7 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
     <div class="logo-icon">🌿</div>
     <div>
       <div>AyuGuard</div>
-      <div class="logo-devanagari">आयुगार्ड</div>
+      <div class="logo-devanagari">आयुगार्ड · Ambient Caregiver AI</div>
     </div>
   </div>
 
@@ -430,6 +523,7 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
       <div class="urgency-dot"></div>
       <span id="urgency-text">—</span>
     </div>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle light / dark mode">🌙</button>
     <button class="notif-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Notifications">
       🔔
       <span class="notif-badge" id="notif-badge" style="display:none">0</span>
@@ -492,14 +586,15 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
           <div class="welcome-title">Namaste! I'm AyuGuard</div>
           <div class="welcome-desc">
             Tell me how <strong id="wc-patient-name">your patient</strong> is feeling today.
-            I track patterns across days so you never miss an early warning sign.
+            I watch patterns across <strong>14 days</strong> — so you catch early warning signs
+            before they become a crisis.
           </div>
           <div class="chips">
-            <span class="chip" onclick="quickC('Dad was very tired and thirsty today')">😴 Tired &amp; Thirsty</span>
-            <span class="chip" onclick="quickC('Papa ko aaj bahut thakaan hai')">🇮🇳 Hindi</span>
-            <span class="chip" onclick="quickC('He had a cold today, runny nose and mild fever')">🤧 Cold</span>
-            <span class="chip" onclick="quickC('Update meal plan: Low-carb breakfast, dal rice for lunch, early light dinner')">🥗 Update Meal Plan</span>
-            <span class="chip" onclick="quickC('Show me symptom history')">📋 History</span>
+            <span class="chip" onclick="quickC('Dad was very tired and very thirsty today')">😴 Tired &amp; Thirsty</span>
+            <span class="chip" onclick="quickC('Papa ko aaj bahut thakaan hai aur bhukh nahi lag rahi')">🇮🇳 Hindi</span>
+            <span class="chip" onclick="quickC('He had a cold today, runny nose and mild fever')">🤧 Cold &amp; Fever</span>
+            <span class="chip" onclick="quickC('Show me the symptom pattern history for the last 14 days')">📋 14-Day History</span>
+            <span class="chip" onclick="quickC('What precautions should we be following?')">🛡️ Precautions</span>
           </div>
         </div>
       </div>
@@ -509,7 +604,7 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
             onkeydown="handleKey(event,'cg')" oninput="autoResize(this)"></textarea>
           <button class="send-btn caregiver-btn" id="cg-send" onclick="sendMsg('cg')" title="Send">➤</button>
         </div>
-        <div class="input-hint">Enter to send · Shift+Enter for new line</div>
+        <div class="input-hint">Enter to send · Shift+Enter for new line · <span style="cursor:pointer;color:var(--text3);text-decoration:underline" onclick="clearChat('cg')">Clear history</span></div>
       </div>
     </div>
 
@@ -533,7 +628,7 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
             </svg>
             <div class="ring-center">
               <div class="ring-pct" id="ring-pct">—</div>
-              <div class="ring-sub">Score</div>
+              <div class="ring-sub">/ 100</div>
             </div>
           </div>
           <div class="urg-label" id="urg-label">—</div>
@@ -563,17 +658,18 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
         </div>
 
         <div style="display:flex;flex-direction:column;gap:14px">
+          <!-- Pattern Insight first — most important for the caregiver to see -->
+          <div class="pattern-card">
+            <div class="card-label" style="color:var(--purple)">🔍 Pattern Insight</div>
+            <div id="pattern-text" style="font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:12px">Loading…</div>
+            <div class="card-label">🛡️ Recommended Precautions</div>
+            <div class="prec-list" id="prec-list"><div class="empty"><div class="spinner"></div></div></div>
+          </div>
+
           <!-- Care Plan Card -->
           <div class="card" id="care-plan-card">
             <div class="card-label">🥗 Caregiver's Care Plan</div>
             <div id="care-plan-content"><div class="empty"><div class="spinner"></div></div></div>
-          </div>
-
-          <div class="pattern-card">
-            <div class="card-label" style="color:var(--purple)">🔍 Pattern Insight</div>
-            <div id="pattern-text" style="font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:12px">Loading…</div>
-            <div class="card-label">🛡️ Precautions</div>
-            <div class="prec-list" id="prec-list"><div class="empty"><div class="spinner"></div></div></div>
           </div>
         </div>
       </div>
@@ -584,9 +680,11 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
       <div class="patient-banner">
         <div class="patient-banner-icon">🧓</div>
         <div class="patient-banner-text">
-          <strong>Patient Mode</strong> — Share how you're feeling, ask health questions, or view care plan updates from your caregiver.
+          <strong>Patient Mode</strong> — Share how you're feeling today. Your caregiver Priya can see your updates and AyuGuard will track the patterns.
         </div>
       </div>
+      <!-- Patient notification tray: calming follow-up cards slide in here -->
+      <div id="pt-notif-tray"></div>
       <div class="chat-messages" id="pt-messages">
         <div class="welcome" id="pt-welcome">
           <div class="welcome-emoji">🌸</div>
@@ -610,7 +708,7 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
             onkeydown="handleKey(event,'pt')" oninput="autoResize(this)"></textarea>
           <button class="send-btn patient-btn" id="pt-send" onclick="sendMsg('pt')" title="Send">➤</button>
         </div>
-        <div class="input-hint" style="color:rgba(20,184,166,.6)">This goes directly to AyuGuard · Enter to send</div>
+        <div class="input-hint" style="color:rgba(91,171,138,.6)">This goes directly to AyuGuard · Enter to send · <span style="cursor:pointer;color:var(--text3);text-decoration:underline" onclick="clearChat('pt')">Clear history</span></div>
       </div>
     </div><!-- /view-patient -->
 
@@ -713,13 +811,122 @@ let sessions = { cg: null, pt: null };
 let busy = { cg: false, pt: false };
 let currentMode = 'caregiver';
 let notifPanelOpen = false;
+let ptNotifInterval = null; // patient notification polling timer
 
 // Profile cache
 let profile = {};
 
+// Chat history (persisted in localStorage)
+let chatHistory = { cg: [], pt: [] };
+const CHAT_HISTORY_KEY = 'ayuguard-chat-history-v2';
+const MAX_HISTORY = 120; // max messages per role
+
+/* ── Chat History Persistence ──────────────────────────── */
+function saveChatHistory() {
+  try {
+    localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistory));
+  } catch(e) {
+    // Storage full — trim oldest 30 messages and retry
+    chatHistory.cg = chatHistory.cg.slice(-60);
+    chatHistory.pt = chatHistory.pt.slice(-60);
+    try { localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistory)); } catch {}
+  }
+}
+function loadChatHistory() {
+  try {
+    const s = localStorage.getItem(CHAT_HISTORY_KEY);
+    if (s) { const h = JSON.parse(s); chatHistory.cg = h.cg||[]; chatHistory.pt = h.pt||[]; }
+  } catch { chatHistory = { cg: [], pt: [] }; }
+}
+function restoreChats() {
+  ['cg','pt'].forEach(role => {
+    const msgs = chatHistory[role];
+    if (!msgs || !msgs.length) return;
+    document.getElementById(`${role}-welcome`)?.remove();
+    msgs.forEach(m => _appendMsgDOM(role, m.type, m.text, m.name, m.time));
+  });
+}
+function _appendMsgDOM(role, type, text, name, time) {
+  const container = document.getElementById(`${role}-messages`);
+  if (!container) return;
+  const div = document.createElement('div');
+  const msgClass = type === 'user' && role === 'pt' ? 'patient' : type;
+  div.className = `msg ${msgClass}`;
+  const emoji = type === 'agent' ? '🌿' : role === 'pt' ? '🧓' : '👤';
+  div.innerHTML = `
+    <div class="msg-av">${emoji}</div>
+    <div class="msg-body">
+      <div class="msg-name">${escHtml(name)}</div>
+      <div class="msg-bubble">${type==='agent' ? renderMd(text) : escHtml(text)}</div>
+      <div class="msg-time">${time||''}</div>
+    </div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+function clearChat(role) {
+  if (!confirm('Clear all chat history for this conversation? This cannot be undone.')) return;
+  chatHistory[role] = [];
+  saveChatHistory();
+  const container = document.getElementById(`${role}-messages`);
+  container.innerHTML = '';
+  // Re-add welcome card
+  const wCard = document.createElement('div');
+  wCard.id = `${role}-welcome`;
+  if (role === 'cg') {
+    wCard.className = 'welcome';
+    wCard.innerHTML = `
+      <div class="welcome-emoji">🌿</div>
+      <div class="welcome-title">Namaste! I'm AyuGuard</div>
+      <div class="welcome-desc">Tell me how <strong>${escHtml(profile.name||'your patient')}</strong> is feeling today.
+        I watch patterns across <strong>14 days</strong> — so you catch early warning signs before they become a crisis.</div>
+      <div class="chips">
+        <span class="chip" onclick="quickC('Dad was very tired and very thirsty today')">😴 Tired &amp; Thirsty</span>
+        <span class="chip" onclick="quickC('Show me the symptom pattern history for the last 14 days')">📋 14-Day History</span>
+        <span class="chip" onclick="quickC('What precautions should we be following?')">🛡️ Precautions</span>
+      </div>`;
+  } else {
+    wCard.className = 'welcome';
+    wCard.innerHTML = `
+      <div class="welcome-emoji">🌸</div>
+      <div class="welcome-title" id="pt-welcome-title">Hello!</div>
+      <div class="welcome-desc" id="pt-welcome-desc">Tell AyuGuard how you're feeling today.</div>
+      <div class="chips">
+        <span class="chip teal" onclick="quickP('I am feeling tired today')">😴 Feeling Tired</span>
+        <span class="chip teal" onclick="quickP('I am feeling fine today, just checking in')">😊 Checking In</span>
+        <span class="chip teal" onclick="quickP('What is my care plan for today?')">🥗 My Care Plan</span>
+      </div>`;
+  }
+  container.appendChild(wCard);
+  showToast('🗑️ Chat history cleared');
+}
+function applyTheme(mode) {
+  if (mode === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.getElementById('theme-btn').textContent = '☀️';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    document.getElementById('theme-btn').textContent = '🌙';
+  }
+  localStorage.setItem('ayuguard-theme', mode);
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  applyTheme(current === 'light' ? 'dark' : 'light');
+}
+
 /* ── Init ──────────────────────────────────────────────────────── */
 async function init() {
+  // 1. Restore theme immediately (no flash)
+  const savedTheme = localStorage.getItem('ayuguard-theme') || 'dark';
+  applyTheme(savedTheme);
+  // 2. Load saved chat history from localStorage (synchronous)
+  loadChatHistory();
+  // 3. Fetch profile + live data
   await Promise.all([loadProfile(), loadStats(), loadUrgencyBadge(), loadNotifCount()]);
+  // 4. Replay stored messages into DOM (after profile so names are available)
+  restoreChats();
+  // 5. Create backend sessions for live chatting
   await Promise.all([createSession('cg'), createSession('pt')]);
 }
 
@@ -889,6 +1096,132 @@ async function loadDashboard() {
   } catch { showToast('⚠️ Could not load dashboard data'); }
 }
 
+/* ── Silent real-time dashboard refresh (no spinners) ──────── */
+async function silentDashboardRefresh() {
+  try {
+    const [histR, trendR, statsR, planR] = await Promise.all([
+      fetch(`${API}/history?limit=14`),
+      fetch(`${API}/trend`),
+      fetch(`${API}/stats`),
+      fetch(`${API}/care-plan`),
+    ]);
+    const [hist, trend, stats, plan] = await Promise.all([
+      histR.json(), trendR.json(), statsR.json(), planR.json()
+    ]);
+    // Always update urgency pill (visible in every tab)
+    renderUrgencyRing(trend);
+    // Update all dashboard cards silently (safe when dashboard is hidden)
+    renderTimeline(hist.logs || []);
+    renderFreqBars(stats.symptom_breakdown || {});
+    renderPrecautions(trend.top_disease_precautions || []);
+    renderPatternText(trend);
+    renderCarePlan(plan);
+    // Timestamp
+    const now = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('dash-sub').textContent =
+      `${profile.name || 'Patient'} · ⚡ Live updated ${now}`;
+    // Flash the dashboard tab to signal fresh data
+    flashDashTab();
+  } catch {}
+}
+
+function flashDashTab() {
+  const tab = document.getElementById('tab-dashboard');
+  const sbn = document.getElementById('sbn-dashboard');
+  [tab, sbn].forEach(el => {
+    if (!el) return;
+    el.classList.remove('dash-flash');
+    void el.offsetWidth;
+    el.classList.add('dash-flash');
+    setTimeout(() => el.classList.remove('dash-flash'), 1900);
+  });
+  const sub = document.getElementById('dash-sub');
+  if (sub) {
+    sub.style.color = 'var(--teal)';
+    setTimeout(() => { sub.style.color = ''; }, 2500);
+  }
+}
+
+/* ── Patient Notifications ──────────────────────────── */
+async function checkPatientNotifications() {
+  try {
+    const res  = await fetch(`${API}/notifications?unread_only=true&limit=10`);
+    const data = await res.json();
+    const unread = (data.notifications || []).filter(n => !n.read);
+    renderPatientNotifs(unread);
+    // Also flash the Patient Chat tab if there are new notifications and we're not on it
+    if (unread.length > 0 && currentMode !== 'patient') {
+      const ptTab = document.getElementById('tab-patient');
+      const ptSbn = document.getElementById('sbn-patient');
+      [ptTab, ptSbn].forEach(el => {
+        if (!el) return;
+        el.classList.remove('dash-flash');
+        void el.offsetWidth;
+        el.classList.add('dash-flash');
+        setTimeout(() => el.classList.remove('dash-flash'), 1900);
+      });
+    }
+  } catch {}
+}
+
+function renderPatientNotifs(notifs) {
+  const tray = document.getElementById('pt-notif-tray');
+  if (!tray) return;
+  if (!notifs.length) { tray.innerHTML = ''; return; }
+  // Map notification types to calm icons and titles
+  const typeMap = {
+    care_plan: { icon: '🥗', from: 'Care plan update from your caregiver' },
+    alert:     { icon: '💙', from: 'A message for you' },
+    default:   { icon: '🌿', from: 'From your care team' },
+  };
+  tray.innerHTML = notifs.map((n, idx) => {
+    const t = typeMap[n.type] || typeMap.default;
+    // Convert alarming language to calming language
+    const calmMsg = (n.message || '')
+      .replace(/urgent|URGENT/gi, 'important')
+      .replace(/critical|CRITICAL/gi, 'noteworthy')
+      .replace(/warning|WARNING/gi, 'reminder')
+      .replace(/alert|ALERT/gi, 'gentle note');
+    const askQ = `Tell me about: ${calmMsg.slice(0, 80)}`;
+    return `
+      <div class="ptn-card" id="ptn-${idx}">
+        <div class="ptn-icon-wrap">${t.icon}</div>
+        <div class="ptn-body">
+          <div class="ptn-from">${escHtml(t.from)}</div>
+          <div class="ptn-msg">${escHtml(calmMsg)}</div>
+          <div class="ptn-actions">
+            <button class="ptn-ask-btn" onclick="quickPAndDismiss(${JSON.stringify(askQ)})">💬 Ask AyuGuard</button>
+            <button class="ptn-ok-btn" onclick="dismissPatientNotifs()">Got it ✓</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function quickPAndDismiss(text) {
+  dismissPatientNotifs();
+  quickP(text);
+}
+
+async function dismissPatientNotifs() {
+  const tray = document.getElementById('pt-notif-tray');
+  if (!tray) return;
+  // Animate out
+  [...tray.querySelectorAll('.ptn-card')].forEach(c => {
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(-10px)';
+  });
+  setTimeout(() => { if (tray) tray.innerHTML = ''; }, 320);
+  // Mark all as read on server
+  try {
+    await fetch(`${API}/notifications/mark-read`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ patient_id: 'patient_001' }),
+    });
+    loadNotifCount();
+  } catch {}
+}
+
 function renderTimeline(logs) {
   const el = document.getElementById('timeline');
   if (!logs.length) { el.innerHTML = '<div class="empty"><div class="icon">📋</div><p>No symptoms yet.</p></div>'; return; }
@@ -1019,6 +1352,7 @@ async function sendMsg(role) {
     app_name: 'ayuguard', user_id: userId,
     session_id: sessions[role],
     new_message: { role: 'user', parts: [{ text }] },
+    streaming: true,
   };
 
   let full = '', msgEl = null;
@@ -1043,11 +1377,23 @@ async function sendMsg(role) {
         if (!raw || raw === '[DONE]') continue;
         try {
           const evt = JSON.parse(raw);
+          // Handle session control messages
+          if (evt?.control === 'set_session' && evt?.session_id) {
+            sessions[role] = evt.session_id;
+            continue;
+          }
+          // ADK standard event — only capture model-role content parts
           const content = evt?.content;
           if (!content || content.role !== 'model') continue;
           for (const part of (content.parts || [])) {
             if (part.text) {
-              full += part.text;
+              if (evt.partial === false) {
+                // Final event has the complete text — replace, don't append
+                full = part.text;
+              } else {
+                // Streaming delta chunk — append incrementally
+                full += part.text;
+              }
               if (!msgEl) { removeTyping(role); msgEl = appendMsg(role, 'agent', full, 'AyuGuard 🌿'); }
               else { msgEl.querySelector('.msg-bubble').innerHTML = renderMd(full); }
             }
@@ -1057,34 +1403,39 @@ async function sendMsg(role) {
     }
     if (!full) {
       removeTyping(role);
-      appendMsg(role, 'agent', "I've noted that. Keep logging daily — patterns across days are what matter. 🌸", 'AyuGuard 🌿');
+      appendMsg(role, 'agent', '⚠️ No response received from AyuGuard. The AI may still be starting up — please wait a moment and try again.', 'AyuGuard 🌿');
     }
   } catch (e) {
     removeTyping(role);
-    appendMsg(role, 'agent', `⚠️ ${e.message}`, 'AyuGuard 🌿');
+    appendMsg(role, 'agent', `⚠️ Connection error: ${e.message}`, 'AyuGuard 🌿');
   } finally {
+    // Update last agent message in history with the final streamed text
+    if (full) {
+      const msgs = chatHistory[role];
+      for (let i = msgs.length - 1; i >= 0; i--) {
+        if (msgs[i].type === 'agent') { msgs[i].text = full; saveChatHistory(); break; }
+      }
+    }
     busy[role] = false;
     document.getElementById(`${role}-send`).disabled = false;
-    setTimeout(() => { loadStats(); loadUrgencyBadge(); loadNotifCount(); }, 2200);
+    // Refresh sidebar stats + notif badge immediately, then silently refresh ALL dashboard data
+    setTimeout(() => {
+      loadStats();
+      loadNotifCount();
+      silentDashboardRefresh(); // refreshes urgency ring, care plan, timeline, pattern insight
+      checkPatientNotifications(); // push any new patient follow-up cards
+    }, 2200);
   }
 }
 
 function appendMsg(role, type, text, name) {
-  const container = document.getElementById(`${role}-messages`);
-  const div = document.createElement('div');
-  const msgClass = type === 'user' && role === 'pt' ? 'patient' : type;
-  div.className = `msg ${msgClass}`;
-  const emoji = type === 'agent' ? '🌿' : role === 'pt' ? '🧓' : '👤';
   const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  div.innerHTML = `
-    <div class="msg-av">${emoji}</div>
-    <div class="msg-body">
-      <div class="msg-name">${escHtml(name)}</div>
-      <div class="msg-bubble">${type === 'agent' ? renderMd(text) : escHtml(text)}</div>
-      <div class="msg-time">${time}</div>
-    </div>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
+  const div = _appendMsgDOM(role, type, text, name, time);
+  // Save to persistent history
+  if (!chatHistory[role]) chatHistory[role] = [];
+  chatHistory[role].push({ type, text, name, time });
+  if (chatHistory[role].length > MAX_HISTORY) chatHistory[role].shift();
+  saveChatHistory();
   return div;
 }
 
@@ -1238,7 +1589,7 @@ function renderRecords(records) {
         <div class="rec-header" onclick="toggleRecord('${r.record_id}')">
           <div class="rec-type-icon ${(r.record_type||'other').toLowerCase()}">${icon}</div>
           <div class="rec-meta">
-            <div class="rec-filename" title="${escHtml(r.filename)}">${escHtml(r.filename)}</div>
+            <div class="rec-filename" title="${escHtml(r.filename)}">${escHtml(r.filename.replace(/^\d+_/, ''))}</div>
             <div class="rec-date-row">
               <span class="rec-type-tag">${escHtml(r.record_type || 'other')}</span>
               <span class="rec-date">${r.report_date || r.uploaded_at?.slice(0,10) || '—'}</span>
