@@ -21,7 +21,7 @@
   --teal:#5bab8a;   --teal2:#4a9278;
   --green:#5bbd8a; --amber:#e8a165; --red:#e07070; --blue:#6b9cdf;
   --text:#dde6f0; --text2:#8ea8c0; --text3:#5f7a96; --text4:#415a74;
-  --sidebar:260px; --header:72px;
+  --sidebar:260px; --header:76px;
   --r:14px; --r2:10px; --r3:8px;
   --shadow:0 8px 32px rgba(0,0,0,0.45);
   --glow-p:0 0 30px rgba(107,156,223,0.18);
@@ -89,9 +89,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:
 header{height:var(--header);display:flex;align-items:center;gap:14px;padding:0 20px;
   background:rgba(8,13,26,.85);backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);flex-shrink:0;z-index:100}
-.logo{display:flex;align-items:center;flex-shrink:0}
-.logo-img{height:62px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(107,156,223,.35));transition:opacity .2s}
+.logo{display:flex;align-items:center;flex-shrink:0;
+  background:rgba(255,255,255,0.95);border-radius:10px;padding:5px 12px 5px 8px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.18)}
+.logo-img{height:54px;width:auto;object-fit:contain;transition:opacity .2s}
 .logo-img:hover{opacity:.85}
+[data-theme="light"] .logo{background:rgba(255,255,255,0.98);box-shadow:0 2px 10px rgba(0,0,0,0.10)}
 .header-center{flex:1;display:flex;justify-content:center}
 .tabs{display:flex;background:var(--surface);border:1px solid var(--border);
   border-radius:12px;padding:3px;gap:2px}
