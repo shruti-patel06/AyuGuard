@@ -56,7 +56,7 @@ from .tools.medical_records import get_medical_records, get_record_details, get_
 # ── Root Agent (Orchestrator) ─────────────────────────────────────────────────
 root_agent = Agent(
     name="ayuguard_orchestrator",
-    model="gemini-2.5-flash",
+    model="gemini-2.0-flash",
     description=(
         "AyuGuard (आयुगार्ड) — ambient multi-agent caregiver platform. "
         "Detects symptom patterns across days, provides non-critical home-care "

@@ -140,14 +140,14 @@ def analyse_and_store_record(
                 if raw_text.strip():
                     prompt = _ANALYSIS_PROMPT + f"\n\nDOCUMENT TEXT:\n{raw_text[:12000]}"
                     resp = client.models.generate_content(
-                        model="gemini-2.5-flash",
+                        model="gemini-2.0-flash",
                         contents=prompt,
                     )
                 else:
                     # Scanned PDF with no extractable text — try Gemini Files API
                     uploaded = client.files.upload(file=str(path))
                     resp = client.models.generate_content(
-                        model="gemini-2.5-flash",
+                        model="gemini-2.0-flash",
                         contents=[uploaded, _ANALYSIS_PROMPT],
                     )
             else:
@@ -160,7 +160,7 @@ def analyse_and_store_record(
                 mime = mime_map.get(suffix, "image/jpeg")
                 img_b64 = base64.b64encode(path.read_bytes()).decode()
                 resp = client.models.generate_content(
-                    model="gemini-2.5-flash",
+                    model="gemini-2.0-flash",
                     contents=[
                         {"inline_data": {"mime_type": mime, "data": img_b64}},
                         _ANALYSIS_PROMPT,

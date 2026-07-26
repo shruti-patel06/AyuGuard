@@ -13,7 +13,7 @@ from google.adk.agents import Agent
 
 communication_agent = Agent(
     name="caregiver_communication_agent",
-    model="gemini-2.5-flash",
+    model="gemini-2.0-flash",
     description=(
         "Generates warm, localized caregiver messages from urgency level, "
         "retrieved dataset results, and the observed symptom pattern. "
