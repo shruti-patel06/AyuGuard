@@ -93,7 +93,7 @@ def generate_caregiver_message(
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-3.5-flash-lite",
             contents=prompt,
             config=genai.types.GenerateContentConfig(
                 system_instruction=_SYSTEM_INSTRUCTION,

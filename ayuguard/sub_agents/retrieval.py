@@ -12,7 +12,7 @@ from ayuguard.tools.dataset_search import search_disease_patterns
 
 condition_retrieval_agent = Agent(
     name="condition_retrieval_agent",
-    model="gemini-2.0-flash",
+    model="gemini-3.5-flash-lite",
     description=(
         "Searches AyuGuard's real clinical disease-symptom dataset for patterns "
         "matching the patient's current symptom profile. Use when urgency is "
