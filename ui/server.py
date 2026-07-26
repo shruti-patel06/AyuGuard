@@ -153,19 +153,30 @@ async def mark_notifications_read(request: Request):
 
 @app.post("/api/session")
 async def create_session(request: Request):
-    """Create a new ADK session."""
+    """Create a new ADK session. Returns graceful 503 if ADK is offline."""
     body = await request.json()
     user_id = body.get("user_id", "caregiver-001")
     app_name = body.get("app_name", "ayuguard")
-    async with httpx.AsyncClient(timeout=15) as client:
-        resp = await client.post(
-            f"{ADK_BASE}/apps/{app_name}/users/{user_id}/sessions",
-            json={},
+    try:
+        async with httpx.AsyncClient(
+            timeout=httpx.Timeout(connect=3.0, read=5.0, write=5.0, pool=5.0)
+        ) as client:
+            resp = await client.post(
+                f"{ADK_BASE}/apps/{app_name}/users/{user_id}/sessions",
+                json={},
+            )
+            if resp.status_code in (200, 201):
+                data = resp.json()
+                return JSONResponse(content={"session_id": data.get("id", data.get("session_id", ""))})
+            return JSONResponse(
+                status_code=503,
+                content={"error": "adk_unavailable", "detail": resp.text},
+            )
+    except (httpx.ConnectError, httpx.TimeoutException) as exc:
+        return JSONResponse(
+            status_code=503,
+            content={"error": "adk_unavailable", "detail": f"ADK agent not reachable on {ADK_BASE}. Start it with: adk web"},
         )
-        if resp.status_code in (200, 201):
-            data = resp.json()
-            return JSONResponse(content={"session_id": data.get("id", data.get("session_id", ""))})
-        raise HTTPException(status_code=resp.status_code, detail=resp.text)
 
 
 @app.post("/api/chat")
