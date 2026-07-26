@@ -89,14 +89,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:
 header{height:var(--header);display:flex;align-items:center;gap:14px;padding:0 20px;
   background:rgba(8,13,26,.85);backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);flex-shrink:0;z-index:100}
-.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;letter-spacing:-.4px;
-  background:linear-gradient(135deg,#8b5cf6,#14b8a6);-webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
-.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,#8b5cf6,#14b8a6);
-  border-radius:9px;display:flex;align-items:center;justify-content:center;
-  font-size:17px;flex-shrink:0;box-shadow:0 3px 14px rgba(107,156,223,.38)}
-.logo-devanagari{font-size:10px;font-weight:400;opacity:.45;letter-spacing:.3px;margin-top:-2px}
-.logo-tagline{font-size:9px;font-weight:500;opacity:.38;letter-spacing:.6px;margin-top:1px;-webkit-text-fill-color:rgba(148,163,184,.6);background:none;text-transform:uppercase}
+.logo{display:flex;align-items:center;flex-shrink:0}
+.logo-img{height:44px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(107,156,223,.35));transition:opacity .2s}
+.logo-img:hover{opacity:.85}
 .header-center{flex:1;display:flex;justify-content:center}
 .tabs{display:flex;background:var(--surface);border:1px solid var(--border);
   border-radius:12px;padding:3px;gap:2px}
@@ -502,11 +497,7 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 <!-- ─── Header ──────────────────────────────────────────────────── -->
 <header>
   <div class="logo">
-    <div class="logo-icon">🌿</div>
-    <div>
-      <div>AyuGuard</div>
-      <div class="logo-devanagari">आयुगार्ड · Ambient Caregiver AI</div>
-    </div>
+    <img src="/static/Logo.png" alt="AyuGuard" class="logo-img" />
   </div>
 
   <div class="header-center">

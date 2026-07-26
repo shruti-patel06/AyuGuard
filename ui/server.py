@@ -20,6 +20,7 @@ from typing import AsyncGenerator, Optional
 import httpx
 import uvicorn
 from fastapi import FastAPI, File, Form, Request, HTTPException, UploadFile
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse
 
@@ -52,6 +53,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve static assets (logo, icons, etc.) from ui/static/
+_STATIC_DIR = UI_DIR / "static"
+if _STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
 
 
 @app.get("/", response_class=HTMLResponse)
