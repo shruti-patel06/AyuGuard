@@ -1,4 +1,5 @@
 import sys
+import os
 import pptx
 from pptx.util import Pt, Inches
 from pptx.dml.color import RGBColor
