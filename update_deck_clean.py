@@ -204,5 +204,5 @@ update_slide(
     ]
 )
 
-prs.save('AyuGuard_Prototype_Submission_Deck.pptx')
-print('CLEAN 12 SLIDES UPDATE COMPLETED!')
+prs.save('AyuGuard_Final_Deck.pptx')
+print('AYUGUARD FINAL DECK CREATED SUCCESSFULLY!')
