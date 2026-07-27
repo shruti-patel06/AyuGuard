@@ -208,5 +208,5 @@ update_slide(
     ]
 )
 
-prs.save('AyuGuard_Final_Deck.pptx')
-print('AYUGUARD FINAL DECK CREATED SUCCESSFULLY!')
+prs.save('AyuGuard_Final_Submission_Deck.pptx')
+print('AYUGUARD FINAL SUBMISSION DECK CREATED SUCCESSFULLY!')
