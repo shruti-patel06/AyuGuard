@@ -1,147 +1,97 @@
-# AyuGuard — 3-Minute Demo Video Script
+# AyuGuard — 2.5-Minute Demo Video Script 🎬
 
 ---
 
-## 🎬 STRUCTURE OVERVIEW
+## ⏱️ STRUCTURE OVERVIEW (Target: 2 min 30 sec)
 
-| Segment | Time | What you do |
+| Segment | Duration | Focus / Action |
 |---|---|---|
-| Hook — The Problem | 0:00–0:30 | Speak to camera (no screen) |
-| Solution — What is AyuGuard | 0:30–1:00 | Show the UI landing page |
-| Live Demo Part 1 — Caregiver Chat | 1:00–1:45 | Type a symptom, show AI response |
-| Live Demo Part 2 — Dashboard | 1:45–2:15 | Show urgency ring, trend graph |
-| Live Demo Part 3 — Medical Records | 2:15–2:40 | Show record upload / AI analysis |
-| Closing — The Why | 2:40–3:00 | Speak to camera |
+| **1. Hook — The Problem** | 0:00–0:25 (25s) | Speak to camera: Patterns across time vs isolated symptoms |
+| **2. Architecture & Platform** | 0:25–0:50 (25s) | Show UI landing page: Google ADK + Vertex AI multi-agent architecture |
+| **3. Live Demo — Multi-Agent Subagent Collaboration** | 0:50–1:40 (50s) | **Star Feature**: Pre-diabetes + Diarrhoea conflict reconciliation & recovery transition |
+| **4. Live Demo — Health Dashboard & Medical Records** | 1:40–2:15 (35s) | Glassmorphism dashboard, real-time sync, Gemini multimodal PDF lab extraction |
+| **5. Closing — The Impact** | 2:15–2:30 (15s) | Speak to camera: Ambient care powered by AI |
 
 ---
 
-## 🎙️ SEGMENT 1 — THE HOOK (0:00 – 0:30)
+## 🎙️ SEGMENT 1 — THE HOOK (0:00 – 0:25)
 **[No screen. Speak directly to camera.]**
 
-> "Imagine you're looking after your ageing parent at home.
-> Every day something small happens — he's a little tired, a bit thirsty, not sleeping well.
-> You ask an AI chatbot: 'Is this serious?' And it says: 'Monitor it.'
->
-> The problem is — no symptom in isolation is serious.
-> But fatigue plus thirst plus blurry vision over ten days?
-> That is a textbook early warning sign for a metabolic crisis.
->
-> No caregiver has the bandwidth to track and connect those dots manually.
-> AyuGuard does."
+> "Imagine caring for your ageing parent at home. Every day something small happens — he's a bit tired, thirsty, not sleeping well. You ask a chatbot, and it says: *'Monitor it.'*
+> 
+> But no symptom in isolation tells the whole story. **Fatigue plus thirst plus blurry vision over 10 days** is a classic metabolic warning sign.
+> 
+> Caregivers don't have the bandwidth to manually track and connect sparse observations across weeks. **AyuGuard does.**"
 
 ---
 
-## 🖥️ SEGMENT 2 — WHAT IS AYUGUARD (0:30 – 1:00)
-**[Switch to screen. Show the AyuGuard UI at http://127.0.0.1:8001]**
+## 🖥️ SEGMENT 2 — WHAT IS AYUGUARD (0:25 – 0:50)
+**[Switch to screen. Show AyuGuard UI at http://127.0.0.1:8001]**
 
-> "This is AyuGuard — an ambient multi-agent caregiver platform built with Google ADK and Gemini.
->
-> It has three roles in one interface:
-> The Caregiver — logs symptoms and manages the care plan.
-> The Patient — reports how they feel and sees their updates.
-> The AI Agent — connects the dots across days and weeks.
->
-> Under the hood it runs a 6-step pipeline —
-> free-text symptoms go in, they get extracted into structured data,
-> scored against real clinical datasets,
-> and a warm personalised message comes out —
-> in English, Hindi, or Hinglish."
+> "This is AyuGuard — an ambient multi-agent caregiver platform built with **Google ADK** and **Vertex AI Gemini 2.5**.
+> 
+> Under the hood, specialized AI subagents collaborate in real-time:
+> - **Extraction Subagent** turns free text (in English, Hindi, or Hinglish) into structured medical logs.
+> - **Retrieval Subagent** searches 4,921 real clinical dataset rows.
+> - **Dietary Reconciliation Subagent** resolves complex, conflicting health conditions."
 
-**[Hover over the 4 tabs: Caregiver / Dashboard / Patient Chat / Records]**
+**[Hover over the tabs: Caregiver Chat / Health Dashboard / Patient Chat / Records]**
 
 ---
 
-## 🖥️ SEGMENT 3 — LIVE DEMO: CAREGIVER CHAT (1:00 – 1:45)
-**[Click Caregiver tab. Type in the chat box:]**
-**→ Type:** `Dad was very tired and very thirsty today`
+## 🖥️ SEGMENT 3 — MULTI-AGENT SUBAGENT COLLABORATION (0:50 – 1:40)
+**[Click Caregiver tab. Type in chat:]**
+`Dad has developed diarrhoea today. What should we feed him considering his pre-diabetes?`
 
-**[While waiting for the response, narrate:]**
+**[Narrate while response streams in real-time:]**
 
-> "I'm Priya — the caregiver — logging what I noticed about my father Rajan today.
-> AyuGuard doesn't just answer my question.
-> It runs the full pipeline in the background:
->
-> First — it extracts the symptoms from my natural language.
-> Second — it stores them in a rolling 14-day log.
-> Third — it runs a deterministic urgency formula.
-> The AI never decides what's dangerous. The math does.
-> Fourth — it cross-references against 4,921 real clinical records.
-> And then it writes me a warm, contextual message."
+> "Watch what happens here. I'm Priya — logging an acute symptom for my father Rajan ji.
+> 
+> Normally, a pre-diabetes diet requires high fiber. But acute diarrhoea requires low fiber. High fiber during diarrhoea accelerates gut motility and worsens dehydration.
+> 
+> AyuGuard's **`dietary_reconciliation_agent`** recognizes this conflict instantly. It reconciles the two conditions, formulates a temporary low-fiber, bland, glycemic-safe diet (*bananas, soft white rice with moong dal, ORS*), and automatically updates his **Care Plan** on the dashboard in real-time!"
 
-**[Show the response]**
+**[Now type:]**
+`Dad has completely recovered from diarrhoea today!`
 
-> "Notice how it addresses me by name, refers to my father by name,
-> and gives me a specific next step — not just 'monitor it'."
+**[Narrate response:]**
+
+> "And when I report recovery, the subagent automatically de-escalates the acute diet and transitions his care plan right back to his healthy baseline pre-diabetes schedule."
 
 ---
 
-## 🖥️ SEGMENT 4 — LIVE DEMO: HEALTH DASHBOARD (1:45 – 2:15)
-**[Click Dashboard tab. Scroll slowly as you speak.]**
+## 🖥️ SEGMENT 4 — DASHBOARD & GEMINI MEDICAL RECORDS (1:40 – 2:15)
+**[Click Dashboard tab, scroll through glassmorphism cards & timeline.]**
 
-> "Here is the Health Dashboard.
->
-> This urgency ring shows the current alert level — Low, Watch, or Escalate —
-> calculated from 14 days of symptom logs using a weighted formula:
-> symptom similarity to disease clusters,
-> how many days the pattern has persisted,
-> and clinical severity scores from a real medical dataset.
->
-> This chart shows symptom frequency — so Priya can see at a glance
-> that fatigue has been the top symptom this fortnight.
->
-> And the care plan below shows the meals, medications, and activities
-> she has set up for Rajan ji today."
+> "Our Health Dashboard features real-time background sync:
+> - **Urgency Ring**: Calculated deterministically from 14-day symptom persistence and clinical severity weights. The LLM never decides what's dangerous — math does.
+> - **Live Notification Engine**: Updates caregiver and patient views instantly.
+> 
+> On the **Records tab**, caregivers upload PDF blood reports or discharge summaries. **Gemini AI** extracts abnormal lab values — like elevated HbA1c — and cross-references them with Rajan ji's logged symptoms automatically."
 
 ---
 
-## 🖥️ SEGMENT 5 — LIVE DEMO: MEDICAL RECORDS (2:15 – 2:40)
-**[Click Records tab.]**
-
-> "Caregivers can also upload medical documents here —
-> blood test reports, prescriptions, discharge summaries.
->
-> AyuGuard uses Gemini's multimodal capability to read the document and extract
-> abnormal lab values flagged as HIGH or LOW,
-> medications mentioned,
-> and follow-up recommendations.
->
-> And here's the powerful part:
-> If Rajan's HbA1c is flagged HIGH in his blood report
-> AND he's been logging fatigue and thirst for 10 days —
-> AyuGuard connects those dots across both sources and surfaces that pattern."
-
----
-
-## 🎙️ SEGMENT 6 — THE CLOSING (2:40 – 3:00)
+## 🎙️ SEGMENT 5 — THE CLOSING (2:15 – 2:30)
 **[Back to camera.]**
 
-> "AyuGuard is not a diagnostic tool.
-> It never says 'you have diabetes.'
-> It says: 'This pattern is sometimes associated with — please mention it to your doctor.'
->
-> It's designed to be the difference between a caregiver who is reacting
-> and a caregiver who is prepared.
->
-> Built with Google ADK, Gemini, and real clinical datasets —
-> AyuGuard is ambient care, powered by AI."
+> "AyuGuard supplements — never replaces — the doctor's advice. It turns reactive caregiving into proactive, ambient monitoring.
+> 
+> Built with Google ADK, Vertex AI, and real clinical datasets — AyuGuard is ambient care, powered by AI."
 
 ---
 
-## ⚡ BEFORE YOU RECORD — SETUP CHECKLIST
+## ⚡ RECORDING SETUP CHECKLIST
 
-- [ ] Run `python scripts/seed_demo_logs.py` so the Dashboard shows real trend data
-- [ ] Open http://127.0.0.1:8001 in full-screen browser (hide bookmarks bar)
-- [ ] Do a test run of the chat — make sure AI responds correctly
-- [ ] Keep mic close, speak slowly — 3 minutes is tighter than it sounds
+- [ ] Open http://127.0.0.1:8001 in full-screen browser (hide bookmarks bar).
+- [ ] Test typing the two demo prompts before recording to verify instant response.
+- [ ] Clear chat using **`🗑️ Clear history`** button right before starting recording.
+- [ ] Keep mic clear and pace steady — 2.5 minutes is fast, crisp, and high-impact!
 
 ---
 
-## 🔑 5 KEY PHRASES TO MEMORISE
+## 🔑 4 KEY LINES TO EMPHASIZE
 
-| Moment | Line |
-|---|---|
-| Urgency formula | "The AI never decides what's dangerous — the formula does" |
-| Response tone | "It speaks like a caring family member, not a doctor" |
-| Safety boundary | "It supplements, never replaces, the doctor's advice" |
-| Dataset credibility | "4,921 real clinical records — not invented by the LLM" |
-| Core insight | "Patterns across days — not symptoms in isolation" |
+1. **Safety Line:** *"The LLM never decides what is dangerous — deterministic math does."*
+2. **Subagent Innovation:** *"Subagents collaborate to resolve conflicting conditions like Pre-diabetes and Diarrhoea."*
+3. **Recovery Lifecycle:** *"When symptoms resolve, the care plan automatically transitions back to baseline."*
+4. **Core Insight:** *"Connecting patterns across weeks — not symptoms in isolation."*
