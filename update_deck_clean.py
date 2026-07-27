@@ -65,18 +65,21 @@ update_slide(
 )
 
 # SLIDE 3
+s3 = prs.slides[2]
 update_slide(
-    prs.slides[2],
-    "How We Approached the Problem & Real-World Impact",
+    s3,
+    "How We Approached the Problem & Decision Architecture",
     [
-        ("Google ADK Solution Architecture", 15, True, TEAL),
-        "• Google ADK Multi-Agent Framework: Built using Google ADK 2.x and Vertex AI (gemini-2.5-flash-lite). Features specialized subagents: extraction, clinical dataset retrieval, and dietary reconciliation.",
-        "• Deterministic Safety Gate: Integrates a 14-day rolling trend window and Jaccard similarity scoring against a 4,921-row clinical dataset. The LLM never decides if a pattern is dangerous — deterministic math does.",
-        "• Multimodal Data Vault: Ingests unstructured chat, scanned PDF lab reports, and prescriptions into Google Cloud Storage with Gemini AI parameter extraction.",
-        ("Real-World Practical Impact", 15, True, TEAL),
-        "• Proactive Early Triage: Evaluates symptom frequency, severity, and multi-week trends to output a clear urgency score (Low, Watch, Escalate), preventing emergency room crises."
+        ("Google ADK & Decision Logic Architecture", 13, True, TEAL),
+        "• Deterministic Urgency Gate: 14-day rolling decay window + similarity search against 4,921 clinical rows.",
+        "• Triage Decision Routing: Score >= 0.65 -> Escalate (Doctor), Score >= 0.42 -> Watch, Score < 0.42 -> Low.",
+        "• Subagent Conflict Gate: Pre-diabetes + Diarrhoea -> Reconcile to temporary bland diet + ORS.",
+        "• Recovery Transition: Symptoms resolved -> Restore healthy baseline meal plan."
     ]
 )
+img3_path = r"C:\Users\Shruti\.gemini\antigravity-ide\brain\4e55b1e4-91df-421f-8cc1-0a0d55313f34\ayuguard_decision_workflow_diagram_1785177163194.png"
+if os.path.exists(img3_path):
+    s3.shapes.add_picture(img3_path, Inches(5.0), Inches(1.6), width=Inches(4.5))
 
 # SLIDE 4
 update_slide(
