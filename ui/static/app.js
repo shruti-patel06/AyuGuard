@@ -163,7 +163,7 @@ async function createSession(role) {
     sessions[role] = data.session_id;
     hideAdkOfflineBanner();
   } catch {
-    if (role === 'cg') showAdkOfflineBanner();
+    if (role === 'cg' && !sessions[role]) showAdkOfflineBanner();
   }
 }
 
@@ -657,7 +657,7 @@ async function sendMsg(role) {
                 // Streaming delta chunk — append incrementally
                 full += part.text;
               }
-              if (!msgEl) { removeTyping(role); msgEl = appendMsg(role, 'agent', full, 'AyuGuard 🌿'); }
+              if (!msgEl) { hideAdkOfflineBanner(); removeTyping(role); msgEl = appendMsg(role, 'agent', full, 'AyuGuard 🌿'); }
               else { msgEl.querySelector('.msg-bubble').innerHTML = renderMd(full); }
             }
           }
