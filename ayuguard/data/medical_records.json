@@ -1,1 +1,106 @@
-{}
+{
+  "patient_001": [
+    {
+      "record_id": "765909ed",
+      "patient_id": "patient_001",
+      "filename": "1785071299_Blood Diagnostic  Diabetic Panel.pdf",
+      "file_path": "C:\\Users\\Shruti\\OneDrive\\Desktop\\ayuguard-care-platform\\ayuguard\\data\\uploads\\patient_001\\1785071299_Blood Diagnostic  Diabetic Panel.pdf",
+      "record_type": "lab_test",
+      "record_type_label": "🧪 Lab Test",
+      "notes": "",
+      "uploaded_by": "Priya",
+      "uploaded_at": "2026-07-26T18:38:35.801409",
+      "analysis": {
+        "document_type": "Lab Test",
+        "report_date": "2026-07-06",
+        "hospital_or_lab": "Apex Diagnostic Laboratories",
+        "doctor_name": "Dr. Ramesh Chandra, MD",
+        "key_findings": [
+          "Poorly controlled Diabetes Mellitus with elevated Fasting Blood Sugar (185 mg/dL), Post-Prandial Blood Sugar (270 mg/dL), and HbA1c (8.4%).",
+          "Mild renal stress indicating early Stage 3a Chronic Kidney Disease or early-stage Diabetic Nephropathy, evidenced by slightly elevated Serum Creatinine (1.25 mg/dL), elevated Blood Urea Nitrogen (22 mg/dL), and decreased eGFR (58 mL/min/1.73m2).",
+          "Atherogenic dyslipidemia typical of insulin resistance, with elevated Total Cholesterol (215 mg/dL), elevated Triglycerides (188 mg/dL), elevated LDL Cholesterol (139 mg/dL), and low HDL Cholesterol (38 mg/dL)."
+        ],
+        "abnormal_values": [
+          {
+            "parameter": "Fasting Blood Sugar (FBS)",
+            "value": "185 mg/dL",
+            "normal_range": "70–100",
+            "flag": "HIGH"
+          },
+          {
+            "parameter": "Post-Prandial Blood Sugar (PPBS)",
+            "value": "270 mg/dL",
+            "normal_range": "<140",
+            "flag": "HIGH"
+          },
+          {
+            "parameter": "HbA1c (Glycosylated Hemoglobin)",
+            "value": "8.4%",
+            "normal_range": "<5.7%",
+            "flag": "HIGH"
+          },
+          {
+            "parameter": "Serum Creatinine",
+            "value": "1.25 mg/dL",
+            "normal_range": "0.70–1.20",
+            "flag": "HIGH"
+          },
+          {
+            "parameter": "Blood Urea Nitrogen (BUN)",
+            "value": "22 mg/dL",
+            "normal_range": "8–20",
+            "flag": "HIGH"
+          },
+          {
+            "parameter": "Estimated GFR (eGFR)",
+            "value": "58 mL/min/1.73m2",
+            "normal_range": ">60",
+            "flag": "LOW"
+          },
+          {
+            "parameter": "Total Cholesterol",
+            "value": "215 mg/dL",
+            "normal_range": "<200",
+            "flag": "HIGH"
+          },
+          {
+            "parameter": "Triglycerides",
+            "value": "188 mg/dL",
+            "normal_range": "<150",
+            "flag": "HIGH"
+          },
+          {
+            "parameter": "HDL Cholesterol (Good)",
+            "value": "38 mg/dL",
+            "normal_range": ">40",
+            "flag": "LOW"
+          },
+          {
+            "parameter": "LDL Cholesterol (Calculated)",
+            "value": "139 mg/dL",
+            "normal_range": "<100",
+            "flag": "HIGH"
+          }
+        ],
+        "normal_values": [
+          "Hemoglobin",
+          "Total WBC Count",
+          "Platelet Count"
+        ],
+        "medications_mentioned": [],
+        "recommendations": [
+          "Aggressive lipid-lowering management is advised to mitigate cardiovascular risk.",
+          "Clinical interpretation must be performed alongside complete physical and history mapping by the supervising physician."
+        ],
+        "summary": "The patient's lab results show poorly controlled diabetes with very high fasting and post-meal blood sugar levels, alongside a high HbA1c of 8.4%. There are also signs of early-stage kidney disease and high cholesterol levels, which increase the risk of heart disease. A medical consultation is recommended to adjust diabetes and cholesterol treatments.",
+        "follow_up_required": "yes",
+        "critical_values": [
+          "Fasting Blood Sugar (185 mg/dL)",
+          "Post-Prandial Blood Sugar (270 mg/dL)",
+          "HbA1c (8.4%)"
+        ]
+      },
+      "raw_text_preview": "APEX DIAGNOSTIC LABORATORIES\nAffiliatedwithHolyGraceCommunityHospital&ResearchCentre\nSector12,Dwarka,NewDelhi-110075|Tel: +91-11-4921-8834\nPatientName: Mr. RajanSharma DateofCollection: 06-Jul-2026\nAge/Sex: 68Years/Male ReportDate: 06-Jul-2026\nPatientID: P-8834921 SampleType: EDTA Blood & Fluoride\nPlasma\nRef. Doctor: Dr. RameshChandra,MD Ref. Clinic: Chandra Diabetes & Well-\nnessCentre\nDEPARTMENT OF BIOCHEMISTRY & HEMATOLOGY\nConsolidatedMetabolic,Lipid&DiabeticEvaluation\nTestParameter ObservedResult Flag BiologicalReferenceInterval\nDIABETICCHEMISTRYPROFILE\nFastingBloodSugar(FBS) 185mg/dL [H] 7"
+    }
+  ]
+}

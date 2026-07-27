@@ -1,4 +1,4 @@
-﻿---
+---
 name: ayuguard-care-platform
 description: >
   Build, extend, debug, and operate the AyuGuard Ambient Caregiver Platform —
@@ -64,7 +64,8 @@ ayuguard-care-platform/
 │   │
 │   ├── sub_agents/
 │   │   ├── extraction.py        # symptom_extraction_agent (Gemini JSON extractor)
-│   │   └── retrieval.py         # condition_retrieval_agent (dataset search)
+│   │   ├── retrieval.py         # condition_retrieval_agent (dataset search)
+│   │   └── dietary_reconciliation.py # dietary_reconciliation_agent (multi-condition care plan subagent)
 │   │
 │   ├── tools/
 │   │   ├── patient_profile.py   # get/save patient + caregiver profile

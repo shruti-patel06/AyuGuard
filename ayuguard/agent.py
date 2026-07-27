@@ -28,7 +28,26 @@ _AGENT_DIR = Path(__file__).parent.resolve()
 _ENV_FILE = _AGENT_DIR / ".env"
 load_dotenv(dotenv_path=_ENV_FILE)
 
-if not os.environ.get("GOOGLE_API_KEY"):
+# ── Auth check: Vertex AI (ADC) or Gemini Developer API key ──────────────────
+_use_vertex = os.environ.get("GOOGLE_GENAI_USE_VERTEXAI", "").upper() == "TRUE"
+_has_api_key = bool(os.environ.get("GOOGLE_API_KEY"))
+_has_project  = bool(os.environ.get("GOOGLE_CLOUD_PROJECT"))
+
+if _use_vertex:
+    if not _has_project:
+        print(
+            "\n  GOOGLE_CLOUD_PROJECT not set!\n"
+            f"    Please add GOOGLE_CLOUD_PROJECT=<your-project-id> to: {_ENV_FILE}\n"
+            "    Also run: gcloud auth application-default login\n",
+            file=sys.stderr,
+        )
+    else:
+        print(
+            f"  [OK] AyuGuard -- Vertex AI backend active "
+            f"(project={os.environ['GOOGLE_CLOUD_PROJECT']}, "
+            f"location={os.environ.get('GOOGLE_CLOUD_LOCATION', 'us-central1')})"
+        )
+elif not _has_api_key:
     print(
         "\n  GOOGLE_API_KEY not found!\n"
         f"    Please add it to: {_ENV_FILE}\n"
@@ -43,6 +62,7 @@ from google.adk.tools.agent_tool import AgentTool
 # ── Sub-agents ────────────────────────────────────────────────────────────────
 from .sub_agents.extraction import symptom_extraction_agent
 from .sub_agents.retrieval import condition_retrieval_agent
+from .sub_agents.dietary_reconciliation import dietary_reconciliation_agent
 
 # ── Orchestrator tools ─────────────────────────────────────────────────────────
 from .tools.symptom_store import store_symptom_log, get_patient_history
@@ -56,7 +76,7 @@ from .tools.medical_records import get_medical_records, get_record_details, get_
 # ── Root Agent (Orchestrator) ─────────────────────────────────────────────────
 root_agent = Agent(
     name="ayuguard_orchestrator",
-    model="gemini-3.5-flash-lite",
+    model="gemini-2.5-flash-lite",  # Vertex AI model (confirmed available in this project)
     description=(
         "AyuGuard (आयुगार्ड) — ambient multi-agent caregiver platform. "
         "Detects symptom patterns across days, provides non-critical home-care "
@@ -101,10 +121,12 @@ IF THE ACTIVE USER IS THE CAREGIVER (caregiver-001):
   → Follow the caregiver instructions (Step 6 COMMUNICATE) and call generate_caregiver_message().
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-CRITICAL TOOL-CALLING RULE
+CRITICAL TOOL-CALLING & EXECUTION RULES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-When calling sub-agents (symptom_extraction_agent, condition_retrieval_agent),
-ALWAYS pass a PLAIN TEXT STRING. NEVER pass a dict or JSON object.
+1. When calling sub-agents (symptom_extraction_agent, condition_retrieval_agent, dietary_reconciliation_agent),
+   ALWAYS pass a PLAIN TEXT STRING. NEVER pass a dict or JSON object.
+2. DO NOT output partial text to the user like "I am now running a check..." or "I have logged the symptom and will check..." in between tool calls!
+3. You MUST complete ALL steps in the pipeline (Extract -> Store -> Score -> Reconcile/Diagnose -> Message) continuously in the tool-use loop before producing your final message!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SYMPTOM PIPELINE — run when caregiver describes a symptom
@@ -186,6 +208,18 @@ ROUTING RULES
 • "Any abnormal values?" / trends      → get_abnormal_history(patient_id="patient_001")
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MULTI-CONDITION & RECOVERY SUBAGENT COLLABORATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ACUTE SYMPTOMS (e.g. Diarrhoea, Vomiting, Fever, Acid Reflux) for a patient with CHRONIC CONDITIONS (Pre-diabetes, Diabetes, Hypertension):
+   → Delegate to dietary_reconciliation_agent(patient_id="patient_001") to resolve dietary conflicts (e.g. temporary low-fiber bland diet + ORS).
+   → The subagent updates the care plan via save_care_plan() and pushes a real-time notification.
+
+2. RECOVERY (e.g. "Diarrhoea has stopped", "Feeling fine now", "Fever is gone", "Fully recovered"):
+   → Delegate to dietary_reconciliation_agent(patient_id="patient_001") to de-escalate temporary acute diets.
+   → The subagent will restore the baseline chronic health management plan (e.g. healthy high-fiber pre-diabetic meals with salad & multigrain roti), call save_care_plan(), and push a real-time notification.
+   → Celebrate the recovery warmly with the caregiver!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 MEDICAL RECORDS — HOW TO USE IN DIAGNOSIS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Records are uploaded by the caregiver via the UI (PDFs, lab reports, images).
@@ -236,6 +270,7 @@ AyuGuard supplements — never replaces — the doctor's advice. 🌸""",
         # Symptom pipeline
         AgentTool(agent=symptom_extraction_agent),
         AgentTool(agent=condition_retrieval_agent),
+        AgentTool(agent=dietary_reconciliation_agent),
         store_symptom_log,
         get_patient_history,
         compute_trend_score,

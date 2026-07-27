@@ -1,4 +1,4 @@
-﻿# ──────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────
 #  Dockerfile.agent  —  AyuGuard ADK Agent Service
 #  Runs: adk web  (Google ADK development server)
 #  Port: $PORT (Cloud Run injects this, default 8000)
@@ -32,7 +32,11 @@ COPY ayuguard/data/ ./ayuguard/data/
 # We read ADK_PORT from env (set to $PORT by Cloud Run entrypoint).
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
-ENV GOOGLE_GENAI_USE_VERTEXAI=FALSE
+# Vertex AI backend — ADC is provided by Cloud Run's attached service account
+ENV GOOGLE_GENAI_USE_VERTEXAI=TRUE
+ENV GOOGLE_CLOUD_PROJECT=silken-dogfish-484814-g9
+# Gemini models on Vertex AI require us-central1 (not asia-south1)
+ENV GOOGLE_CLOUD_LOCATION=us-central1
 
 # Startup: read Cloud Run PORT and pass to adk web
 CMD ["sh", "-c", "adk web --host 0.0.0.0 --port ${PORT:-8000}"]

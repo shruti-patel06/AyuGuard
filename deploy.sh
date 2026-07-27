@@ -7,7 +7,8 @@
 set -euo pipefail
 
 PROJECT_ID="silken-dogfish-484814-g9"
-REGION="asia-south1"
+REGION="asia-south1"               # Cloud Run infrastructure region
+VERTEX_LOCATION="us-central1"      # Vertex AI Gemini model region
 REGISTRY="${REGION}-docker.pkg.dev/${PROJECT_ID}/ayuguard"
 GCS_BUCKET="ayuguard-uploads-${PROJECT_ID}"
 
@@ -26,6 +27,7 @@ gcloud services enable \
   artifactregistry.googleapis.com \
   storage.googleapis.com \
   secretmanager.googleapis.com \
+  aiplatform.googleapis.com \
   --quiet
 
 # ── 3. Create Artifact Registry repo (idempotent) ───────────────
@@ -41,17 +43,31 @@ echo "→ Creating GCS bucket..."
 gsutil mb -p "$PROJECT_ID" -l "$REGION" "gs://${GCS_BUCKET}" 2>/dev/null \
   || echo "  (bucket already exists)"
 
-# ── 5. Store GOOGLE_API_KEY secret ──────────────────────────────
+# ── 5. Store GOOGLE_API_KEY secret (used by UI service for direct genai calls) ─
 if [ -z "${GOOGLE_API_KEY:-}" ]; then
-  echo "⚠️  GOOGLE_API_KEY env var not set. Set it before running deploy.sh"
+  echo "⚠️  GOOGLE_API_KEY env var not set. Required for UI's medical records analysis."
   echo "   export GOOGLE_API_KEY=your_key_here"
   exit 1
 fi
-echo "→ Storing GOOGLE_API_KEY in Secret Manager..."
+echo "→ Storing GOOGLE_API_KEY in Secret Manager (for UI service)..."
 echo -n "$GOOGLE_API_KEY" | gcloud secrets create ayuguard-gemini-key \
   --data-file=- --quiet 2>/dev/null \
   || echo -n "$GOOGLE_API_KEY" | gcloud secrets versions add ayuguard-gemini-key \
   --data-file=- --quiet
+
+# ── 5b. Grant Compute SA Secret Accessor role ────────────────────────
+PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format="value(projectNumber)")
+echo "→ Granting Secret Accessor role to Compute SA..."
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor" --quiet
+
+# ── 5c. Grant Vertex AI User role to Compute SA ────────────────────────
+echo "→ Granting Vertex AI User role to Compute SA..."
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+  --role="roles/aiplatform.user" --condition=None --quiet
+echo "  All IAM roles granted."
 
 # ── 6. Configure Docker auth ─────────────────────────────────────
 echo "→ Configuring Docker auth for Artifact Registry..."
@@ -77,8 +93,8 @@ else
   exit 1
 fi
 
-# ── 9. Deploy agent service (internal) ──────────────────────────
-echo "→ Deploying ayuguard-agent..."
+# ── 9. Deploy agent service (Vertex AI backend — no API key needed) ─
+echo "→ Deploying ayuguard-agent (Vertex AI backend)..."
 gcloud run deploy ayuguard-agent \
   --image "${REGISTRY}/ayuguard-agent:latest" \
   --platform managed \
@@ -90,15 +106,14 @@ gcloud run deploy ayuguard-agent \
   --timeout 300 \
   --min-instances 0 \
   --max-instances 3 \
-  --set-secrets "GOOGLE_API_KEY=ayuguard-gemini-key:latest" \
-  --set-env-vars "GCS_BUCKET=${GCS_BUCKET},GOOGLE_GENAI_USE_VERTEXAI=FALSE" \
+  --set-env-vars "GCS_BUCKET=${GCS_BUCKET},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=${VERTEX_LOCATION}" \
   --quiet
 
 AGENT_URL=$(gcloud run services describe ayuguard-agent \
   --region "$REGION" --format "value(status.url)")
 echo "  Agent URL: $AGENT_URL"
 
-# ── 10. Deploy UI service (public) ──────────────────────────────
+# ── 10. Deploy UI service (public) ────────────────────────────
 echo "→ Deploying ayuguard-ui..."
 gcloud run deploy ayuguard-ui \
   --image "${REGISTRY}/ayuguard-ui:latest" \
@@ -112,7 +127,7 @@ gcloud run deploy ayuguard-ui \
   --min-instances 0 \
   --max-instances 5 \
   --set-secrets "GOOGLE_API_KEY=ayuguard-gemini-key:latest" \
-  --set-env-vars "ADK_BASE_URL=${AGENT_URL},GCS_BUCKET=${GCS_BUCKET},GOOGLE_GENAI_USE_VERTEXAI=FALSE" \
+  --set-env-vars "ADK_BASE_URL=${AGENT_URL},GCS_BUCKET=${GCS_BUCKET},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=${VERTEX_LOCATION}" \
   --quiet
 
 UI_URL=$(gcloud run services describe ayuguard-ui \

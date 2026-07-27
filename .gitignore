@@ -29,4 +29,7 @@ uploads/
 .vscode/
 .idea/
 *.log
+*.zip
+events.json
+split_ui.py
 

@@ -52,9 +52,12 @@ def store_symptom_log(patient_id: str, symptom_json: str) -> dict:
     store = _load_store()
 
     try:
-        data = json.loads(symptom_json)
+        if isinstance(symptom_json, (dict, list)):
+            data = symptom_json
+        else:
+            data = json.loads(str(symptom_json))
         entries: list[dict] = [data] if isinstance(data, dict) else list(data)
-    except (json.JSONDecodeError, TypeError) as exc:
+    except Exception as exc:
         return {"status": "error", "message": f"Invalid symptom_json: {exc}"}
 
     if patient_id not in store["patients"]:
@@ -67,12 +70,25 @@ def store_symptom_log(patient_id: str, symptom_json: str) -> dict:
     added = 0
     firestore_entries = []
     for entry in entries:
+        if not isinstance(entry, dict):
+            continue
         sym = str(entry.get("symptom", "")).strip().lower()
         if sym in ("none", "", "unclear"):
             continue
         entry["stored_at"] = datetime.now().isoformat()
         store["patients"][patient_id]["logs"].append(entry)
-        firestore_entries.append(entry)
+        
+        # Add real-time notification for caregiver/patient
+        notifs = store.setdefault("notifications", {}).setdefault(patient_id, [])
+        sev = str(entry.get("severity", "mild"))
+        notes_val = entry.get("notes")
+        notes = f" — {notes_val}" if notes_val and isinstance(notes_val, str) else ""
+        notifs.append({
+            "message": f"Symptom recorded: {sym.title()} ({sev} severity){notes}",
+            "type": "alert",
+            "read": False,
+            "created_at": datetime.now().isoformat(),
+        })
         added += 1
 
     _save_store(store)

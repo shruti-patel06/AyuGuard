@@ -106,14 +106,15 @@ async def api_trend(patient_id: str = "patient_001"):
 async def api_stats(patient_id: str = "patient_001"):
     store = _load_store()
     logs = store.get("patients", {}).get(patient_id, {}).get("logs", [])
-    if not logs:
-        return JSONResponse(content={"total_logs": 0, "streak_days": 0, "top_symptom": None})
+    valid_logs = [l for l in logs if isinstance(l, dict) and l.get("symptom") and l.get("date")]
+    if not valid_logs:
+        return JSONResponse(content={"total_logs": 0, "days_tracked": 0, "top_symptom": None})
     from collections import Counter
-    symptom_counts = Counter(l["symptom"] for l in logs)
+    symptom_counts = Counter(l.get("symptom") for l in valid_logs)
     top = symptom_counts.most_common(1)[0] if symptom_counts else (None, 0)
-    dates = sorted(set(l["date"] for l in logs), reverse=True)
+    dates = sorted(set(l.get("date") for l in valid_logs), reverse=True)
     return JSONResponse(content={
-        "total_logs": len(logs),
+        "total_logs": len(valid_logs),
         "days_tracked": len(dates),
         "top_symptom": top[0],
         "top_symptom_count": top[1],
@@ -197,20 +198,28 @@ async def chat_proxy(request: Request):
     app_name = body.get("app_name", "ayuguard")
     session_id = body.get("session_id")
 
-    # If the user is patient-001, inject system context to bypass caregiver messages and speak directly
-    if user_id == "patient-001" and "new_message" in body:
+    # Inject explicit context for caregiver-001 or patient-001
+    if "new_message" in body:
         new_msg = body["new_message"]
         if "parts" in new_msg and len(new_msg["parts"]) > 0:
             part = new_msg["parts"][0]
-            if "text" in part:
-                context_instruction = (
-                    "[SYSTEM CONTEXT: You are speaking directly to the ELDERLY PATIENT (Rajan Sharma), NOT the caregiver. "
-                    "Greet and address them directly as Rajan ji, with extreme respect, warmth, and care. "
-                    "Do NOT call generate_caregiver_message() under any circumstances. "
-                    "Compose a direct, comforting response. If appropriate, run Step 1 to Step 4 of the symptom pipeline to log their feelings. "
-                    "Remind them that their caregiver Priya can view these logs on her dashboard, and gently advise them to rest and notify Priya "
-                    "if they are feeling worse or if urgency is elevated. Respond directly in their preferred language.]\n\n"
-                )
+            if "text" in part and not part["text"].startswith("[SYSTEM CONTEXT"):
+                if user_id == "patient-001":
+                    context_instruction = (
+                        "[SYSTEM CONTEXT: You are speaking directly to the ELDERLY PATIENT (Rajan Sharma), NOT the caregiver. "
+                        "Greet and address them directly as Rajan ji, with extreme respect, warmth, and care. "
+                        "Do NOT call generate_caregiver_message() under any circumstances. "
+                        "Compose a direct, comforting response. If appropriate, run Step 1 to Step 4 of the symptom pipeline to log their feelings. "
+                        "Remind them that their caregiver Priya can view these logs on her dashboard, and gently advise them to rest and notify Priya "
+                        "if they are feeling worse or if urgency is elevated. Respond directly in their preferred language.]\n\n"
+                    )
+                else:
+                    context_instruction = (
+                        "[SYSTEM CONTEXT: Active user is PRIYA (the caregiver). "
+                        "Always greet and address her directly as Priya! "
+                        "Her father's name is Rajan Sharma (refer to him as Rajan ji or her dad). "
+                        "NEVER address Priya as Rajan ji. You are talking to Priya.]\n\n"
+                    )
                 part["text"] = context_instruction + part["text"]
 
     async def stream_adk() -> AsyncGenerator[bytes, None]:

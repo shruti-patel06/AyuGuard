@@ -94,7 +94,7 @@
         {
           "symptom": "fatigue",
           "severity": "mild",
-          "date": "2026-06-22",
+          "date": "2026-07-13",
           "source": "log",
           "notes": "Dad seemed tired today, went to bed early after dinner",
           "stored_at": "2026-07-05T21:50:00.410449"
@@ -102,7 +102,7 @@
         {
           "symptom": "increased thirst",
           "severity": "mild",
-          "date": "2026-06-23",
+          "date": "2026-07-14",
           "source": "log",
           "notes": "He drank a lot of water today — refilled his bottle twice",
           "stored_at": "2026-07-05T21:50:00.410489"
@@ -110,7 +110,7 @@
         {
           "symptom": "fatigue",
           "severity": "mild",
-          "date": "2026-06-24",
+          "date": "2026-07-15",
           "source": "log",
           "notes": "Still tired, slept an extra hour in the afternoon",
           "stored_at": "2026-07-05T21:50:00.410506"
@@ -118,7 +118,7 @@
         {
           "symptom": "increased thirst",
           "severity": "mild",
-          "date": "2026-06-25",
+          "date": "2026-07-16",
           "source": "log",
           "notes": "Very thirsty again, kept asking for water",
           "stored_at": "2026-07-05T21:50:00.410576"
@@ -126,7 +126,7 @@
         {
           "symptom": "blurry vision",
           "severity": "mild",
-          "date": "2026-06-26",
+          "date": "2026-07-17",
           "source": "log",
           "notes": "Mentioned his vision was a bit blurry while reading newspaper",
           "stored_at": "2026-07-05T21:50:00.410738"
@@ -134,7 +134,7 @@
         {
           "symptom": "weight loss",
           "severity": "mild",
-          "date": "2026-06-27",
+          "date": "2026-07-18",
           "source": "log",
           "notes": "Weight down roughly 1 kg compared to last week",
           "stored_at": "2026-07-05T21:50:00.410758"
@@ -142,7 +142,7 @@
         {
           "symptom": "fatigue",
           "severity": "mild",
-          "date": "2026-06-28",
+          "date": "2026-07-19",
           "source": "log",
           "notes": "Low energy, did not want to go for his evening walk",
           "stored_at": "2026-07-05T21:50:00.410769"
@@ -150,7 +150,7 @@
         {
           "symptom": "increased thirst",
           "severity": "mild",
-          "date": "2026-06-29",
+          "date": "2026-07-20",
           "source": "log",
           "notes": "Thirsty again — had 6-7 glasses of water through the day",
           "stored_at": "2026-07-05T21:50:00.410810"
@@ -158,7 +158,7 @@
         {
           "symptom": "frequent urination",
           "severity": "mild",
-          "date": "2026-06-30",
+          "date": "2026-07-21",
           "source": "log",
           "notes": "Bathroom trips more often than usual, including at night",
           "stored_at": "2026-07-05T21:50:00.410829"
@@ -166,7 +166,7 @@
         {
           "symptom": "fatigue",
           "severity": "moderate",
-          "date": "2026-07-01",
+          "date": "2026-07-22",
           "source": "log",
           "notes": "Very tired today, skipped lunch, felt weak",
           "stored_at": "2026-07-05T21:50:00.410842"
@@ -174,7 +174,7 @@
         {
           "symptom": "blurry vision",
           "severity": "mild",
-          "date": "2026-07-02",
+          "date": "2026-07-23",
           "source": "log",
           "notes": "Eyes bothering him again while reading",
           "stored_at": "2026-07-05T21:50:00.410854"
@@ -182,7 +182,7 @@
         {
           "symptom": "frequent urination",
           "severity": "mild",
-          "date": "2026-07-03",
+          "date": "2026-07-24",
           "source": "log",
           "notes": "Had to get up 3 times at night",
           "stored_at": "2026-07-05T21:50:00.410866"
@@ -190,7 +190,7 @@
         {
           "symptom": "fatigue",
           "severity": "moderate",
-          "date": "2026-07-04",
+          "date": "2026-07-25",
           "source": "log",
           "notes": "Tired and irritable — no energy for his walk",
           "stored_at": "2026-07-05T21:50:00.410877"
@@ -198,7 +198,7 @@
         {
           "symptom": "increased thirst",
           "severity": "mild",
-          "date": "2026-07-05",
+          "date": "2026-07-26",
           "source": "log",
           "notes": "Drinking a lot of water again today",
           "stored_at": "2026-07-05T21:50:00.410889"
@@ -206,7 +206,7 @@
         {
           "symptom": "numb fingers",
           "severity": "mild",
-          "date": "2026-06-03",
+          "date": "2026-07-20",
           "source": "log",
           "notes": "numb fingers",
           "stored_at": "2026-07-05T22:43:14.621860"
@@ -214,7 +214,7 @@
         {
           "symptom": "swollen feet",
           "severity": "mild",
-          "date": "2026-06-03",
+          "date": "2026-07-20",
           "source": "log",
           "notes": "swollen feet",
           "stored_at": "2026-07-05T22:43:14.621932"
@@ -222,7 +222,7 @@
         {
           "symptom": "finger numbness",
           "severity": "mild",
-          "date": "2026-07-30",
+          "date": "2026-07-25",
           "source": "log",
           "notes": "numb fingers",
           "stored_at": "2026-07-05T22:45:35.142161"
@@ -230,7 +230,7 @@
         {
           "symptom": "foot edema",
           "severity": "mild",
-          "date": "2026-07-30",
+          "date": "2026-07-25",
           "source": "log",
           "notes": "swollen feet",
           "stored_at": "2026-07-05T22:45:35.142257"
@@ -238,10 +238,78 @@
         {
           "symptom": "hearing loss",
           "severity": "moderate",
-          "date": "2026-07-05",
+          "date": "2026-07-26",
           "source": "log",
           "notes": "he is also experiencing problem in hearing as last month he lost one side hearing due to the sound of firecrakers",
           "stored_at": "2026-07-05T22:47:20.301014"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "moderate",
+          "date": "2026-07-26",
+          "source": "log",
+          "notes": "Dad was very tired",
+          "stored_at": "2026-07-26T17:38:52.941638"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-07-26",
+          "source": "log",
+          "notes": "thirsty today",
+          "stored_at": "2026-07-26T17:38:52.941663"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-07-27",
+          "source": "log",
+          "notes": "Dad is very tired today",
+          "stored_at": "2026-07-27T22:07:21.955442"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-07-27",
+          "source": "log",
+          "notes": "Rajan ji is feeling tired today",
+          "stored_at": "2026-07-27T22:52:58.999143"
+        },
+        {
+          "symptom": "diarrhea",
+          "severity": "moderate",
+          "date": "2026-07-27",
+          "source": "report",
+          "notes": "Dad has developed diarrhoea today.",
+          "stored_at": "2026-07-27T23:14:34.042731"
+        },
+        {
+          "symptom": "diarrhoea",
+          "severity": "moderate",
+          "notes": "acute diarrhoea",
+          "stored_at": "2026-07-27T23:15:28.602706"
+        },
+        {
+          "symptom": "diarrhoea",
+          "severity": "moderate",
+          "notes": "acute diarrhoea",
+          "stored_at": "2026-07-27T23:15:28.606249"
+        },
+        {
+          "symptom": "diarrhea",
+          "severity": "moderate",
+          "date": "2026-07-27",
+          "source": "log",
+          "notes": "Dad has developed diarrhoea today.",
+          "stored_at": "2026-07-27T23:18:02.095865"
+        },
+        {
+          "symptom": "diarrhea",
+          "severity": "moderate",
+          "date": "2026-07-27",
+          "source": "log",
+          "notes": "Dad has developed diarrhoea today.",
+          "stored_at": "2026-07-27T23:19:15.371066"
         }
       ]
     }
@@ -251,7 +319,7 @@
       "Diabetes": "2026-07-05T21:25:30.543445"
     },
     "patient_001": {
-      "Diabetes": "2026-07-05T21:59:48.948763"
+      "Diabetes": "2026-07-27T23:25:06.485108"
     }
   },
   "profiles": {
@@ -270,30 +338,36 @@
   "care_plans": {
     "patient_001": {
       "meals": [
-        "Low-carb breakfast",
-        "dal rice for lunch",
-        "early light dinner"
+        "Low-carb breakfast (Oats / Ripe Banana / Whole-grain Toast)",
+        "Soft white rice with light Moong Dal and Curd for lunch",
+        "Light Moong Dal Khichdi for dinner"
       ],
-      "medications": [],
-      "activities": [],
-      "notes": "",
+      "medications": [
+        "Metformin 500mg (after dinner as advised by doctor)",
+        "ORS / Salted buttermilk for hydration"
+      ],
+      "activities": [
+        "Light 15-min evening stroll",
+        "Adequate bed rest"
+      ],
+      "notes": "Temporary bland low-fiber diet for diarrhoea while maintaining low-sugar glycemic safety for pre-diabetes.",
       "updated_by": "Priya",
-      "updated_at": "2026-07-05T23:35:47.449610"
+      "updated_at": "2026-07-27T23:25:06.088623"
     }
   },
   "notifications": {
     "patient_001": [
       {
-        "message": "Meal plan updated: Low-carb breakfast, Dal chapati lunch | Medications: Metformin 500mg after dinner | Activities: 15 min walk | Note from Priya: Rest well",
+        "message": "Care plan updated for Pre-diabetes + Diarrhoea management.",
         "type": "care_plan",
         "read": true,
-        "created_at": "2026-07-05T22:21:51.405395"
+        "created_at": "2026-07-27T23:25:06.088689"
       },
       {
-        "message": "Meal plan updated: Low-carb breakfast, dal rice for lunch",
-        "type": "care_plan",
+        "message": "Symptom recorded: Diarrhea (moderate severity)",
+        "type": "alert",
         "read": true,
-        "created_at": "2026-07-05T23:35:47.449610"
+        "created_at": "2026-07-27T23:25:06.088694"
       }
     ]
   }

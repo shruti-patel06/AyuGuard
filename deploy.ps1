@@ -9,7 +9,8 @@ $GCLOUD_BIN_DIR = "C:\Users\Shruti\google-cloud-sdk\google-cloud-sdk\bin"
 $env:Path = "$GCLOUD_BIN_DIR;$env:Path"
 
 $PROJECT_ID = "silken-dogfish-484814-g9"
-$REGION = "asia-south1"
+$REGION = "asia-south1"              # Cloud Run infrastructure region
+$VERTEX_LOCATION = "us-central1"     # Vertex AI Gemini model region
 $REGISTRY = "${REGION}-docker.pkg.dev/${PROJECT_ID}/ayuguard"
 $GCS_BUCKET = "ayuguard-uploads-${PROJECT_ID}"
 $GCLOUD = "$GCLOUD_BIN_DIR\gcloud.cmd"
@@ -37,6 +38,7 @@ Write-Host "→ Enabling required GCP APIs..." -ForegroundColor Yellow
   storage.googleapis.com `
   secretmanager.googleapis.com `
   cloudbuild.googleapis.com `
+  aiplatform.googleapis.com `
   --quiet
 
 # ── 3. Create Artifact Registry repo (idempotent) ───────────────
@@ -142,6 +144,15 @@ $PROJECT_NUMBER = (& $GCLOUD projects describe $PROJECT_ID --format="value(proje
   --quiet
 Write-Host "  Secret Accessor role granted successfully." -ForegroundColor Green
 
+# ── 6c. Grant Vertex AI User role to Compute Service Account ────
+Write-Host "→ Granting Vertex AI User role to Compute Service Account..." -ForegroundColor Yellow
+& $GCLOUD projects add-iam-policy-binding $PROJECT_ID `
+  --member="serviceAccount:$($PROJECT_NUMBER)-compute@developer.gserviceaccount.com" `
+  --role="roles/aiplatform.user" `
+  --condition=None `
+  --quiet
+Write-Host "  Vertex AI User role granted successfully." -ForegroundColor Green
+
 # ── 7. Configure Docker Auth ────────────────────────────────────
 Write-Host "→ Configuring Docker authentication for Artifact Registry..." -ForegroundColor Yellow
 & $GCLOUD auth configure-docker "${REGION}-docker.pkg.dev" --quiet
@@ -164,8 +175,8 @@ try {
     Rename-Item -Path Dockerfile -NewName Dockerfile.ui
 }
 
-# ── 10. Deploy Agent Service ────────────────────
-Write-Host "→ Deploying ayuguard-agent..." -ForegroundColor Yellow
+# ── 10. Deploy Agent Service (Vertex AI backend — no API key needed) ──
+Write-Host "→ Deploying ayuguard-agent (Vertex AI backend)..." -ForegroundColor Yellow
 & $GCLOUD run deploy ayuguard-agent `
   --image "${REGISTRY}/ayuguard-agent:latest" `
   --platform managed `
@@ -177,8 +188,7 @@ Write-Host "→ Deploying ayuguard-agent..." -ForegroundColor Yellow
   --timeout 300 `
   --min-instances 0 `
   --max-instances 3 `
-  --set-secrets "GOOGLE_API_KEY=ayuguard-gemini-key:latest" `
-  --set-env-vars "GCS_BUCKET=${GCS_BUCKET},GOOGLE_GENAI_USE_VERTEXAI=FALSE" `
+  --set-env-vars "GCS_BUCKET=${GCS_BUCKET},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=${VERTEX_LOCATION}" `
   --quiet
 
 # Get Agent internal URL
@@ -199,7 +209,7 @@ Write-Host "→ Deploying ayuguard-ui (Public)..." -ForegroundColor Yellow
   --min-instances 0 `
   --max-instances 5 `
   --set-secrets "GOOGLE_API_KEY=ayuguard-gemini-key:latest" `
-  --set-env-vars "ADK_BASE_URL=${AGENT_URL},GCS_BUCKET=${GCS_BUCKET},GOOGLE_GENAI_USE_VERTEXAI=FALSE" `
+  --set-env-vars "ADK_BASE_URL=${AGENT_URL},GCS_BUCKET=${GCS_BUCKET},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=${VERTEX_LOCATION}" `
   --quiet
 
 # Get UI public URL

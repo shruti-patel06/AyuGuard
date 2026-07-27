@@ -16,7 +16,7 @@ _TODAY = date.today().strftime("%Y-%m-%d")
 
 symptom_extraction_agent = Agent(
     name="symptom_extraction_agent",
-    model="gemini-3.5-flash-lite",
+    model="gemini-2.5-flash-lite",
     description=(
         "Converts raw caregiver text or health observations into structured "
         "symptom JSON. Use whenever a caregiver describes physical symptoms, "
