@@ -22,7 +22,28 @@ def _load_store() -> dict:
         _save_store(store)
         return store
     with _LOG_FILE.open("r", encoding="utf-8") as f:
-        return json.load(f)
+        store = json.load(f)
+    
+    # Automatically align seed logs to current day (up to past 14 days)
+    try:
+        from datetime import date as dt_date
+        today_str = dt_date.today().strftime("%Y-%m-%d")
+        for p_id, p_data in store.get("patients", {}).items():
+            logs = p_data.get("logs", [])
+            if logs:
+                latest_log_date = max([l.get("date", today_str) for l in logs if l.get("date")])
+                if latest_log_date < today_str:
+                    delta_days = (dt_date.today() - dt_date.fromisoformat(latest_log_date)).days
+                    for l in logs:
+                        if l.get("date"):
+                            try:
+                                orig_dt = dt_date.fromisoformat(l["date"])
+                                l["date"] = (orig_dt + timedelta(days=delta_days)).strftime("%Y-%m-%d")
+                            except Exception:
+                                pass
+    except Exception:
+        pass
+    return store
 
 
 def _save_store(store: dict) -> None:
@@ -143,7 +164,7 @@ def get_patient_history(patient_id: str, days: int = 14) -> dict:
             "message": "No logs yet. Start logging symptoms to begin trend tracking.",
         }
 
-    cutoff = datetime.now() - timedelta(days=days)
+    cutoff = (datetime.now() - timedelta(days=days)).replace(hour=0, minute=0, second=0, microsecond=0)
     patient = store["patients"][patient_id]
     recent: list[dict] = []
 
