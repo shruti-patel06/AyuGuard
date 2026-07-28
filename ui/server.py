@@ -213,6 +213,7 @@ async def chat_proxy(request: Request):
         if "parts" in new_msg and len(new_msg["parts"]) > 0:
             part = new_msg["parts"][0]
             if "text" in part and not part["text"].startswith("[SYSTEM CONTEXT"):
+                raw_user_text = part["text"]
                 if user_id == "patient-001":
                     context_instruction = (
                         "[SYSTEM CONTEXT: You are speaking directly to the ELDERLY PATIENT (Rajan Sharma), NOT the caregiver. "
@@ -229,7 +230,19 @@ async def chat_proxy(request: Request):
                         "Her father's name is Rajan Sharma (refer to him as Rajan ji or her dad). "
                         "NEVER address Priya as Rajan ji. You are talking to Priya.]\n\n"
                     )
-                part["text"] = context_instruction + part["text"]
+                part["text"] = context_instruction + raw_user_text
+
+                # Server-side Auto-Logging Safeguard: Ensure symptoms in chat are ALWAYS stored in persistent logs
+                raw_lower = raw_user_text.lower()
+                symptom_keywords = ("vomit", "vomitted", "vomiting", "dehydrat", "diarrh", "fever", "pain", "tired", "cough", "dizzy", "weak", "sick", "unwell", "nausea", "headache", "sugar", "bp", "stomach", "chest", "breath", "hurt", "ache")
+                if any(kw in raw_lower for kw in symptom_keywords):
+                    try:
+                        from ayuguard.tools.symptom_store import store_symptom_log
+                        from ayuguard.agent import extract_symptoms
+                        extracted_json = extract_symptoms(text=raw_user_text)
+                        store_symptom_log(patient_id="patient_001", symptom_json=extracted_json)
+                    except Exception as exc:
+                        print(f"Auto-logging safeguard error: {exc}")
 
     async def stream_adk() -> AsyncGenerator[bytes, None]:
         current_session_id = session_id

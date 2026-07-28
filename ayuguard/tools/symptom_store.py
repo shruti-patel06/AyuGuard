@@ -76,7 +76,10 @@ def store_symptom_log(patient_id: str, symptom_json: str) -> dict:
         if isinstance(symptom_json, (dict, list)):
             data = symptom_json
         else:
-            data = json.loads(str(symptom_json))
+            s_clean = str(symptom_json).strip()
+            if s_clean.startswith("```"):
+                s_clean = s_clean.replace("```json", "").replace("```JSON", "").replace("```", "").strip()
+            data = json.loads(s_clean)
         entries: list[dict] = [data] if isinstance(data, dict) else list(data)
     except Exception as exc:
         return {"status": "error", "message": f"Invalid symptom_json: {exc}"}
@@ -96,6 +99,16 @@ def store_symptom_log(patient_id: str, symptom_json: str) -> dict:
         sym = str(entry.get("symptom", "")).strip().lower()
         if sym in ("none", "", "unclear"):
             continue
+        # Standardize common spelling variations
+        if "vomit" in sym:
+            sym = "vomiting"
+        elif "diarrh" in sym:
+            sym = "diarrhea"
+        entry["symptom"] = sym
+
+        if not entry.get("date"):
+            entry["date"] = datetime.now().strftime("%Y-%m-%d")
+
         entry["stored_at"] = datetime.now().isoformat()
         store["patients"][patient_id]["logs"].append(entry)
         
