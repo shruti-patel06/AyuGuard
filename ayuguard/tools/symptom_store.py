@@ -83,9 +83,12 @@ def store_symptom_log(patient_id: str, symptom_json: str) -> dict:
         sev = str(entry.get("severity", "mild"))
         notes_val = entry.get("notes")
         notes = f" — {notes_val}" if notes_val and isinstance(notes_val, str) else ""
+        import uuid
         notifs.append({
-            "message": f"Symptom recorded: {sym.title()} ({sev} severity){notes}",
+            "id": str(uuid.uuid4()),
+            "message": f"🚨 Symptom recorded for Rajan ji: {sym.title()} ({sev} severity){notes}",
             "type": "alert",
+            "from": "Rajan Sharma",
             "read": False,
             "created_at": datetime.now().isoformat(),
         })

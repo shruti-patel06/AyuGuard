@@ -123,27 +123,21 @@ async function init() {
   applyTheme(savedTheme);
   // 2. Load saved chat history from localStorage (synchronous)
   loadChatHistory();
-  // 3. Fetch profile + live data (dashboard-safe APIs, no ADK needed)
-  await Promise.all([loadProfile(), loadStats(), loadUrgencyBadge(), loadNotifCount()]);
-  // 4. Replay stored messages into DOM (after profile so names are available)
+  // 3. Fetch profile + live data
+  await Promise.all([loadProfile(), loadStats(), loadUrgencyBadge(), loadNotifications()]);
+  // 4. Replay stored messages into DOM
   restoreChats();
-  // 5. Create backend sessions — fire-and-forget, does NOT block page load
-  //    The banner/toast will appear if ADK is offline; chat will retry on send
+  // 5. Create backend sessions
   createSession('cg');
   createSession('pt');
   
-  // 6. Realtime Polling
+  // 6. Real-Time Background Synchronization & Notification Pop-up Polling (every 2.5 seconds)
   setInterval(() => {
-    checkPatientNotifications();
-    loadNotifCount();
-  }, 3000);
-  
-  setInterval(() => {
-    if (currentMode === 'dashboard') {
-      silentDashboardRefresh();
-      loadStats();
-    }
-  }, 5000);
+    loadNotifications();
+    loadUrgencyBadge();
+    loadStats();
+    silentDashboardRefresh(); // Automatic real-time dashboard update in background
+  }, 2500);
 }
 
 /* ── Sessions ──────────────────────────────────────────────────── */
@@ -768,7 +762,82 @@ function showToast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg; el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+/* ── Real-Time Notifications System ────────────────────────────── */
+let seenNotifIds = new Set();
+let isInitialNotifLoad = true;
+
+async function loadNotifications() {
+  try {
+    const res = await fetch(`${API}/notifications?patient_id=patient_001`);
+    const data = await res.json();
+    const notifs = data.notifications || [];
+    const unreadCount = data.unread_count || 0;
+
+    // Update unread count badge on bell icon
+    const badge = document.getElementById('notif-badge');
+    if (badge) {
+      if (unreadCount > 0) {
+        badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // Render notifications panel list
+    const listEl = document.getElementById('notif-list');
+    if (listEl) {
+      if (!notifs.length) {
+        listEl.innerHTML = '<div class="notif-empty">No notifications yet.</div>';
+      } else {
+        listEl.innerHTML = notifs.map(n => `
+          <div class="notif-item ${n.read ? 'read' : 'unread'}">
+            <div class="notif-item-msg">${escHtml(n.message)}</div>
+            <div class="notif-item-meta">${escHtml(n.from || 'System')} · ${fmtDt(n.created_at)}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Trigger Pop-up Toast for newly arrived unread notifications
+    for (const n of notifs) {
+      const nId = n.id || (n.created_at + n.message);
+      if (!seenNotifIds.has(nId)) {
+        seenNotifIds.add(nId);
+        if (!isInitialNotifLoad && !n.read) {
+          // Automatic pop-up Toast notification
+          showToast(`🔔 ${n.message}`);
+          silentDashboardRefresh(); // Live update dashboard without manual click
+        }
+      }
+    }
+    isInitialNotifLoad = false;
+  } catch (e) {
+    console.warn('Could not load notifications:', e);
+  }
+}
+
+async function toggleNotifPanel() {
+  const panel = document.getElementById('notif-panel');
+  if (!panel) return;
+  notifPanelOpen = !notifPanelOpen;
+  if (notifPanelOpen) {
+    panel.classList.add('open');
+    // Mark as read when opening panel
+    try {
+      await fetch(`${API}/notifications/mark-read`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ patient_id: 'patient_001' })
+      });
+      loadNotifications();
+    } catch {}
+  } else {
+    panel.classList.remove('open');
+  }
 }
 
 /* ── Medical Records JS ────────────────────────────────────────── */
