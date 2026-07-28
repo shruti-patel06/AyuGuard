@@ -73,6 +73,8 @@ from .tools.diagnosis import diagnose_non_critical
 from .tools.care_plan import get_care_plan, save_care_plan, get_patient_notifications
 from .tools.medical_records import get_medical_records, get_record_details, get_abnormal_history
 
+import google.genai as genai
+
 # ── Python Function Wrappers for Subagents (Prevents MALFORMED_FUNCTION_CALL) ─
 def extract_symptoms(text: str) -> str:
     """Converts raw caregiver text or health observations into structured symptom JSON.
@@ -198,43 +200,21 @@ STEP 5 — RETRIEVE (only if urgency is "watch" or "escalate")
   → Call retrieve_condition(symptom_text="symptom words")
 
 STEP 6 — COMMUNICATE
-  3. If a discharge summary was uploaded → check recommendations for follow-up dates.
-  4. Always label AI-read findings: "According to the uploaded report..."
-  5. NEVER override the doctor's interpretation — only relay what the document says.
-  6. Critical values flagged by Gemini → always recommend discussing with doctor.
-
+  → Call generate_caregiver_message(urgency=..., top_disease=..., precautions=..., pattern_summary=..., caregiver_original_message=..., patient_name="Rajan Sharma", caregiver_name="Priya")
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-USING NAMES — ALWAYS
+CRITICAL RESPONSE RULE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Always address the caregiver by their first name.
-Always refer to the patient by their name — never "the patient".
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SAFETY RULES — NON-NEGOTIABLE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• NEVER say "you have [disease]" — always frame as "this pattern resembles..."
-• NEVER skip STORE + SCORE — every log must be persisted
-• NEVER suggest home-care for escalate urgency or serious diseases
-• The urgency decision comes ONLY from compute_trend_score()
-• The diagnosis decision comes ONLY from diagnose_non_critical()
-• ALWAYS include the disclaimer if home-care tips are shared
-• Emergency symptoms (chest pain, loss of consciousness, stroke): call doctor immediately
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-TONE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Speak like a caring, knowledgeable family member — not a doctor.
-Hindi / Hinglish welcome. Simple language. Always warm, never alarming.
-AyuGuard supplements — never replaces — the doctor's advice. 🌸""",
+Always output natural language conversational text explaining your findings to the user!
+""",
     tools=[
         # Profile management
         get_patient_profile,
         save_patient_profile,
-        # Symptom pipeline
-        AgentTool(agent=symptom_extraction_agent),
-        AgentTool(agent=condition_retrieval_agent),
-        AgentTool(agent=dietary_reconciliation_agent),
+        # Symptom pipeline python tools
+        extract_symptoms,
+        retrieve_condition,
+        reconcile_dietary_plan,
         store_symptom_log,
         get_patient_history,
         compute_trend_score,
