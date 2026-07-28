@@ -364,7 +364,7 @@
       {
         "message": "Meal plan updated: Breakfast: Oatmeal or suji with minimal sugar, Lunch: Small portion of rice or chapati with dal and low-potassium vegetables like bottle gourd or ridge gourd, Dinner: Vegetable khichdi or roti with cooked vegetables, Snacks: Apples or pears | Note from Priya: Focus on low-protein, low-sodium, and low-potassium foods for kidney strain reconciliation.",
         "type": "care_plan",
-        "read": false,
+        "read": true,
         "created_at": "2026-07-28T20:38:17.837172"
       }
     ]
