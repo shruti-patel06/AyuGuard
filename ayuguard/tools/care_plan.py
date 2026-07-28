@@ -102,15 +102,39 @@ def save_care_plan(
     """
     now = datetime.now().isoformat()
 
-    def parse_list(s: str) -> list[str]:
-        return [item.strip() for item in s.split(",") if item.strip()] if s else []
+    def parse_list(s) -> list[str]:
+        if isinstance(s, list):
+            return [str(x).strip() for x in s if str(x).strip()]
+        if isinstance(s, dict):
+            return [f"{k}: {v}" for k, v in s.items()]
+        if isinstance(s, str):
+            items = []
+            for raw_line in s.replace(";", "\n").split("\n"):
+                line = raw_line.strip().lstrip("*").lstrip("-").strip()
+                if line:
+                    if "," in line and len(line) < 80:
+                        for chunk in line.split(","):
+                            c = chunk.strip().lstrip("*").lstrip("-").strip()
+                            if c: items.append(c)
+                    else:
+                        items.append(line)
+            return items
+        return []
+
+    parsed_meals = parse_list(meals)
+    parsed_meds = parse_list(medications)
+    parsed_acts = parse_list(activities)
+    
+    clean_notes = notes.strip() if isinstance(notes, str) else ""
+    if not clean_notes and parsed_meals:
+        clean_notes = f"Custom meal plan set by caregiver ({len(parsed_meals)} items)."
 
     plan = {
-        "meals":        parse_list(meals),
-        "medications":  parse_list(medications),
-        "activities":   parse_list(activities),
-        "notes":        notes.strip(),
-        "updated_by":   caregiver_name or "Caregiver",
+        "meals":        parsed_meals,
+        "medications":  parsed_meds,
+        "activities":   parsed_acts,
+        "notes":        clean_notes,
+        "updated_by":   caregiver_name or "Priya",
         "updated_at":   now,
     }
 

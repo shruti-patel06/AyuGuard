@@ -669,7 +669,10 @@ async function sendMsg(role) {
       try {
         const pRes = await fetch(`${API}/care-plan`);
         const pData = await pRes.json();
-        if (pData.notes) {
+        if (pData.meals?.length) {
+          const mealList = pData.meals.map(m => `• ${m}`).join('\n');
+          full = `🌸 **Care Plan Updated by ${pData.updated_by || 'Caregiver'}**:\n\n${mealList}\n\n*Rajan ji's care plan on the Health Dashboard has been updated in real-time!*`;
+        } else if (pData.notes) {
           full = `🌸 **Care Plan Updated**: ${pData.notes}\n\n*Rajan ji's care plan on the Health Dashboard has been updated!*`;
         } else {
           full = `🌸 **Update Received**: I have processed the request and updated Rajan ji's health dashboard and care plan accordingly!`;

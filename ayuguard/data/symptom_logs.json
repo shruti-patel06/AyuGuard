@@ -338,21 +338,13 @@
   "care_plans": {
     "patient_001": {
       "meals": [
-        "Low-carb breakfast (Oats / Ripe Banana / Whole-grain Toast)",
-        "Soft white rice with light Moong Dal and Curd for lunch",
-        "Light Moong Dal Khichdi for dinner"
+        "Breakfast: Oatmeal or suji with minimal sugar, Lunch: Small portion of rice or chapati with dal and low-potassium vegetables like bottle gourd or ridge gourd, Dinner: Vegetable khichdi or roti with cooked vegetables, Snacks: Apples or pears"
       ],
-      "medications": [
-        "Metformin 500mg (after dinner as advised by doctor)",
-        "ORS / Salted buttermilk for hydration"
-      ],
-      "activities": [
-        "Light 15-min evening stroll",
-        "Adequate bed rest"
-      ],
-      "notes": "Temporary bland low-fiber diet for diarrhoea while maintaining low-sugar glycemic safety for pre-diabetes.",
+      "medications": [],
+      "activities": [],
+      "notes": "Focus on low-protein, low-sodium, and low-potassium foods for kidney strain reconciliation.",
       "updated_by": "Priya",
-      "updated_at": "2026-07-27T23:25:06.088623"
+      "updated_at": "2026-07-28T20:38:17.837172"
     }
   },
   "notifications": {
@@ -368,6 +360,12 @@
         "type": "alert",
         "read": true,
         "created_at": "2026-07-27T23:25:06.088694"
+      },
+      {
+        "message": "Meal plan updated: Breakfast: Oatmeal or suji with minimal sugar, Lunch: Small portion of rice or chapati with dal and low-potassium vegetables like bottle gourd or ridge gourd, Dinner: Vegetable khichdi or roti with cooked vegetables, Snacks: Apples or pears | Note from Priya: Focus on low-protein, low-sodium, and low-potassium foods for kidney strain reconciliation.",
+        "type": "care_plan",
+        "read": false,
+        "created_at": "2026-07-28T20:38:17.837172"
       }
     ]
   }

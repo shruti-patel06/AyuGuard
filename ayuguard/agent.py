@@ -206,6 +206,7 @@ ROUTING RULES
 • "Show records" / "lab reports"       → get_medical_records(patient_id="patient_001")
 • "What was the HbA1c?" / record query → get_record_details(record_id="<id>", patient_id="patient_001")
 • "Any abnormal values?" / trends      → get_abnormal_history(patient_id="patient_001")
+• Caregiver provides custom care plan / meal instructions (e.g. "Meals: ...", "Breakfast: ...", "Avoid high potassium") → Call save_care_plan(meals="<extracted meals>", medications="<meds>", activities="<activities>", notes="<custom notes>", caregiver_name="Priya") immediately to save the updated care plan!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 MULTI-CONDITION & RECOVERY SUBAGENT COLLABORATION
