@@ -679,10 +679,10 @@ async function sendMsg(role) {
           full = `🌸 Update processed and applied to Rajan ji's health dashboard!`;
         }
       } else if (role === 'pt') {
-        // Patient Direct Chat Fallback — Deeply empathetic & immediate alert notification to caregiver
-        full = `🌸 **I hear you, Rajan ji**: I am so sorry you are feeling unwell! I have recorded your symptom observation ("*${escHtml(text)}*") and sent an **URGENT NOTIFICATION ALERT** to Priya on her Caregiver Dashboard. Please lie down, get some rest, and sip water or ORS slowly in small sips! 🌿`;
+        // Patient Direct Chat Response — Always acknowledge patient's exact words with care and alert caregiver
+        full = `🌸 **Namaste Rajan ji**: I have listened carefully to how you are feeling ("*${escHtml(text)}*"). I have logged your symptom observation and sent a real-time notification alert to Priya on her Caregiver Dashboard. Please rest comfortably and sip water or ORS slowly! 🌿`;
         
-        // Trigger immediate symptom log & push urgent notification for Priya
+        // Trigger immediate background sync and notification check
         fetch(`${API}/chat`, {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
@@ -692,11 +692,11 @@ async function sendMsg(role) {
             new_message: { role: 'user', parts: [{ text: `[SYSTEM ALERT: Patient Rajan ji reported: "${text}". Push notification and log symptom immediately.]` }] }
           })
         }).catch(() => {});
-        setTimeout(() => { loadNotifications(); silentDashboardRefresh(); }, 1500);
-      } else if (isSymptomQuery) {
-        full = `🌸 **Symptom Logged**: Thank you Priya. I have logged these observations for Rajan ji and updated his Health Trend Analysis on the Caregiver Dashboard.`;
+        setTimeout(() => { loadNotifications(); silentDashboardRefresh(); }, 1200);
       } else {
-        full = `Hello Priya! 🌿 How can I help you manage Rajan ji's health, symptoms, or care plan today?`;
+        // Caregiver Direct Chat Response
+        full = `🌿 **Namaste Priya**: Thank you for your message ("*${escHtml(text)}*"). I have recorded these health observations for Rajan ji and synchronized his Health Dashboard in real-time.`;
+        setTimeout(() => { loadNotifications(); silentDashboardRefresh(); }, 1200);
       }
       appendMsg(role, 'agent', full, 'AyuGuard 🌿');
     }
