@@ -1,7 +1,7 @@
 # ──────────────────────────────────────────────────────────────
-#  Dockerfile.agent  —  AyuGuard ADK Agent Service
-#  Runs: adk web  (Google ADK development server)
-#  Port: $PORT (Cloud Run injects this, default 8000)
+#  Dockerfile.ui  —  AyuGuard FastAPI UI + Dashboard Service
+#  Runs: python ui/server.py
+#  Port: $PORT (Cloud Run injects this, default 8001)
 # ──────────────────────────────────────────────────────────────
 FROM python:3.11-slim
 
@@ -18,13 +18,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ayuguard/ ./ayuguard/
+COPY ui/ ./ui/
 COPY datasets/ ./datasets/
-COPY ayuguard/data/ ./ayuguard/data/
 
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
-ENV GOOGLE_GENAI_USE_VERTEXAI=TRUE
-ENV GOOGLE_CLOUD_PROJECT=silken-dogfish-484814-g9
-ENV GOOGLE_CLOUD_LOCATION=us-central1
 
-CMD ["sh", "-c", "adk web --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["python", "ui/server.py"]

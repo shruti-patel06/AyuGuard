@@ -141,6 +141,7 @@ $PROJECT_NUMBER = (& $GCLOUD projects describe $PROJECT_ID --format="value(proje
 & $GCLOUD projects add-iam-policy-binding $PROJECT_ID `
   --member="serviceAccount:$($PROJECT_NUMBER)-compute@developer.gserviceaccount.com" `
   --role="roles/secretmanager.secretAccessor" `
+  --condition=None `
   --quiet
 Write-Host "  Secret Accessor role granted successfully." -ForegroundColor Green
 
@@ -159,20 +160,20 @@ Write-Host "→ Configuring Docker authentication for Artifact Registry..." -For
 
 # ── 8. Build & Push Agent Image (Cloud Build) ───────────────────
 Write-Host "→ Building Agent image in Google Cloud Build..." -ForegroundColor Yellow
-Rename-Item -Path Dockerfile.agent -NewName Dockerfile
+Copy-Item -Path Dockerfile.agent -Destination Dockerfile -Force
 try {
     & $GCLOUD builds submit --tag "${REGISTRY}/ayuguard-agent:latest" --region $REGION --quiet .
 } finally {
-    Rename-Item -Path Dockerfile -NewName Dockerfile.agent
+    Remove-Item -Path Dockerfile -Force -ErrorAction SilentlyContinue
 }
 
 # ── 9. Build & Push UI Image (Cloud Build) ──────────────────────
 Write-Host "→ Building UI image in Google Cloud Build..." -ForegroundColor Yellow
-Rename-Item -Path Dockerfile.ui -NewName Dockerfile
+Copy-Item -Path Dockerfile.ui -Destination Dockerfile -Force
 try {
     & $GCLOUD builds submit --tag "${REGISTRY}/ayuguard-ui:latest" --region $REGION --quiet .
 } finally {
-    Rename-Item -Path Dockerfile -NewName Dockerfile.ui
+    Remove-Item -Path Dockerfile -Force -ErrorAction SilentlyContinue
 }
 
 # ── 10. Deploy Agent Service (Vertex AI backend — no API key needed) ──
@@ -212,6 +213,16 @@ Write-Host "→ Deploying ayuguard-ui (Public)..." -ForegroundColor Yellow
   --set-env-vars "ADK_BASE_URL=${AGENT_URL},GCS_BUCKET=${GCS_BUCKET},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=${VERTEX_LOCATION}" `
   --quiet
 
+# Get UI public URL
+$UI_URL = (& $GCLOUD run services describe ayuguard-ui --region $REGION --format "value(status.url)").Trim()
+
+Write-Host ""
+Write-Host "======================================================" -ForegroundColor Green
+Write-Host "  ✅ AyuGuard Deployed Successfully on Cloud Run!" -ForegroundColor Green
+Write-Host "======================================================" -ForegroundColor Green
+Write-Host "  🌐  UI URL  : $UI_URL" -ForegroundColor Green
+Write-Host "  🤖  Agent   : $AGENT_URL (internal)" -ForegroundColor Green
+Write-Host "======================================================" -ForegroundColor Green
 # Get UI public URL
 $UI_URL = (& $GCLOUD run services describe ayuguard-ui --region $REGION --format "value(status.url)").Trim()
 
