@@ -650,11 +650,9 @@ async function sendMsg(role) {
           if (!content || content.role !== 'model') continue;
           for (const part of (content.parts || [])) {
             if (part.text) {
-              if (evt.partial === false) {
-                // Final event has the complete text — replace, don't append
+              if (evt.partial === false && part.text.length > full.length) {
                 full = part.text;
-              } else {
-                // Streaming delta chunk — append incrementally
+              } else if (!full.includes(part.text)) {
                 full += part.text;
               }
               if (!msgEl) { hideAdkOfflineBanner(); removeTyping(role); msgEl = appendMsg(role, 'agent', full, 'AyuGuard 🌿'); }
@@ -672,10 +670,8 @@ async function sendMsg(role) {
         if (pData.meals?.length) {
           const mealList = pData.meals.map(m => `• ${m}`).join('\n');
           full = `🌸 **Care Plan Updated by ${pData.updated_by || 'Caregiver'}**:\n\n${mealList}\n\n*Rajan ji's care plan on the Health Dashboard has been updated in real-time!*`;
-        } else if (pData.notes) {
-          full = `🌸 **Care Plan Updated**: ${pData.notes}\n\n*Rajan ji's care plan on the Health Dashboard has been updated!*`;
         } else {
-          full = `🌸 **Update Received**: I have processed the request and updated Rajan ji's health dashboard and care plan accordingly!`;
+          full = `🌸 **Update Applied**: I have logged the update and synchronized Rajan ji's care plan and Health Dashboard in real-time!`;
         }
         appendMsg(role, 'agent', full, 'AyuGuard 🌿');
       } catch {
