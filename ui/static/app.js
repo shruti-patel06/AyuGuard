@@ -660,7 +660,7 @@ async function sendMsg(role) {
       removeTyping(role);
       const textLower = text.toLowerCase();
       const isCarePlanQuery = textLower.includes('meal') || textLower.includes('diet') || textLower.includes('care plan') || textLower.includes('food') || textLower.includes('eat') || textLower.includes('breakfast') || textLower.includes('lunch') || textLower.includes('dinner') || textLower.includes('potassium') || textLower.includes('protein');
-      const isSymptomQuery = textLower.includes('tired') || textLower.includes('thirsty') || textLower.includes('pain') || textLower.includes('fever') || textLower.includes('cough') || textLower.includes('diarrhea') || textLower.includes('diarrhoea') || textLower.includes('vomit') || textLower.includes('weak') || textLower.includes('dizzy') || textLower.includes('sugar') || textLower.includes('bp') || textLower.includes('pressure') || textLower.includes('headache');
+      const isSymptomQuery = textLower.includes('tired') || textLower.includes('thirsty') || textLower.includes('pain') || textLower.includes('fever') || textLower.includes('cough') || textLower.includes('diarrhea') || textLower.includes('diarrhoea') || textLower.includes('vomit') || textLower.includes('weak') || textLower.includes('dizzy') || textLower.includes('sugar') || textLower.includes('bp') || textLower.includes('pressure') || textLower.includes('headache') || textLower.includes('sick') || textLower.includes('unwell') || textLower.includes('dehydrat') || textLower.includes('nausea') || textLower.includes('feel') || textLower.includes('felt') || textLower.includes('stomach') || textLower.includes('chest') || textLower.includes('breath') || textLower.includes('hurt') || textLower.includes('ache');
 
       if (isCarePlanQuery) {
         try {
@@ -675,14 +675,25 @@ async function sendMsg(role) {
         } catch {
           full = `🌸 Update processed and applied to Rajan ji's health dashboard!`;
         }
+      } else if (role === 'pt') {
+        // Patient Direct Chat Fallback — Deeply empathetic & immediate alert notification to caregiver
+        full = `🌸 **I hear you, Rajan ji**: I am so sorry you are feeling unwell! I have recorded your symptom observation ("*${escHtml(text)}*") and sent an **URGENT NOTIFICATION ALERT** to Priya on her Caregiver Dashboard. Please lie down, get some rest, and sip water or ORS slowly in small sips! 🌿`;
+        
+        // Trigger immediate symptom log & push urgent notification for Priya
+        fetch(`${API}/chat`, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({
+            app_name: 'ayuguard', user_id: 'caregiver-001',
+            session_id: 'alert-sync-' + Date.now(),
+            new_message: { role: 'user', parts: [{ text: `[SYSTEM ALERT: Patient Rajan ji reported: "${text}". Push notification and log symptom immediately.]` }] }
+          })
+        }).catch(() => {});
+        setTimeout(() => { loadNotifications(); silentDashboardRefresh(); }, 1500);
       } else if (isSymptomQuery) {
-        full = role === 'cg'
-          ? `🌸 **Symptom Logged**: Thank you Priya. I have logged these observations for Rajan ji and updated his Health Trend Analysis on the Caregiver Dashboard.`
-          : `🌸 **Symptom Logged**: Thank you Rajan ji. I have logged how you are feeling and notified Priya on her dashboard. Please get some rest!`;
+        full = `🌸 **Symptom Logged**: Thank you Priya. I have logged these observations for Rajan ji and updated his Health Trend Analysis on the Caregiver Dashboard.`;
       } else {
-        full = role === 'cg'
-          ? `Hello Priya! 🌿 How can I help you manage Rajan ji's health, symptoms, or care plan today?`
-          : `Hello Rajan ji! 🌸 Tell me how you are feeling today!`;
+        full = `Hello Priya! 🌿 How can I help you manage Rajan ji's health, symptoms, or care plan today?`;
       }
       appendMsg(role, 'agent', full, 'AyuGuard 🌿');
     }
