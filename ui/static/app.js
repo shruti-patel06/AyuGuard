@@ -305,6 +305,9 @@ function setMode(mode) {
   document.getElementById('view-records').style.display   = mode === 'records'   ? 'flex' : 'none';
   if (mode === 'dashboard') loadDashboard();
   if (mode === 'records')   loadRecords();
+  
+  // Instant notification pop-up check when opening Priya's caregiver or Patient's view
+  loadNotifications();
 }
 
 /* ── Dashboard Data ────────────────────────────────────────────── */
@@ -813,19 +816,16 @@ async function loadNotifications() {
       }
     }
 
-    // Trigger Pop-up Toast for newly arrived unread notifications
+    // Trigger Pop-up Toast for unread notifications whenever interface is opened or loaded
     for (const n of notifs) {
       const nId = n.id || (n.created_at + n.message);
-      if (!seenNotifIds.has(nId)) {
+      if (!n.read && !seenNotifIds.has(nId)) {
         seenNotifIds.add(nId);
-        if (!isInitialNotifLoad && !n.read) {
-          // Automatic pop-up Toast notification
-          showToast(`🔔 ${n.message}`);
-          silentDashboardRefresh(); // Live update dashboard without manual click
-        }
+        // Automatic pop-up Toast notification
+        showToast(`🔔 ${n.message}`);
+        silentDashboardRefresh(); // Live update dashboard without manual click
       }
     }
-    isInitialNotifLoad = false;
   } catch (e) {
     console.warn('Could not load notifications:', e);
   }
