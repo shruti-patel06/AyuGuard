@@ -664,19 +664,27 @@ async function sendMsg(role) {
     }
     if (!full) {
       removeTyping(role);
-      try {
-        const pRes = await fetch(`${API}/care-plan`);
-        const pData = await pRes.json();
-        if (pData.meals?.length) {
-          const mealList = pData.meals.map(m => `• ${m}`).join('\n');
-          full = `🌸 **Care Plan Updated by ${pData.updated_by || 'Caregiver'}**:\n\n${mealList}\n\n*Rajan ji's care plan on the Health Dashboard has been updated in real-time!*`;
-        } else {
-          full = `🌸 **Update Applied**: I have logged the update and synchronized Rajan ji's care plan and Health Dashboard in real-time!`;
+      const textLower = text.toLowerCase();
+      const isCarePlanQuery = textLower.includes('meal') || textLower.includes('diet') || textLower.includes('care plan') || textLower.includes('food') || textLower.includes('eat') || textLower.includes('breakfast') || textLower.includes('lunch') || textLower.includes('dinner') || textLower.includes('potassium') || textLower.includes('protein');
+      if (isCarePlanQuery) {
+        try {
+          const pRes = await fetch(`${API}/care-plan`);
+          const pData = await pRes.json();
+          if (pData.meals?.length) {
+            const mealList = pData.meals.map(m => `• ${m}`).join('\n');
+            full = `🌸 **Care Plan Updated by ${pData.updated_by || 'Caregiver'}**:\n\n${mealList}\n\n*Rajan ji's care plan on the Health Dashboard has been updated in real-time!*`;
+          } else {
+            full = `🌸 **Update Applied**: I have logged the update and synchronized Rajan ji's care plan and Health Dashboard in real-time!`;
+          }
+        } catch {
+          full = `🌸 Update processed and applied to Rajan ji's health dashboard!`;
         }
-        appendMsg(role, 'agent', full, 'AyuGuard 🌿');
-      } catch {
-        appendMsg(role, 'agent', '🌸 Update processed and applied to Rajan ji\'s health dashboard!', 'AyuGuard 🌿');
+      } else {
+        full = role === 'cg'
+          ? `Hello Priya! 🌿 How can I help you manage Rajan ji's health, symptoms, or care plan today?`
+          : `Hello Rajan ji! 🌸 Tell me how you are feeling today!`;
       }
+      appendMsg(role, 'agent', full, 'AyuGuard 🌿');
     }
   } catch (e) {
     removeTyping(role);
