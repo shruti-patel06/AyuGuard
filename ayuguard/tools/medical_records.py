@@ -130,10 +130,16 @@ def analyse_and_store_record(
     analysis = {}
     raw_text = ""
 
-    if api_key:
+    use_vertex = os.environ.get("GOOGLE_GENAI_USE_VERTEXAI", "").upper() == "TRUE"
+    if use_vertex or api_key:
         try:
             import google.genai as genai
-            client = genai.Client(api_key=api_key)
+            if use_vertex:
+                project = os.environ.get("GOOGLE_CLOUD_PROJECT", "silken-dogfish-484814-g9")
+                location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+                client = genai.Client(vertexai=True, project=project, location=location)
+            else:
+                client = genai.Client(api_key=api_key)
 
             if suffix == ".pdf":
                 raw_text = _extract_pdf_text(path)

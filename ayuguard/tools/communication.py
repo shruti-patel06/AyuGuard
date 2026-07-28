@@ -64,14 +64,19 @@ def generate_caregiver_message(
     Returns:
         A warm plain-text message string that uses both names throughout.
     """
-    api_key = os.environ.get("GOOGLE_API_KEY")
-    if not api_key:
-        return (
-            "I've noted this symptom and AyuGuard is watching the pattern. "
-            "Please ensure your GOOGLE_API_KEY is set. Take care and stay well. 🌸"
-        )
-
-    client = genai.Client(api_key=api_key)
+    use_vertex = os.environ.get("GOOGLE_GENAI_USE_VERTEXAI", "").upper() == "TRUE"
+    if use_vertex:
+        project = os.environ.get("GOOGLE_CLOUD_PROJECT", "silken-dogfish-484814-g9")
+        location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+        client = genai.Client(vertexai=True, project=project, location=location)
+    else:
+        api_key = os.environ.get("GOOGLE_API_KEY")
+        if not api_key:
+            return (
+                "I've noted this symptom and AyuGuard is watching the pattern. "
+                "Please ensure your GOOGLE_API_KEY or Vertex AI credentials are set. Take care and stay well. 🌸"
+            )
+        client = genai.Client(api_key=api_key)
 
     name_context = ""
     if caregiver_name:
