@@ -226,9 +226,10 @@ async def chat_proxy(request: Request):
                 else:
                     context_instruction = (
                         "[SYSTEM CONTEXT: Active user is PRIYA (the caregiver). "
-                        "Always greet and address her directly as Priya! "
+                        "ALWAYS start your response addressing her directly by name as 'Namaste Priya! 🌿' or 'Priya,'. "
                         "Her father's name is Rajan Sharma (refer to him as Rajan ji or her dad). "
-                        "NEVER address Priya as Rajan ji. You are talking to Priya.]\n\n"
+                        "NEVER address Priya as Rajan ji. You are talking to Priya. "
+                        "Provide a complete, clear, single-occurrence non-repetitive response explaining care recommendations.]\n\n"
                     )
                 part["text"] = context_instruction + raw_user_text
 

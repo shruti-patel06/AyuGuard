@@ -145,6 +145,13 @@ def compute_trend_score(patient_id: str) -> dict:
     avg_severity = pattern["avg_severity"]
     urgency = compute_urgency(similarity, persistence_days, avg_severity)
 
+    # Emergency Safeguard: Immediate escalation for acute red-flag symptoms
+    sym_text_lower = " ".join(pattern["symptom_text"]).lower()
+    red_flags = ("chest", "arm", "numb", "sweat", "breath", "unconscious", "faint", "stroke", "heart", "clutch")
+    if any(rf in sym_text_lower for rf in red_flags):
+        urgency = "escalate"
+        similarity = max(similarity, 0.85)
+
     composite = (
         similarity * 0.50
         + min(persistence_days / 14.0, 1.0) * 0.30
