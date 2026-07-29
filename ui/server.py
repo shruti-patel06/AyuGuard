@@ -138,6 +138,25 @@ async def api_care_plan(patient_id: str = "patient_001"):
     return JSONResponse(content=plan)
 
 
+@app.post("/api/care-plan")
+async def save_api_care_plan(request: Request):
+    """Update caregiver care plan (meals, meds, activities)."""
+    body = await request.json()
+    patient_id = body.get("patient_id", "patient_001")
+    meal_plan = body.get("meal_plan", [])
+    medications = body.get("medications", [])
+    activities = body.get("activities", [])
+    updated_by = body.get("updated_by", "Priya")
+    result = save_care_plan(
+        patient_id=patient_id,
+        meal_plan=meal_plan,
+        medications=medications,
+        activities=activities,
+        updated_by=updated_by,
+    )
+    return JSONResponse(content=result)
+
+
 @app.get("/api/notifications")
 async def api_notifications(
     patient_id: str = "patient_001",
@@ -261,7 +280,9 @@ async def chat_proxy(request: Request):
                     else:
                         async for line in resp.aiter_lines():
                             if line:
-                                yield (line + "\n\n").encode()
+                                import re
+                                clean_line = re.sub(r"<ctrl\d+>", "", line)
+                                yield (clean_line + "\n\n").encode()
             except Exception as exc:
                 recreate_needed = True
                 print(f"Initial stream connection failed: {exc}")

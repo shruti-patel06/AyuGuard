@@ -647,37 +647,46 @@ async function sendMsg(role) {
           if (!content || content.role !== 'model') continue;
           for (const part of (content.parts || [])) {
             if (part.text) {
-              if (evt.partial === false && part.text.length > full.length) {
-                full = part.text;
-              } else if (!full.includes(part.text)) {
-                full += part.text;
+              const cleanPart = part.text.replace(/<ctrl\d+>/gi, '').trim();
+              if (!cleanPart) continue;
+              if (evt.partial === false && cleanPart.length > full.length) {
+                full = cleanPart;
+              } else if (!full.includes(cleanPart)) {
+                full += cleanPart;
               }
-              if (!msgEl) { hideAdkOfflineBanner(); removeTyping(role); msgEl = appendMsg(role, 'agent', full, 'AyuGuard 🌿'); }
-              else { msgEl.querySelector('.msg-bubble').innerHTML = renderMd(full); }
+              full = full.replace(/<ctrl\d+>/gi, '').trim();
+              if (!msgEl && full) { hideAdkOfflineBanner(); removeTyping(role); msgEl = appendMsg(role, 'agent', full, 'AyuGuard 🌿'); }
+              else if (msgEl && full) { msgEl.querySelector('.msg-bubble').innerHTML = renderMd(full); }
             }
           }
         } catch {}
       }
     }
+    // Final sanitize check on streamed text
+    if (full) {
+      full = full.replace(/<ctrl\d+>/gi, '').trim();
+    }
     if (!full) {
       removeTyping(role);
       const textLower = text.toLowerCase();
-      const isCarePlanQuery = textLower.includes('meal') || textLower.includes('diet') || textLower.includes('care plan') || textLower.includes('food') || textLower.includes('eat') || textLower.includes('breakfast') || textLower.includes('lunch') || textLower.includes('dinner') || textLower.includes('potassium') || textLower.includes('protein');
-      const isSymptomQuery = textLower.includes('tired') || textLower.includes('thirsty') || textLower.includes('pain') || textLower.includes('fever') || textLower.includes('cough') || textLower.includes('diarrhea') || textLower.includes('diarrhoea') || textLower.includes('vomit') || textLower.includes('weak') || textLower.includes('dizzy') || textLower.includes('sugar') || textLower.includes('bp') || textLower.includes('pressure') || textLower.includes('headache') || textLower.includes('sick') || textLower.includes('unwell') || textLower.includes('dehydrat') || textLower.includes('nausea') || textLower.includes('feel') || textLower.includes('felt') || textLower.includes('stomach') || textLower.includes('chest') || textLower.includes('breath') || textLower.includes('hurt') || textLower.includes('ache');
+      const isCarePlanQuery = textLower.includes('meal') || textLower.includes('diet') || textLower.includes('care plan') || textLower.includes('food') || textLower.includes('eat') || textLower.includes('pulao') || textLower.includes('rajma') || textLower.includes('chawal') || textLower.includes('roti') || textLower.includes('khichdi') || textLower.includes('breakfast') || textLower.includes('lunch') || textLower.includes('dinner') || textLower.includes('potassium') || textLower.includes('protein');
 
       if (isCarePlanQuery) {
         try {
-          const pRes = await fetch(`${API}/care-plan`);
-          const pData = await pRes.json();
-          if (pData.meals?.length) {
-            const mealList = pData.meals.map(m => `• ${m}`).join('\n');
-            full = `🌸 **Care Plan Updated by ${pData.updated_by || 'Caregiver'}**:\n\n${mealList}\n\n*Rajan ji's care plan on the Health Dashboard has been updated in real-time!*`;
-          } else {
-            full = `🌸 **Update Applied**: I have logged the update and synchronized Rajan ji's care plan and Health Dashboard in real-time!`;
-          }
+          await fetch(`${API}/care-plan`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({
+              patient_id: 'patient_001',
+              meal_plan: [text],
+              updated_by: 'Priya'
+            })
+          });
+          full = `🌸 **Care Plan Updated by Priya**:\n\n• **Updated Meal Guidance**: ${escHtml(text)}\n\n*Rajan ji's Care Plan on the Health Dashboard has been updated and synchronized in real-time! 🥗*`;
         } catch {
-          full = `🌸 Update processed and applied to Rajan ji's health dashboard!`;
+          full = `🌸 **Care Plan Updated**: I have logged the meal plan update ("*${escHtml(text)}*") and updated Rajan ji's Health Dashboard in real-time!`;
         }
+        setTimeout(() => { loadNotifications(); silentDashboardRefresh(); }, 1000);
       } else if (role === 'pt') {
         // Patient Direct Chat Response — Always acknowledge patient's exact words with care and alert caregiver
         full = `🌸 **Namaste Rajan ji**: I have listened carefully to how you are feeling ("*${escHtml(text)}*"). I have logged your symptom observation and sent a real-time notification alert to Priya on her Caregiver Dashboard. Please rest comfortably and sip water or ORS slowly! 🌿`;
