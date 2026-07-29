@@ -7,7 +7,7 @@
         {
           "symptom": "fatigue",
           "severity": "mild",
-          "date": "2026-07-15",
+          "date": "2026-07-16",
           "source": "log",
           "notes": "test entry",
           "stored_at": "2026-07-05T21:25:30.367605"
@@ -15,7 +15,7 @@
         {
           "symptom": "increased thirst",
           "severity": "mild",
-          "date": "2026-07-17",
+          "date": "2026-07-18",
           "source": "log",
           "notes": "test entry",
           "stored_at": "2026-07-05T21:25:30.367644"
@@ -23,7 +23,7 @@
         {
           "symptom": "fatigue",
           "severity": "mild",
-          "date": "2026-07-19",
+          "date": "2026-07-20",
           "source": "log",
           "notes": "test entry",
           "stored_at": "2026-07-05T21:25:30.367670"
@@ -31,7 +31,7 @@
         {
           "symptom": "increased thirst",
           "severity": "mild",
-          "date": "2026-07-20",
+          "date": "2026-07-21",
           "source": "log",
           "notes": "test entry",
           "stored_at": "2026-07-05T21:25:30.367691"
@@ -39,7 +39,7 @@
         {
           "symptom": "blurry vision",
           "severity": "mild",
-          "date": "2026-07-21",
+          "date": "2026-07-22",
           "source": "log",
           "notes": "test entry",
           "stored_at": "2026-07-05T21:25:30.367712"
@@ -47,7 +47,7 @@
         {
           "symptom": "weight loss",
           "severity": "mild",
-          "date": "2026-07-22",
+          "date": "2026-07-23",
           "source": "log",
           "notes": "test entry",
           "stored_at": "2026-07-05T21:25:30.367742"
@@ -55,7 +55,7 @@
         {
           "symptom": "fatigue",
           "severity": "mild",
-          "date": "2026-07-24",
+          "date": "2026-07-25",
           "source": "log",
           "notes": "test entry",
           "stored_at": "2026-07-05T21:25:30.367761"
@@ -63,7 +63,7 @@
         {
           "symptom": "increased thirst",
           "severity": "mild",
-          "date": "2026-07-25",
+          "date": "2026-07-26",
           "source": "log",
           "notes": "test entry",
           "stored_at": "2026-07-05T21:25:30.367780"
@@ -71,7 +71,7 @@
         {
           "symptom": "frequent urination",
           "severity": "mild",
-          "date": "2026-07-26",
+          "date": "2026-07-27",
           "source": "log",
           "notes": "test entry",
           "stored_at": "2026-07-05T21:25:30.367797"
@@ -79,7 +79,7 @@
         {
           "symptom": "fatigue",
           "severity": "mild",
-          "date": "2026-07-28",
+          "date": "2026-07-29",
           "source": "log",
           "notes": "test entry",
           "stored_at": "2026-07-05T21:25:30.367817"
@@ -94,7 +94,7 @@
         {
           "symptom": "fatigue",
           "severity": "mild",
-          "date": "2026-07-15",
+          "date": "2026-07-16",
           "source": "log",
           "notes": "Dad seemed tired today, went to bed early after dinner",
           "stored_at": "2026-07-15T12:00:00.000000"
@@ -102,7 +102,7 @@
         {
           "symptom": "increased thirst",
           "severity": "mild",
-          "date": "2026-07-16",
+          "date": "2026-07-17",
           "source": "log",
           "notes": "He drank a lot of water today — refilled his bottle twice",
           "stored_at": "2026-07-16T12:00:00.000000"
@@ -110,7 +110,7 @@
         {
           "symptom": "fatigue",
           "severity": "mild",
-          "date": "2026-07-17",
+          "date": "2026-07-18",
           "source": "log",
           "notes": "Still tired, slept an extra hour in the afternoon",
           "stored_at": "2026-07-17T12:00:00.000000"
@@ -118,7 +118,7 @@
         {
           "symptom": "increased thirst",
           "severity": "mild",
-          "date": "2026-07-18",
+          "date": "2026-07-19",
           "source": "log",
           "notes": "Very thirsty again, kept asking for water",
           "stored_at": "2026-07-18T12:00:00.000000"
@@ -126,7 +126,7 @@
         {
           "symptom": "blurry vision",
           "severity": "mild",
-          "date": "2026-07-19",
+          "date": "2026-07-20",
           "source": "log",
           "notes": "Mentioned his vision was a bit blurry while reading newspaper",
           "stored_at": "2026-07-19T12:00:00.000000"
@@ -134,7 +134,7 @@
         {
           "symptom": "weight loss",
           "severity": "mild",
-          "date": "2026-07-20",
+          "date": "2026-07-21",
           "source": "log",
           "notes": "Weight down roughly 1 kg compared to last week",
           "stored_at": "2026-07-20T12:00:00.000000"
@@ -142,7 +142,7 @@
         {
           "symptom": "fatigue",
           "severity": "mild",
-          "date": "2026-07-21",
+          "date": "2026-07-22",
           "source": "log",
           "notes": "Low energy, did not want to go for his evening walk",
           "stored_at": "2026-07-21T12:00:00.000000"
@@ -150,7 +150,7 @@
         {
           "symptom": "increased thirst",
           "severity": "mild",
-          "date": "2026-07-22",
+          "date": "2026-07-23",
           "source": "log",
           "notes": "Thirsty again — had 6-7 glasses of water through the day",
           "stored_at": "2026-07-22T12:00:00.000000"
@@ -158,7 +158,7 @@
         {
           "symptom": "frequent urination",
           "severity": "mild",
-          "date": "2026-07-23",
+          "date": "2026-07-24",
           "source": "log",
           "notes": "Bathroom trips more often than usual, including at night",
           "stored_at": "2026-07-23T12:00:00.000000"
@@ -166,7 +166,7 @@
         {
           "symptom": "fatigue",
           "severity": "moderate",
-          "date": "2026-07-24",
+          "date": "2026-07-25",
           "source": "log",
           "notes": "Very tired today, skipped lunch, felt weak",
           "stored_at": "2026-07-24T12:00:00.000000"
@@ -174,7 +174,7 @@
         {
           "symptom": "blurry vision",
           "severity": "mild",
-          "date": "2026-07-25",
+          "date": "2026-07-26",
           "source": "log",
           "notes": "Eyes bothering him again while reading",
           "stored_at": "2026-07-25T12:00:00.000000"
@@ -182,7 +182,7 @@
         {
           "symptom": "frequent urination",
           "severity": "mild",
-          "date": "2026-07-26",
+          "date": "2026-07-27",
           "source": "log",
           "notes": "Had to get up 3 times at night",
           "stored_at": "2026-07-26T12:00:00.000000"
@@ -190,7 +190,7 @@
         {
           "symptom": "fatigue",
           "severity": "moderate",
-          "date": "2026-07-27",
+          "date": "2026-07-28",
           "source": "log",
           "notes": "Dad was very tired and very thirsty today",
           "stored_at": "2026-07-27T12:00:00.000000"
@@ -198,7 +198,7 @@
         {
           "symptom": "increased thirst",
           "severity": "moderate",
-          "date": "2026-07-27",
+          "date": "2026-07-28",
           "source": "log",
           "notes": "Dad was very tired and very thirsty today",
           "stored_at": "2026-07-27T12:00:00.000000"
@@ -206,7 +206,7 @@
         {
           "symptom": "diarrhoea",
           "severity": "moderate",
-          "date": "2026-07-27",
+          "date": "2026-07-28",
           "source": "log",
           "notes": "Acute diarrhoea onset yesterday",
           "stored_at": "2026-07-27T12:00:00.000000"
@@ -214,7 +214,7 @@
         {
           "symptom": "recovery",
           "severity": "mild",
-          "date": "2026-07-28",
+          "date": "2026-07-29",
           "source": "log",
           "notes": "Diarrhoea much better today, appetite returning, dad feeling hungry again",
           "stored_at": "2026-07-28T12:00:00.000000"
@@ -222,10 +222,24 @@
         {
           "symptom": "vomiting",
           "severity": "moderate",
-          "date": "2026-07-28",
+          "date": "2026-07-29",
           "source": "log",
           "notes": "I vomitted again today",
           "stored_at": "2026-07-28T23:38:22.961250"
+        },
+        {
+          "symptom": "chest pain",
+          "severity": "severe",
+          "notes": "Dad is sweating heavily, clutching his chest, and says his left arm feels numb",
+          "date": "2026-07-29",
+          "stored_at": "2026-07-28T23:45:22.731407"
+        },
+        {
+          "symptom": "chest pain",
+          "severity": "severe",
+          "notes": "Dad is sweating heavily, clutching his chest, and says his left arm feels numb",
+          "date": "2026-07-29",
+          "stored_at": "2026-07-28T23:45:43.107679"
         }
       ]
     }
@@ -254,13 +268,17 @@
   "care_plans": {
     "patient_001": {
       "meals": [
-        "Breakfast: Oatmeal or suji with minimal sugar, Lunch: Small portion of rice or chapati with dal and low-potassium vegetables like bottle gourd or ridge gourd, Dinner: Vegetable khichdi or roti with cooked vegetables, Snacks: Apples or pears"
+        "Vegetable Pulao with low-GI rice for dinner"
       ],
-      "medications": [],
-      "activities": [],
-      "notes": "Focus on low-protein, low-sodium, and low-potassium foods for kidney strain reconciliation.",
+      "medications": [
+        "Metformin 500mg after dinner"
+      ],
+      "activities": [
+        "15 min walk after dinner"
+      ],
+      "notes": "Custom meal plan set by caregiver (1 items).",
       "updated_by": "Priya",
-      "updated_at": "2026-07-28T20:38:17.837172"
+      "updated_at": "2026-07-29T13:49:41.682114"
     }
   },
   "notifications": {
@@ -288,6 +306,28 @@
         "from": "Rajan Sharma",
         "read": false,
         "created_at": "2026-07-28T23:38:22.961317"
+      },
+      {
+        "id": "148014ad-0995-4142-83c7-6e6f801aa75d",
+        "message": "🚨 Symptom recorded for Rajan ji: Chest Pain (severe severity) — Dad is sweating heavily, clutching his chest, and says his left arm feels numb",
+        "type": "alert",
+        "from": "Rajan Sharma",
+        "read": false,
+        "created_at": "2026-07-28T23:45:22.731446"
+      },
+      {
+        "id": "385eb1cd-e153-4eff-aee7-4c549c3c75d0",
+        "message": "🚨 Symptom recorded for Rajan ji: Chest Pain (severe severity) — Dad is sweating heavily, clutching his chest, and says his left arm feels numb",
+        "type": "alert",
+        "from": "Rajan Sharma",
+        "read": false,
+        "created_at": "2026-07-28T23:45:43.107714"
+      },
+      {
+        "message": "Meal plan updated: Vegetable Pulao with low-GI rice for dinner | Medications: Metformin 500mg after dinner | Activities: 15 min walk after dinner | Note from Priya: Custom meal plan set by caregiver (1 items).",
+        "type": "care_plan",
+        "read": false,
+        "created_at": "2026-07-29T13:49:41.682114"
       }
     ]
   }

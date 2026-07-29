@@ -149,10 +149,10 @@ async def save_api_care_plan(request: Request):
     updated_by = body.get("updated_by", "Priya")
     result = save_care_plan(
         patient_id=patient_id,
-        meal_plan=meal_plan,
+        meals=meal_plan,
         medications=medications,
         activities=activities,
-        updated_by=updated_by,
+        caregiver_name=updated_by,
     )
     return JSONResponse(content=result)
 
