@@ -394,16 +394,26 @@ async function checkPatientNotifications() {
 function renderPatientNotifs(notifs) {
   const tray = document.getElementById('pt-notif-tray');
   if (!tray) return;
-  if (!notifs.length) { tray.innerHTML = ''; return; }
-  // Map notification types to calm icons and titles
+  
+  // Filter out symptom alert notifications (which belong on Caregiver Priya's view)
+  // Patient tray ONLY shows Care Plan Updates from Priya (care_plan type)
+  const patientNotifs = (notifs || []).filter(n => n.type === 'care_plan' && !n.read);
+  if (!patientNotifs.length) { tray.innerHTML = ''; return; }
+
+  // Deduplicate by message and take ONLY the 1 latest unique care plan update so screen NEVER floods
+  const uniqueMap = new Map();
+  for (const n of patientNotifs) {
+    if (!uniqueMap.has(n.message)) uniqueMap.set(n.message, n);
+  }
+  const displayNotifs = Array.from(uniqueMap.values()).slice(0, 1);
+
   const typeMap = {
-    care_plan: { icon: '🥗', from: 'Care plan update from your caregiver' },
-    alert:     { icon: '💙', from: 'A message for you' },
-    default:   { icon: '🌿', from: 'From your care team' },
+    care_plan: { icon: '🥗', from: 'CARE PLAN UPDATE FROM YOUR CAREGIVER' },
+    default:   { icon: '🌿', from: 'FROM YOUR CARE TEAM' },
   };
-  tray.innerHTML = notifs.map((n, idx) => {
+
+  tray.innerHTML = displayNotifs.map((n, idx) => {
     const t = typeMap[n.type] || typeMap.default;
-    // Convert alarming language to calming language
     const calmMsg = (n.message || '')
       .replace(/urgent|URGENT/gi, 'important')
       .replace(/critical|CRITICAL/gi, 'noteworthy')
@@ -778,8 +788,14 @@ async function loadNotifications() {
   try {
     const res = await fetch(`${API}/notifications?patient_id=patient_001`);
     const data = await res.json();
-    const notifs = data.notifications || [];
-    const unreadCount = data.unread_count || 0;
+    const rawNotifs = data.notifications || [];
+    // Deduplicate notifications by message text to eliminate notification floods
+    const uniqueNotifMap = new Map();
+    for (const n of rawNotifs) {
+      if (!uniqueNotifMap.has(n.message)) uniqueNotifMap.set(n.message, n);
+    }
+    const notifs = Array.from(uniqueNotifMap.values());
+    const unreadCount = notifs.filter(n => !n.read).length;
 
     // Update unread count badge on bell icon
     const badge = document.getElementById('notif-badge');
