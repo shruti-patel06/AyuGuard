@@ -268,17 +268,21 @@
   "care_plans": {
     "patient_001": {
       "meals": [
-        "Vegetable Pulao with low-GI rice for dinner"
+        "Breakfast: Oatmeal or suji with minimal sugar",
+        "Lunch: Small portion of rice or chapati with dal and low-potassium vegetables",
+        "Dinner: Vegetable Pulao with low-GI rice and mild spices",
+        "Snacks: Apples or pears"
       ],
       "medications": [
-        "Metformin 500mg after dinner"
+        "Metformin 500mg after dinner",
+        "Multivitamin in morning"
       ],
       "activities": [
-        "15 min walk after dinner"
+        "15 min gentle walk after dinner"
       ],
-      "notes": "Custom meal plan set by caregiver (1 items).",
+      "notes": "Choice of Vegetable Pulao confirmed by Priya for today's dinner.",
       "updated_by": "Priya",
-      "updated_at": "2026-07-29T13:49:41.682114"
+      "updated_at": "2026-07-29T13:56:43.883109"
     }
   },
   "notifications": {
@@ -328,6 +332,12 @@
         "type": "care_plan",
         "read": false,
         "created_at": "2026-07-29T13:49:41.682114"
+      },
+      {
+        "message": "Meal plan updated: Breakfast: Oatmeal or suji with minimal sugar, Lunch: Small portion of rice or chapati with dal and low-potassium vegetables | Medications: Metformin 500mg after dinner, Multivitamin in morning | Activities: 15 min gentle walk after dinner | Note from Priya: Choice of Vegetable Pulao confirmed by Priya for today's dinner.",
+        "type": "care_plan",
+        "read": false,
+        "created_at": "2026-07-29T13:56:43.883109"
       }
     ]
   }

@@ -39,7 +39,15 @@ def get_care_plan(patient_id: str = "patient_001") -> dict:
           - updated_by: str — caregiver name
           - updated_at: str — ISO datetime
     """
-    # Try Firestore first
+    # Check local JSON store first (primary for instant live updates)
+    store = _load_store()
+    plans = store.get("care_plans", {})
+    plan = plans.get(patient_id)
+    if plan and plan.get("meals"):
+        plan["status"] = "found"
+        return plan
+
+    # Fallback to Firestore if local store is empty
     try:
         from ayuguard.firebase_client import get_firestore_client
         db = get_firestore_client()
@@ -53,22 +61,15 @@ def get_care_plan(patient_id: str = "patient_001") -> dict:
     except Exception:
         pass
 
-    # Fallback: local JSON
-    store = _load_store()
-    plans = store.get("care_plans", {})
-    plan = plans.get(patient_id)
-    if not plan:
-        return {
-            "status": "not_found",
-            "meals": [],
-            "medications": [],
-            "activities": [],
-            "notes": "",
-            "updated_by": "",
-            "updated_at": None,
-        }
-    plan["status"] = "found"
-    return plan
+    return plan or {
+        "status": "not_found",
+        "meals": [],
+        "medications": [],
+        "activities": [],
+        "notes": "",
+        "updated_by": "",
+        "updated_at": None,
+    }
 
 
 def save_care_plan(
