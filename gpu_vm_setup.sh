@@ -1,63 +1,46 @@
 #!/bin/bash
 # ============================================================
-# AyuGuard — Google Cloud GPU VM Setup Script
-# NVIDIA T4 GPU + NVIDIA RAPIDS cuDF
+# AyuGuard — GPU VM Quick Setup (pip-based, CUDA 12.x / L4)
 # ============================================================
-# Run this ONCE on the GPU VM after it is created.
-# Usage:
-#   chmod +x gpu_vm_setup.sh
-#   ./gpu_vm_setup.sh
-# ============================================================
-
 set -e
+
+VM_ZONE="asia-southeast1-b"
+REPO="https://github.com/shruti-patel06/AyuGuard.git"
+APP_DIR="$HOME/ayuguard-care-platform"
+
 echo "=================================================="
-echo "  AyuGuard GPU VM Setup — NVIDIA RAPIDS cuDF"
+echo "  AyuGuard GPU Analytics — Quick Setup (L4/pip)"
 echo "=================================================="
 
-# Step 1: Update system
-echo "[1/7] Updating system packages..."
-sudo apt-get update -q && sudo apt-get upgrade -yq
+# 1 — Verify GPU
+echo "[1/6] Verifying NVIDIA GPU..."
+nvidia-smi || { echo "ERROR: nvidia-smi not found. Use a Deep Learning VM image."; exit 1; }
+echo "   ✅ GPU detected."
 
-# Step 2: Install CUDA Toolkit (if not present)
-echo "[2/7] Checking NVIDIA CUDA..."
-if ! command -v nvidia-smi &> /dev/null; then
-    echo "   nvidia-smi not found. Please use a Deep Learning VM image with CUDA pre-installed."
-    echo "   Recommended: 'pytorch-latest-gpu' or 'common-cu121' image family."
-    exit 1
-fi
-nvidia-smi
-echo "   ✅ CUDA/GPU detected."
+# 2 — Install Python deps via pip (fast, no conda needed)
+echo "[2/6] Installing dependencies via pip..."
+pip install --quiet --upgrade pip
+pip install --quiet \
+    "cudf-cu12==24.12.*" \
+    --extra-index-url=https://pypi.nvidia.com \
+    || echo "   ⚠️  cudf-cu12 install failed — will use CPU fallback"
+pip install --quiet fastapi uvicorn[standard] httpx numpy pandas
 
-# Step 3: Install Miniconda (if not present)
-echo "[3/7] Setting up Conda..."
-if ! command -v conda &> /dev/null; then
-    wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh
-    bash /tmp/miniconda.sh -b -p $HOME/miniconda3
-    eval "$($HOME/miniconda3/bin/conda shell.bash hook)"
-    conda init bash
-    source ~/.bashrc
-fi
-echo "   ✅ Conda ready."
+echo "   ✅ Dependencies installed."
 
-# Step 4: Create RAPIDS conda environment
-echo "[4/7] Creating RAPIDS conda environment..."
-conda create -n rapids -c rapidsai -c conda-forge -c nvidia \
-    rapids=24.12 python=3.11 cuda-version=12.1 \
-    fastapi uvicorn httpx numpy -y
-echo "   ✅ RAPIDS environment created."
-
-# Step 5: Clone the AyuGuard repo
-echo "[5/7] Cloning AyuGuard repository..."
-if [ -d "ayuguard-care-platform" ]; then
-    echo "   Repo already exists — pulling latest..."
-    cd ayuguard-care-platform && git pull origin main && cd ..
+# 3 — Clone / update repo
+echo "[3/6] Cloning AyuGuard repository..."
+if [ -d "$APP_DIR" ]; then
+    echo "   Repo exists — pulling latest..."
+    cd "$APP_DIR" && git pull origin main
 else
-    git clone https://github.com/shruti-patel06/AyuGuard.git ayuguard-care-platform
+    git clone "$REPO" "$APP_DIR"
 fi
-echo "   ✅ AyuGuard repo ready."
+echo "   ✅ Repo ready at $APP_DIR."
 
-# Step 6: Create systemd service for the analytics endpoint
-echo "[6/7] Creating systemd service for AyuGuard Analytics..."
+# 4 — Create systemd service
+echo "[4/6] Creating systemd service..."
+PYTHON_BIN=$(which python3)
 sudo tee /etc/systemd/system/ayuguard-analytics.service > /dev/null <<EOF
 [Unit]
 Description=AyuGuard NVIDIA RAPIDS Analytics Service
@@ -66,11 +49,13 @@ After=network.target
 [Service]
 Type=simple
 User=$USER
-WorkingDirectory=$HOME/ayuguard-care-platform
-Environment="PATH=$HOME/miniconda3/envs/rapids/bin:$PATH"
-ExecStart=$HOME/miniconda3/envs/rapids/bin/python -m uvicorn ayuguard.analytics.benchmark_server:app --host 0.0.0.0 --port 8080 --workers 1
+WorkingDirectory=$APP_DIR
+Environment="PYTHONPATH=$APP_DIR"
+ExecStart=$PYTHON_BIN -m uvicorn ayuguard.analytics.benchmark_server:app --host 0.0.0.0 --port 8080 --workers 1
 Restart=on-failure
 RestartSec=5s
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
@@ -78,24 +63,38 @@ EOF
 
 sudo systemctl daemon-reload
 sudo systemctl enable ayuguard-analytics
-sudo systemctl start ayuguard-analytics
-echo "   ✅ Analytics service started on port 8080."
+sudo systemctl restart ayuguard-analytics
+echo "   ✅ Service started."
 
-# Step 7: Open firewall port 8080 (if using gcloud)
-echo "[7/7] Opening firewall port 8080..."
-gcloud compute firewall-rules create ayuguard-analytics-port \
-    --allow tcp:8080 \
-    --source-ranges 0.0.0.0/0 \
-    --description "AyuGuard RAPIDS Analytics Service" 2>/dev/null || \
-    echo "   (Firewall rule already exists or gcloud not configured — skip)"
+# 5 — Wait and health check
+echo "[5/6] Waiting for service to be ready..."
+sleep 5
+for i in {1..10}; do
+    STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health || true)
+    if [ "$STATUS" = "200" ]; then
+        echo "   ✅ Service is healthy!"
+        break
+    fi
+    echo "   Waiting ($i/10)..."
+    sleep 3
+done
+
+# 6 — Print summary
+EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" \
+    http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
 
 echo ""
 echo "=================================================="
 echo "  ✅ AyuGuard GPU Analytics Setup Complete!"
-echo "  Test it: curl http://$(curl -s ifconfig.me):8080/health"
-echo "  Benchmark: curl http://$(curl -s ifconfig.me):8080/benchmark"
+echo ""
+echo "  External IP : $EXTERNAL_IP"
+echo "  Health:       curl http://$EXTERNAL_IP:8080/health"
+echo "  Benchmark:    curl http://$EXTERNAL_IP:8080/benchmark"
+echo ""
+echo "  ⚠️  Now update server.py GPU_VM_URL to:"
+echo "      http://$EXTERNAL_IP:8080"
 echo "=================================================="
 echo ""
-echo "  ⚠️  IMPORTANT: Stop this VM when not in use!"
-echo "  Command: gcloud compute instances stop INSTANCE_NAME --zone=ZONE"
+echo "  ⚠️  STOP VM WHEN DONE (saves ~\$0.70/hr):"
+echo "  gcloud compute instances stop ayuguard-gpu-vm-sg --zone=$VM_ZONE"
 echo "=================================================="
