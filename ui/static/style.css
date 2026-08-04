@@ -494,3 +494,70 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 .dash-updated-label{font-size:10px;color:var(--teal);font-weight:600;
   letter-spacing:.4px;margin-left:8px;opacity:0;transition:opacity .3s}
 .dash-updated-label.visible{opacity:1}
+
+/* ── NVIDIA RAPIDS GPU Benchmark Card ─────────────────── */
+.gpu-benchmark-card{
+  margin:18px 16px 12px;padding:20px 22px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(118,66,255,.12),rgba(0,255,180,.07));
+  border:1.5px solid rgba(118,66,255,.28);
+  box-shadow:0 4px 24px rgba(118,66,255,.12),0 1px 4px rgba(0,0,0,.18);
+  position:relative;overflow:hidden;transition:box-shadow .3s}
+.gpu-benchmark-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(118,66,255,.06),transparent 60%);
+  pointer-events:none}
+.gpu-benchmark-card:hover{box-shadow:0 8px 36px rgba(118,66,255,.2)}
+.gpu-card-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.gpu-icon{font-size:22px;filter:drop-shadow(0 0 6px rgba(118,66,255,.6))}
+.gpu-title{font-size:14.5px;font-weight:700;color:var(--text);letter-spacing:.2px;flex:1}
+.gpu-badge{
+  padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;
+  background:rgba(118,66,255,.18);color:#b39dff;border:1px solid rgba(118,66,255,.35)}
+.gpu-badge.gpu-on{background:rgba(0,255,140,.15);color:#4fffb0;border-color:rgba(0,255,140,.3)}
+.gpu-badge.gpu-off{background:rgba(255,200,0,.13);color:#ffd74f;border-color:rgba(255,200,0,.25)}
+.gpu-meta{font-size:11.5px;color:var(--text2);margin-bottom:14px;opacity:.85}
+.gpu-meta strong{color:var(--text)}
+.gpu-loading{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--text2);padding:6px 0}
+.gpu-error{font-size:12px;color:#f87171;padding:6px 0;opacity:.8}
+
+/* Benchmark grid */
+.gpu-bench-grid{
+  display:grid;grid-template-columns:1fr auto 1fr 1fr;
+  align-items:center;gap:10px;margin-bottom:14px;
+  background:rgba(0,0,0,.18);border-radius:12px;padding:14px 16px}
+.gpu-bench-item{text-align:center}
+.gpu-bench-label{font-size:10px;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:4px;font-weight:600}
+.gpu-bench-val{font-size:22px;font-weight:800;line-height:1;color:var(--text)}
+.gpu-bench-unit{font-size:11px;font-weight:500;color:var(--text2);margin-left:2px}
+.gpu-bench-arrow{font-size:18px;color:rgba(118,66,255,.6);text-align:center}
+.cpu-val{color:#f97316}
+.gpu-val{color:#4fffb0;text-shadow:0 0 12px rgba(79,255,176,.4)}
+.speedup-item .gpu-bench-val{font-size:18px}
+.speedup-val{
+  background:linear-gradient(135deg,#7642ff,#00ffb4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-size:20px!important;font-weight:900}
+
+/* Insight row */
+.gpu-insight{
+  display:flex;align-items:baseline;gap:8px;
+  background:rgba(0,255,140,.06);border-radius:10px;
+  padding:9px 13px;margin-bottom:10px;flex-wrap:wrap}
+.gpu-insight-label{font-size:11px;color:var(--text2);font-weight:600;flex-shrink:0}
+.gpu-insight-val{font-size:12.5px;color:var(--text);flex:1}
+.gpu-insight-val strong{color:#4fffb0}
+.gpu-footnote{font-size:10.5px;color:var(--text2);opacity:.7;text-align:right;
+  padding-top:4px;border-top:1px solid rgba(255,255,255,.06)}
+
+[data-theme="light"] .gpu-benchmark-card{
+  background:linear-gradient(135deg,rgba(118,66,255,.07),rgba(0,200,140,.05));
+  border-color:rgba(118,66,255,.2)}
+[data-theme="light"] .gpu-bench-grid{background:rgba(0,0,0,.04)}
+[data-theme="light"] .gpu-insight{background:rgba(0,180,100,.06)}
+[data-theme="light"] .gpu-badge{background:rgba(118,66,255,.1);color:#6030c0}
+[data-theme="light"] .gpu-badge.gpu-on{background:rgba(0,160,80,.1);color:#007a40}
+[data-theme="light"] .gpu-badge.gpu-off{background:rgba(200,150,0,.1);color:#7a5c00}
+[data-theme="light"] .speedup-val{background:linear-gradient(135deg,#5520cc,#009a60);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}

@@ -316,8 +316,83 @@ async function loadDashboard() {
     renderCarePlan(plan);
     document.getElementById('dash-sub').textContent =
       `${profile.name || 'Patient'} · Updated ${new Date().toLocaleTimeString()}`;
+
+    // Load GPU benchmark card in background (non-blocking)
+    loadGPUBenchmarkCard();
   } catch { showToast('⚠️ Could not load dashboard data'); }
 }
+
+/* ── NVIDIA RAPIDS GPU Benchmark Card ──────────────────── */
+async function loadGPUBenchmarkCard() {
+  const card = document.getElementById('gpu-benchmark-card');
+  if (!card) return;
+  card.innerHTML = `
+    <div class="gpu-card-header">
+      <span class="gpu-icon">⚡</span>
+      <span class="gpu-title">NVIDIA RAPIDS Analytics</span>
+      <span class="gpu-badge">Running benchmark…</span>
+    </div>
+    <div class="gpu-loading"><div class="spinner"></div> Analysing ${(10000).toLocaleString()} patient records…</div>`;
+  try {
+    const res  = await fetch(`${API}/analytics/benchmark`);
+    const data = await res.json();
+    renderGPUCard(card, data);
+  } catch(e) {
+    card.innerHTML = `<div class="gpu-card-header"><span class="gpu-icon">⚡</span><span class="gpu-title">NVIDIA RAPIDS Analytics</span></div>
+      <div class="gpu-error">Analytics service unavailable — will retry on next refresh.</div>`;
+  }
+}
+
+function renderGPUCard(card, d) {
+  const isGPU = d.gpu_available;
+  const cpuMs  = d.cpu_time_ms   != null ? d.cpu_time_ms.toFixed(1)  : '—';
+  const gpuMs  = d.gpu_time_ms   != null ? d.gpu_time_ms.toFixed(1)  : '—';
+  const speedup= d.speedup_x     != null ? `${d.speedup_x}×`         : '—';
+  const nPts   = d.n_patients    != null ? d.n_patients.toLocaleString() : '—';
+  const nRecs  = d.n_records     != null ? d.n_records.toLocaleString()  : '—';
+  const backend= d.acceleration_backend || 'Unknown';
+  const rs = d.real_patient_summary || {};
+  const topDis  = d.top_disease || rs.top_disease || '—';
+  const simPct  = d.similarity_score != null ? `${d.similarity_score}%` : (rs.similarity_pct != null ? `${rs.similarity_pct}%` : '—');
+
+  const statusBadge = isGPU
+    ? `<span class="gpu-badge gpu-on">🟢 GPU Active</span>`
+    : `<span class="gpu-badge gpu-off">🟡 CPU Mode</span>`;
+
+  card.innerHTML = `
+    <div class="gpu-card-header">
+      <span class="gpu-icon">⚡</span>
+      <span class="gpu-title">NVIDIA RAPIDS cuDF Analytics</span>
+      ${statusBadge}
+    </div>
+    <div class="gpu-meta">Powered by <strong>${backend}</strong> · ${nPts} patients · ${nRecs} records</div>
+
+    <div class="gpu-bench-grid">
+      <div class="gpu-bench-item">
+        <div class="gpu-bench-label">CPU pandas</div>
+        <div class="gpu-bench-val cpu-val">${cpuMs}<span class="gpu-bench-unit">ms</span></div>
+      </div>
+      <div class="gpu-bench-arrow">→</div>
+      <div class="gpu-bench-item">
+        <div class="gpu-bench-label">cudf.pandas (GPU)</div>
+        <div class="gpu-bench-val gpu-val">${isGPU ? gpuMs : 'N/A'}<span class="gpu-bench-unit">${isGPU ? 'ms' : ''}</span></div>
+      </div>
+      <div class="gpu-bench-item speedup-item">
+        <div class="gpu-bench-label">Speedup</div>
+        <div class="gpu-bench-val speedup-val">${isGPU ? speedup : 'Deploy on GPU →'}</div>
+      </div>
+    </div>
+
+    <div class="gpu-insight">
+      <span class="gpu-insight-label">🔬 Real Patient Analysis:</span>
+      <span class="gpu-insight-val">Rajan ji → <strong>${topDis}</strong> (${simPct} similarity)</span>
+    </div>
+    <div class="gpu-footnote">${isGPU
+      ? '✅ Running on NVIDIA T4 GPU · Google Cloud GPU VM'
+      : '⚙️ CPU fallback mode — deploy on Google Cloud GPU VM for full acceleration'}</div>`;
+}
+
+
 
 /* ── Silent real-time dashboard refresh (no spinners) ──────── */
 async function silentDashboardRefresh() {

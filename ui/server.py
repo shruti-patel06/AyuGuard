@@ -42,6 +42,16 @@ from ayuguard.tools.medical_records import (
     _UPLOADS,
 )
 
+# NVIDIA RAPIDS analytics pipeline (GPU-accelerated, CPU fallback if no GPU)
+try:
+    from ayuguard.analytics.rapids_pipeline import run_benchmark as _run_gpu_benchmark, GPU_AVAILABLE, ACCELERATION_BACKEND
+    _RAPIDS_LOADED = True
+except Exception:
+    _RAPIDS_LOADED = False
+    GPU_AVAILABLE = False
+    ACCELERATION_BACKEND = "Not loaded"
+    def _run_gpu_benchmark(n_patients=10_000): return {}
+
 # Cloud Run: set ADK_BASE_URL env var to the agent service URL.
 # Local dev: defaults to http://127.0.0.1:8000
 ADK_BASE = os.environ.get("ADK_BASE_URL", "http://127.0.0.1:8000")
@@ -155,6 +165,28 @@ async def save_api_care_plan(request: Request):
         caregiver_name=updated_by,
     )
     return JSONResponse(content=result)
+
+
+@app.get("/api/analytics/benchmark")
+async def api_gpu_benchmark(n_patients: int = 10_000):
+    """
+    NVIDIA RAPIDS cuDF GPU-accelerated benchmark endpoint.
+    Runs the 14-day symptom trend pipeline on synthetic population data
+    comparing CPU pandas vs NVIDIA RAPIDS cudf.pandas.
+    """
+    import asyncio
+    loop = asyncio.get_event_loop()
+    try:
+        result = await loop.run_in_executor(None, lambda: _run_gpu_benchmark(n_patients))
+        return JSONResponse(content={
+            "status": "ok",
+            "rapids_loaded": _RAPIDS_LOADED,
+            "gpu_available": GPU_AVAILABLE,
+            "acceleration_backend": ACCELERATION_BACKEND,
+            **result,
+        })
+    except Exception as exc:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(exc)})
 
 
 @app.get("/api/notifications")
