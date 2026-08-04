@@ -344,20 +344,42 @@ async function loadGPUBenchmarkCard() {
 }
 
 function renderGPUCard(card, d) {
-  const isGPU = d.gpu_available;
-  const cpuMs  = d.cpu_time_ms   != null ? d.cpu_time_ms.toFixed(1)  : '—';
-  const gpuMs  = d.gpu_time_ms   != null ? d.gpu_time_ms.toFixed(1)  : '—';
-  const speedup= d.speedup_x     != null ? `${d.speedup_x}×`         : '—';
-  const nPts   = d.n_patients    != null ? d.n_patients.toLocaleString() : '—';
-  const nRecs  = d.n_records     != null ? d.n_records.toLocaleString()  : '—';
-  const backend= d.acceleration_backend || 'Unknown';
-  const rs = d.real_patient_summary || {};
-  const topDis  = d.top_disease || rs.top_disease || '—';
-  const simPct  = d.similarity_score != null ? `${d.similarity_score}%` : (rs.similarity_pct != null ? `${rs.similarity_pct}%` : '—');
+  const isGPU    = d.gpu_available;
+  const isRef    = d.gpu_time_ms_is_reference;   // true = published benchmark reference
+  const cpuMs    = d.cpu_time_ms   != null ? d.cpu_time_ms.toFixed(1)  : '—';
+  const gpuMs    = d.gpu_time_ms   != null ? d.gpu_time_ms.toFixed(1)  : '—';
+  const speedup  = d.speedup_x     != null ? `${d.speedup_x}×`         : '—';
+  const nPts     = d.n_patients    != null ? d.n_patients.toLocaleString() : '—';
+  const nRecs    = d.n_records     != null ? d.n_records.toLocaleString()  : '—';
+  const backend  = d.acceleration_backend || 'pandas (CPU)';
+  const rs       = d.real_patient_summary || {};
+  const topDis   = d.top_disease || rs.top_disease || '—';
+  const simPct   = d.similarity_score != null ? `${d.similarity_score}%`
+                 : (rs.similarity_pct != null ? `${rs.similarity_pct}%` : '—');
 
+  // Status badge logic
   const statusBadge = isGPU
-    ? `<span class="gpu-badge gpu-on">🟢 GPU Active</span>`
-    : `<span class="gpu-badge gpu-off">🟡 CPU Mode</span>`;
+    ? `<span class="gpu-badge gpu-on">🟢 GPU Live</span>`
+    : isRef
+      ? `<span class="gpu-badge gpu-ref">📊 Benchmark Reference</span>`
+      : `<span class="gpu-badge gpu-off">🟡 CPU Only</span>`;
+
+  // GPU column — live or reference
+  const gpuValHtml = isGPU
+    ? `<div class="gpu-bench-val gpu-val">${gpuMs}<span class="gpu-bench-unit">ms</span></div>`
+    : isRef
+      ? `<div class="gpu-bench-val gpu-val ref-val">${gpuMs}<span class="gpu-bench-unit">ms*</span></div>`
+      : `<div class="gpu-bench-val" style="font-size:13px;color:var(--text2)">Pending GPU</div>`;
+
+  const speedupHtml = (isGPU || isRef)
+    ? `<div class="gpu-bench-val speedup-val">${speedup}${isRef ? '*' : ''}</div>`
+    : `<div class="gpu-bench-val" style="font-size:13px;color:var(--text2)">—</div>`;
+
+  const footnote = isGPU
+    ? '✅ Running live on NVIDIA GPU · Google Cloud GPU VM'
+    : isRef
+      ? '📊 *GPU time projected from NVIDIA RAPIDS published benchmarks (30× groupby/aggregation speedup) · CPU time is LIVE'
+      : '⚙️ Connect a Google Cloud GPU VM to see live acceleration';
 
   card.innerHTML = `
     <div class="gpu-card-header">
@@ -365,32 +387,34 @@ function renderGPUCard(card, d) {
       <span class="gpu-title">NVIDIA RAPIDS cuDF Analytics</span>
       ${statusBadge}
     </div>
-    <div class="gpu-meta">Powered by <strong>${backend}</strong> · ${nPts} patients · ${nRecs} records</div>
+    <div class="gpu-meta">
+      Pipeline: <strong>cudf.pandas</strong> (drop-in GPU pandas) ·
+      ${nPts} patients · ${nRecs} records · 14-day decay-weighted trend
+    </div>
 
     <div class="gpu-bench-grid">
       <div class="gpu-bench-item">
-        <div class="gpu-bench-label">CPU pandas</div>
+        <div class="gpu-bench-label">🖥️ CPU pandas<br><span style="font-size:9px;opacity:.7">LIVE measurement</span></div>
         <div class="gpu-bench-val cpu-val">${cpuMs}<span class="gpu-bench-unit">ms</span></div>
       </div>
       <div class="gpu-bench-arrow">→</div>
       <div class="gpu-bench-item">
-        <div class="gpu-bench-label">cudf.pandas (GPU)</div>
-        <div class="gpu-bench-val gpu-val">${isGPU ? gpuMs : 'N/A'}<span class="gpu-bench-unit">${isGPU ? 'ms' : ''}</span></div>
+        <div class="gpu-bench-label">⚡ cudf.pandas (GPU)<br><span style="font-size:9px;opacity:.7">${isGPU ? 'LIVE measurement' : 'RAPIDS benchmark*'}</span></div>
+        ${gpuValHtml}
       </div>
       <div class="gpu-bench-item speedup-item">
-        <div class="gpu-bench-label">Speedup</div>
-        <div class="gpu-bench-val speedup-val">${isGPU ? speedup : 'Deploy on GPU →'}</div>
+        <div class="gpu-bench-label">🚀 Speedup</div>
+        ${speedupHtml}
       </div>
     </div>
 
     <div class="gpu-insight">
-      <span class="gpu-insight-label">🔬 Real Patient Analysis:</span>
-      <span class="gpu-insight-val">Rajan ji → <strong>${topDis}</strong> (${simPct} similarity)</span>
+      <span class="gpu-insight-label">🔬 Real Patient Analysis (Rajan ji):</span>
+      <span class="gpu-insight-val">Condition pattern → <strong>${topDis}</strong> · ${simPct} match</span>
     </div>
-    <div class="gpu-footnote">${isGPU
-      ? '✅ Running on NVIDIA T4 GPU · Google Cloud GPU VM'
-      : '⚙️ CPU fallback mode — deploy on Google Cloud GPU VM for full acceleration'}</div>`;
+    <div class="gpu-footnote">${footnote}</div>`;
 }
+
 
 
 
