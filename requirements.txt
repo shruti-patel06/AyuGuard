@@ -1,4 +1,4 @@
-﻿# AyuGuard — Full Production Requirements
+# AyuGuard — Full Production Requirements
 # Core ADK + agent
 google-adk>=1.0.0
 google-genai>=1.0.0
@@ -22,8 +22,9 @@ pdfplumber>=0.11.0
 pypdf>=4.2.0
 Pillow>=10.3.0
 
-# Data / ML (dataset search)
+# Data / ML (dataset search + GPU benchmark fallback)
 numpy>=1.26.0
+pandas>=2.0.0
 scikit-learn>=1.4.0
 
 # MCP

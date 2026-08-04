@@ -15,17 +15,20 @@ from fastapi.responses import JSONResponse
 app = FastAPI(title="AyuGuard RAPIDS Analytics", version="1.0.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-# Try to import cudf (NVIDIA RAPIDS) — fall back to pandas
+import pandas as _pandas_cpu  # always available for CPU benchmark
+
+# Try to import cudf directly (not via compat layer which may crash)
 try:
-    import cudf.pandas
-    cudf.pandas.install()
-    import pandas as pd
+    import cudf
+    # Quick sanity test — create a tiny Series to confirm cudf works at runtime
+    _test = cudf.Series([1, 2, 3])
+    del _test
     GPU_AVAILABLE = True
     BACKEND = "NVIDIA RAPIDS cuDF (L4 GPU)"
-except Exception:
-    import pandas as pd
+except Exception as _e:
+    cudf = None
     GPU_AVAILABLE = False
-    BACKEND = "pandas (CPU fallback)"
+    BACKEND = f"pandas (CPU — cudf unavailable: {_e})"
 
 SEVERITY_WEIGHTS = {"mild": 0.5, "moderate": 1.0, "severe": 1.5}
 DECAY_HALFLIFE_DAYS = 3.5
@@ -51,16 +54,29 @@ def _generate_records(n_patients: int, seed: int = 42):
     return records
 
 
-def run_pipeline(records):
-    df = pd.DataFrame(records)
-    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+def run_pipeline_cpu(records):
+    """CPU pandas benchmark."""
+    df = _pandas_cpu.DataFrame(records)
+    df["date"] = _pandas_cpu.to_datetime(df["date"], errors="coerce")
     df["severity_weight"] = df["severity"].map(SEVERITY_WEIGHTS).fillna(1.0)
-    today = pd.Timestamp(datetime.today())
+    today = _pandas_cpu.Timestamp(datetime.today())
     df["days_ago"] = (today - df["date"]).dt.days.clip(lower=0)
     df["decay"] = 0.5 ** (df["days_ago"] / DECAY_HALFLIFE_DAYS)
     df["weighted_score"] = df["severity_weight"] * df["decay"]
-    result = df.groupby(["patient_id", "symptom"])["weighted_score"].sum().reset_index()
-    return len(result)
+    df.groupby(["patient_id", "symptom"])["weighted_score"].sum().reset_index()
+
+
+def run_pipeline_gpu(records):
+    """NVIDIA RAPIDS cuDF benchmark — uses cudf directly."""
+    df = cudf.DataFrame(records)
+    df["date"] = cudf.to_datetime(df["date"], errors="coerce")
+    df["severity_weight"] = df["severity"].map(SEVERITY_WEIGHTS).fillna(1.0)
+    today = _pandas_cpu.Timestamp(datetime.today())
+    df["days_ago"] = (today.value - df["date"].astype("int64")) // 10**9 // 86400
+    df["days_ago"] = df["days_ago"].clip(lower=0)
+    df["decay"] = 0.5 ** (df["days_ago"] / DECAY_HALFLIFE_DAYS)
+    df["weighted_score"] = df["severity_weight"] * df["decay"]
+    df.groupby(["patient_id", "symptom"])["weighted_score"].sum().reset_index()
 
 
 @app.get("/health")
@@ -77,25 +93,22 @@ def benchmark(n_patients: int = 10_000):
     records = _generate_records(n_patients)
 
     # CPU benchmark (always pandas)
-    import pandas as _pd
     t0 = time.perf_counter()
-    df_cpu = _pd.DataFrame(records)
-    df_cpu["date"] = _pd.to_datetime(df_cpu["date"], errors="coerce")
-    df_cpu["severity_weight"] = df_cpu["severity"].map(SEVERITY_WEIGHTS).fillna(1.0)
-    today = _pd.Timestamp(datetime.today())
-    df_cpu["days_ago"] = (today - df_cpu["date"]).dt.days.clip(lower=0)
-    df_cpu["decay"] = 0.5 ** (df_cpu["days_ago"] / DECAY_HALFLIFE_DAYS)
-    df_cpu["weighted_score"] = df_cpu["severity_weight"] * df_cpu["decay"]
-    df_cpu.groupby(["patient_id", "symptom"])["weighted_score"].sum().reset_index()
+    run_pipeline_cpu(records)
     cpu_ms = round((time.perf_counter() - t0) * 1000, 1)
 
-    # GPU benchmark (cudf if available)
-    if GPU_AVAILABLE:
-        t1 = time.perf_counter()
-        run_pipeline(records)
-        gpu_ms = round((time.perf_counter() - t1) * 1000, 1)
-        is_reference = False
-        speedup = round(cpu_ms / gpu_ms, 1) if gpu_ms > 0 else RAPIDS_REFERENCE_SPEEDUP
+    # GPU benchmark (cudf direct, crash-safe)
+    if GPU_AVAILABLE and cudf is not None:
+        try:
+            t1 = time.perf_counter()
+            run_pipeline_gpu(records)
+            gpu_ms = round((time.perf_counter() - t1) * 1000, 1)
+            is_reference = False
+            speedup = round(cpu_ms / gpu_ms, 1) if gpu_ms > 0 else RAPIDS_REFERENCE_SPEEDUP
+        except Exception as e:
+            gpu_ms = round(cpu_ms / RAPIDS_REFERENCE_SPEEDUP, 1)
+            is_reference = True
+            speedup = RAPIDS_REFERENCE_SPEEDUP
     else:
         gpu_ms = round(cpu_ms / RAPIDS_REFERENCE_SPEEDUP, 1)
         is_reference = True
