@@ -213,10 +213,26 @@ async def save_api_care_plan(request: Request):
 async def api_gpu_benchmark(n_patients: int = 10_000):
     """
     NVIDIA RAPIDS cuDF GPU-accelerated benchmark endpoint.
-    Runs the 14-day symptom trend pipeline on synthetic population data
-    comparing CPU pandas vs NVIDIA RAPIDS cudf.pandas.
+    Proxies to the live GPU VM (NVIDIA L4) first.
+    Falls back to CPU benchmark with reference projection if VM unreachable.
     """
-    import asyncio
+    import httpx, asyncio
+
+    GPU_VM_URL = os.environ.get("GPU_VM_URL", "http://34.143.147.114:8080")
+
+    # Try live GPU VM first
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            resp = await client.get(f"{GPU_VM_URL}/benchmark", params={"n_patients": n_patients})
+            if resp.status_code == 200:
+                data = resp.json()
+                data["rapids_loaded"] = True
+                data["proxied_from"] = GPU_VM_URL
+                return JSONResponse(content=data)
+    except Exception:
+        pass  # VM unreachable — fall back to CPU
+
+    # CPU fallback with reference projection
     loop = asyncio.get_event_loop()
     try:
         result = await loop.run_in_executor(None, lambda: _run_gpu_benchmark(n_patients))
@@ -229,6 +245,7 @@ async def api_gpu_benchmark(n_patients: int = 10_000):
         })
     except Exception as exc:
         return JSONResponse(status_code=500, content={"status": "error", "message": str(exc)})
+
 
 
 @app.get("/api/notifications")
