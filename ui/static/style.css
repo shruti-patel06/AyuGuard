@@ -496,6 +496,39 @@ main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;posit
 .dash-updated-label.visible{opacity:1}
 
 /* ── NVIDIA RAPIDS GPU Benchmark Card ─────────────────── */
+/* GPU nav button */
+.gpu-nav-btn{
+  background:linear-gradient(135deg,rgba(118,66,255,.25),rgba(0,255,180,.15)) !important;
+  border:1px solid rgba(118,66,255,.4) !important;
+  color:#b39dff !important;
+  font-size:16px !important;
+  animation:gpuBtnPulse 2.5s ease-in-out infinite}
+@keyframes gpuBtnPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(118,66,255,.0)}
+  50%{box-shadow:0 0 10px 3px rgba(118,66,255,.35)}}
+.gpu-nav-btn:hover{
+  background:linear-gradient(135deg,rgba(118,66,255,.4),rgba(0,255,180,.25)) !important;
+  color:#d0b8ff !important;transform:scale(1.08)}
+
+/* GPU slide-in panel — same structure as notif-panel */
+.gpu-panel{
+  right:-420px;
+  width:400px;
+  background:linear-gradient(160deg,var(--surface) 80%,rgba(118,66,255,.06));
+  border-left:1.5px solid rgba(118,66,255,.25) !important;
+  transition:right .32s cubic-bezier(.4,0,.2,1) !important}
+.gpu-panel.open{right:0 !important}
+.gpu-panel .notif-header{
+  background:linear-gradient(135deg,rgba(118,66,255,.18),rgba(0,255,180,.08));
+  border-bottom:1px solid rgba(118,66,255,.2)}
+.gpu-panel .notif-title{
+  background:linear-gradient(135deg,#b39dff,#4fffb0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-weight:800}
+.gpu-panel-inner{
+  padding:16px;overflow-y:auto;
+  height:calc(100% - 56px)}
+
 .gpu-benchmark-card{
   margin:18px 16px 12px;padding:20px 22px;border-radius:18px;
   background:linear-gradient(135deg,rgba(118,66,255,.12),rgba(0,255,180,.07));

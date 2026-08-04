@@ -34,6 +34,9 @@
       <span id="urgency-text">—</span>
     </div>
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle light / dark mode">🌙</button>
+    <button class="notif-btn gpu-nav-btn" id="gpu-panel-btn" onclick="toggleGPUPanel()" title="NVIDIA RAPIDS Analytics">
+      ⚡
+    </button>
     <button class="notif-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Notifications">
       🔔
       <span class="notif-badge" id="notif-badge" style="display:none">0</span>
@@ -184,15 +187,6 @@
         </div>
       </div>
 
-      <!-- NVIDIA RAPIDS GPU Benchmark Card -->
-      <div id="gpu-benchmark-card" class="gpu-benchmark-card">
-        <div class="gpu-card-header">
-          <span class="gpu-icon">⚡</span>
-          <span class="gpu-title">NVIDIA RAPIDS cuDF Analytics</span>
-          <span class="gpu-badge">Loading…</span>
-        </div>
-        <div class="gpu-loading"><div class="spinner"></div> Initialising GPU pipeline…</div>
-      </div>
     </div><!-- /view-dashboard -->
 
 
@@ -316,6 +310,17 @@
   </div>
   <div class="notif-list" id="notif-list">
     <div class="notif-empty">Loading notifications…</div>
+  </div>
+</div>
+
+<!-- ─── NVIDIA RAPIDS GPU Analytics Panel ───────────────────── -->
+<div class="notif-panel gpu-panel" id="gpu-panel">
+  <div class="notif-header">
+    <div class="notif-title">⚡ NVIDIA RAPIDS Analytics</div>
+    <button class="notif-close" onclick="toggleGPUPanel()">✕</button>
+  </div>
+  <div id="gpu-benchmark-card" class="gpu-panel-inner">
+    <div class="gpu-loading"><div class="spinner"></div> Initialising GPU pipeline…</div>
   </div>
 </div>
 

@@ -236,6 +236,9 @@ async function loadNotifCount() {
 async function toggleNotifPanel() {
   notifPanelOpen = !notifPanelOpen;
   document.getElementById('notif-panel').classList.toggle('open', notifPanelOpen);
+  // Close GPU panel if open
+  document.getElementById('gpu-panel').classList.remove('open');
+  gpuPanelOpen = false;
   if (notifPanelOpen) {
     await loadNotifications();
     // mark read
@@ -247,6 +250,23 @@ async function toggleNotifPanel() {
     });
   }
 }
+
+let gpuPanelOpen = false;
+let gpuBenchmarkLoaded = false;
+
+function toggleGPUPanel() {
+  gpuPanelOpen = !gpuPanelOpen;
+  document.getElementById('gpu-panel').classList.toggle('open', gpuPanelOpen);
+  // Close notif panel if open
+  document.getElementById('notif-panel').classList.remove('open');
+  notifPanelOpen = false;
+  // Load benchmark on first open
+  if (gpuPanelOpen && !gpuBenchmarkLoaded) {
+    gpuBenchmarkLoaded = true;
+    loadGPUBenchmarkCard();
+  }
+}
+
 
 async function loadNotifications() {
   const el = document.getElementById('notif-list');
