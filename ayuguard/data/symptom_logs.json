@@ -240,6 +240,118 @@
           "notes": "Dad is sweating heavily, clutching his chest, and says his left arm feels numb",
           "date": "2026-07-29",
           "stored_at": "2026-07-28T23:45:43.107679"
+        },
+        {
+          "symptom": "loose motions",
+          "severity": "mild",
+          "date": "2026-07-30",
+          "source": "log",
+          "notes": "Diarrhoea subsiding, had ORS and daliya, feeling slightly better",
+          "stored_at": "2026-07-30T10:00:00.000000"
+        },
+        {
+          "symptom": "loss of appetite",
+          "severity": "mild",
+          "date": "2026-07-30",
+          "source": "log",
+          "notes": "Not eating much but keeping fluids down",
+          "stored_at": "2026-07-30T14:00:00.000000"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-07-31",
+          "source": "log",
+          "notes": "Feeling weak but diarrhoea has stopped completely",
+          "stored_at": "2026-07-31T11:00:00.000000"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-07-31",
+          "source": "log",
+          "notes": "Drinking water regularly, glucose levels being monitored",
+          "stored_at": "2026-07-31T15:00:00.000000"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-08-01",
+          "source": "log",
+          "notes": "Tired but appetite slowly returning, had khichdi for lunch",
+          "stored_at": "2026-08-01T10:30:00.000000"
+        },
+        {
+          "symptom": "blurry vision",
+          "severity": "mild",
+          "date": "2026-08-01",
+          "source": "log",
+          "notes": "Eyes still slightly bothering him when reading",
+          "stored_at": "2026-08-01T16:00:00.000000"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-08-02",
+          "source": "log",
+          "notes": "Back to normal thirst levels, managing with regular water and coconut water",
+          "stored_at": "2026-08-02T09:00:00.000000"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-08-02",
+          "source": "log",
+          "notes": "Energy levels improving, took a short walk in the evening",
+          "stored_at": "2026-08-02T18:00:00.000000"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-08-03",
+          "source": "log",
+          "notes": "Mild tiredness, otherwise feeling better",
+          "stored_at": "2026-08-03T10:00:00.000000"
+        },
+        {
+          "symptom": "increased thirst",
+          "severity": "mild",
+          "date": "2026-08-03",
+          "source": "log",
+          "notes": "Thirst within normal pre-diabetes range, hydrating well",
+          "stored_at": "2026-08-03T14:00:00.000000"
+        },
+        {
+          "symptom": "frequent urination",
+          "severity": "mild",
+          "date": "2026-08-04",
+          "source": "log",
+          "notes": "Bathroom trips slightly above normal, keeping an eye on it",
+          "stored_at": "2026-08-04T11:00:00.000000"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-08-04",
+          "source": "log",
+          "notes": "Had a good sleep last night, feeling more rested today",
+          "stored_at": "2026-08-04T17:00:00.000000"
+        },
+        {
+          "symptom": "fatigue",
+          "severity": "mild",
+          "date": "2026-08-05",
+          "source": "log",
+          "notes": "Feeling a little better after coconut water, energy slightly up",
+          "stored_at": "2026-08-05T09:30:00.000000"
+        },
+        {
+          "symptom": "loss of appetite",
+          "severity": "mild",
+          "date": "2026-08-05",
+          "source": "log",
+          "notes": "Still mild appetite loss from the recovery phase",
+          "stored_at": "2026-08-05T12:00:00.000000"
         }
       ]
     }
@@ -249,7 +361,7 @@
       "Diabetes": "2026-07-05T21:25:30.543445"
     },
     "patient_001": {
-      "Diabetes": "2026-07-27T23:25:06.485108"
+      "Diabetes": "2026-08-05T08:00:00.000000"
     }
   },
   "profiles": {
@@ -280,9 +392,9 @@
       "activities": [
         "15 min gentle walk after dinner"
       ],
-      "notes": "Choice of Vegetable Pulao confirmed by Priya for today's dinner.",
+      "notes": "Rajan ji is recovering well from the acute episode. Continuing bland low-GI diet with gradual return to standard pre-diabetes meal plan. Monitor hydration and glucose daily.",
       "updated_by": "Priya",
-      "updated_at": "2026-07-29T13:56:43.883109"
+      "updated_at": "2026-08-05T09:00:00.000000"
     }
   },
   "notifications": {
